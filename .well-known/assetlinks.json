@@ -1,0 +1,8 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "pe.pidemas.tienda",
+    "sha256_cert_fingerprints": ["C7:56:D7:9F:B7:62:CA:0F:5C:3B:9E:8B:E7:42:20:8C:3A:A9:1D:6A:8E:85:ED:1C:5E:F8:5A:92:50:AD:07:8E"]
+  }
+}]
