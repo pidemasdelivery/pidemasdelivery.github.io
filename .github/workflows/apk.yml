@@ -1,5 +1,5 @@
 # Construye el APK de la tienda (app de Android que abre tu tienda publicada en GitHub Pages).
-# El APK queda en: Actions → la ejecución → Artifacts → «pidemas-tienda-apk».
+# Descarga directa: https://github.com/pidemasdelivery/pidemasdelivery.github.io/releases/latest/download/pidemas-tienda.apk
 name: Construir APK
 
 on:
@@ -198,3 +198,11 @@ jobs:
         with:
           name: pidemas-tienda-apk
           path: salida/
+
+      - name: Publicar APK para descarga directa
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: app-v${{ github.run_number }}
+          name: Pidemás app ${{ github.run_number }}
+          make_latest: true
+          files: salida/pidemas-tienda.apk
