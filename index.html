@@ -2037,7 +2037,7 @@ html:root body #modal#modal#modal#modal#modal#modal .sheet.pdCkV2 #yapePaymentBo
 html:root body #modal#modal#modal#modal#modal#modal .sheet.pdCkV2 #yapePaymentBox div[style*="#6F625A"], html:root body #modal#modal#modal#modal#modal#modal .sheet.pdCkV2 #cashPaymentBox div[style*="#6F625A"] { color: var(--fr-muted) !important; }
 html:root body #modal#modal#modal#modal#modal#modal .sheet.pdCkV2 #cMontoSubtotal, html:root body #modal#modal#modal#modal#modal#modal .sheet.pdCkV2 #cMontoDelivery, html:root body #modal#modal#modal#modal#modal#modal .sheet.pdCkV2 #cYapeSubtotal, html:root body #modal#modal#modal#modal#modal#modal .sheet.pdCkV2 #cYapeDelivery { color: var(--fr-ink); }
 html:root body #modal#modal#modal#modal#modal#modal .sheet.pdCkV2 #cMontoPedido, html:root body #modal#modal#modal#modal#modal#modal .sheet.pdCkV2 #cYapeMonto { color: var(--fr-orange) !important; }
-html:root body #modal#modal#modal#modal#modal#modal .sheet.pdCkV2 #cCambio { color: var(--fr-green) !important; }
+html:root body #modal#modal#modal#modal#modal#modal .sheet.pdCkV2 #cCambio { color: var(--fr-orange) !important; }
 html:root body #modal#modal#modal#modal#modal#modal .sheet.pdCkV2 #paymentProofBox > div { border: 2px dashed var(--fr-peach-border) !important; background: var(--fr-peach-soft) !important; border-radius: 18px !important; }
 html:root body #modal#modal#modal#modal#modal#modal .sheet.pdCkV2 #paymentProofBox > div [id="cProofStatus"] { color: var(--fr-muted) !important; }
 html:root body #modal#modal#modal#modal#modal#modal .sheet.pdCkV2 #yapePaymentBox .pdYapeOp:has(input:checked) { background: var(--fr-orange) !important; border-color: var(--fr-orange) !important; }
@@ -5599,7 +5599,7 @@ html body #modal#modal .sheet.pdCkV2 .ckToggle em{display:flex !important;align-
   }
   function interruptor(texto,nodo,abierto){
     const b=document.createElement('button');b.type='button';b.className='ckToggle';
-    const set=v=>{nodo.hidden=!v;b.innerHTML=E(texto)+'<em>'+(v?'−':'+')+'</em>';b.setAttribute('aria-expanded',String(!!v))};
+    const set=v=>{nodo.hidden=!v;b.innerHTML=E(texto);b.setAttribute('aria-expanded',String(!!v))};
     b.onclick=e=>{if(e){e.preventDefault();e.stopPropagation()}set(nodo.hidden)};set(!!abierto);return b;
   }
   function negocioNombre(){
@@ -5633,7 +5633,10 @@ html body #modal#modal .sheet.pdCkV2 .ckToggle em{display:flex !important;align-
 
     /* 3. Productos */
     const items=$('pdCkItems');
-    if(items){const cP=document.createElement('section');cP.className='ckCard';cP.innerHTML='<div class="ckHead"><i>'+IC.bag+'</i><b>Tu pedido</b></div>';cP.appendChild(items);cards.appendChild(cP)}
+    if(items){const cP=document.createElement('section');cP.className='ckCard';cP.innerHTML='<div class="ckHead"><i>'+IC.bag+'</i><b>Tu pedido</b></div>';cP.appendChild(items);
+      const fObs=campo('cObs');
+      if(fObs){const v=!!String($('cObs')?.value||'').trim();const caja=document.createElement('div');caja.className='ckNota';caja.appendChild(fObs);cP.appendChild(interruptor('Agregar una nota para el pedido',caja,v));cP.appendChild(caja)}
+      cards.appendChild(cP)}
 
     /* 4. Pago */
     const cG=document.createElement('section');cG.className='ckCard';cG.innerHTML='<div class="ckHead"><i>'+IC.cash+'</i><b>Pago</b></div>';
@@ -5641,8 +5644,6 @@ html body #modal#modal .sheet.pdCkV2 .ckToggle em{display:flex !important;align-
     ['cashPaymentBox','yapePaymentBox'].forEach(id=>{const x=$(id);if(x)cG.appendChild(x)});
     const fDesc=campo('cDiscountCode');
     if(fDesc){const caja=document.createElement('div');caja.className='ckCupon';cG.appendChild(caja);caja.appendChild(fDesc)}
-    const fObs=campo('cObs');
-    if(fObs){const caja=document.createElement('div');caja.className='ckNota';cG.appendChild(caja);caja.appendChild(fObs);const lb=fObs.querySelector('label');if(lb)lb.textContent='Nota para el pedido';const ta=$('cObs');if(ta){ta.placeholder='Ej: sin cebolla, tocar el timbre, dejar en recepción…';ta.rows=3;ta.maxLength=300}}
     cards.appendChild(cG);
 
     /* Resúmenes que se actualizan solos */
@@ -7458,7 +7459,15 @@ html body #pdGoogleAuthOverlay#pdGoogleAuthOverlay#pdGoogleAuthOverlay#pdGoogleA
 </style>
 <style id="pd-fix-salir-blanco">
 html:root body .pdGoogleSignOutBtn, html:root body #modal .pdGoogleSignOutBtn, html:root body button.pdGoogleSignOutBtn[id]{background:var(--fr-surface,#FFF9F5) !important;border:1px solid var(--fr-line) !important;color:var(--fr-ink) !important;box-shadow:none !important}
+</style>
+<style id="pd-nota-pedido">
 html:root body #modal .ckNota textarea{min-height:84px !important;padding:10px 12px !important;resize:vertical}
+</style>
+<style id="pd-nota-boton">
+html:root body #modal#modal#modal#modal#modal#modal#modal#modal .sheet.pdCkV2 .ckCard .ckToggle{display:flex !important;align-items:center !important;justify-content:center !important;width:100% !important;min-height:46px !important;margin:14px 0 0 !important;padding:0 16px !important;border:1px solid var(--fr-line) !important;border-radius:14px !important;background:var(--fr-surface) !important;color:var(--fr-orange) !important;font:700 14px Inter,system-ui,-apple-system,Roboto,Arial,sans-serif !important;text-align:center !important;box-shadow:none !important;cursor:pointer !important}
+html:root body #modal#modal#modal#modal#modal#modal#modal#modal .sheet.pdCkV2 .ckCard .ckToggle:active{background:var(--fr-peach-soft) !important}
+html:root body #modal#modal#modal#modal#modal#modal#modal#modal .sheet.pdCkV2 .ckCard .ckToggle[aria-expanded="true"]{background:var(--fr-peach-soft) !important}
+html:root body #modal#modal#modal#modal#modal#modal#modal#modal .sheet.pdCkV2 .ckNota{margin-top:10px}
 </style>
 </body>
 </html>
