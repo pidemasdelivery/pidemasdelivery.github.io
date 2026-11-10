@@ -2971,7 +2971,7 @@ function openCheckout(){
     </div>
     <div class="locationStatus" id="cCompNota">El negocio emitirá el comprobante con estos datos.</div>
   </div>
-  <div class="field"><label>Observaciones</label><textarea id="cObs"></textarea></div>
+  <div class="field"><label>Nota para el pedido</label><textarea id="cObs" rows="3" maxlength="300" placeholder="Ej: sin cebolla, tocar el timbre, dejar en recepción…"></textarea></div>
   <button class="primary" onclick="submitCartOrder()">Enviar pedido</button></div>`);
 
   // Cada checkout empieza sin coordenadas ocultas para evitar reutilizar un GPS
@@ -5569,6 +5569,11 @@ if (pidemasNegocioEnlace) {
 
 <!-- ===== Pidemás · Tienda: «Tu pedido» con aspecto de app (tarjetas) ===== -->
 
+<style id="pd-fix-cktoggle">
+html body #modal#modal .sheet.pdCkV2 .ckToggle{position:relative !important;min-height:52px !important;touch-action:manipulation !important;-webkit-tap-highlight-color:transparent !important;cursor:pointer !important;text-align:left !important}
+html body #modal#modal .sheet.pdCkV2 .ckToggle *{pointer-events:none !important}
+html body #modal#modal .sheet.pdCkV2 .ckToggle em{display:flex !important;align-items:center !important;justify-content:flex-end !important;min-width:52px !important;height:52px !important;margin-right:-6px !important;font-size:24px !important;line-height:1 !important}
+</style>
 <script id="pidemas-checkout-v2-js">
 (function(){
   const $=id=>document.getElementById(id);
@@ -5594,8 +5599,8 @@ if (pidemasNegocioEnlace) {
   }
   function interruptor(texto,nodo,abierto){
     const b=document.createElement('button');b.type='button';b.className='ckToggle';
-    const set=v=>{nodo.hidden=!v;b.innerHTML=E(texto)+'<em>'+(v?'−':'+')+'</em>'};
-    b.onclick=()=>set(nodo.hidden);set(!!abierto);return b;
+    const set=v=>{nodo.hidden=!v;b.innerHTML=E(texto)+'<em>'+(v?'−':'+')+'</em>';b.setAttribute('aria-expanded',String(!!v))};
+    b.onclick=e=>{if(e){e.preventDefault();e.stopPropagation()}set(nodo.hidden)};set(!!abierto);return b;
   }
   function negocioNombre(){
     try{const it=(cart||[]).find(x=>x.origen==='negocio');if(!it)return 'Productos Pidemás';const r=(restaurants||[]).find(x=>String(x.id)===String(it.negocio_id));return r?(r.nombre||r.nombre_negocio||''):''}catch(e){return ''}
@@ -5635,9 +5640,9 @@ if (pidemasNegocioEnlace) {
     const fPago=campo('cPago');if(fPago)cG.appendChild(fPago);
     ['cashPaymentBox','yapePaymentBox'].forEach(id=>{const x=$(id);if(x)cG.appendChild(x)});
     const fDesc=campo('cDiscountCode');
-    if(fDesc){const v=!!String($('cDiscountCode')?.value||'').trim();const caja=document.createElement('div');cG.appendChild(caja);caja.appendChild(fDesc);cG.insertBefore(interruptor('¿Tienes un código de descuento?',caja,v),caja)}
+    if(fDesc){const caja=document.createElement('div');caja.className='ckCupon';cG.appendChild(caja);caja.appendChild(fDesc)}
     const fObs=campo('cObs');
-    if(fObs){const v=!!String($('cObs')?.value||'').trim();const caja=document.createElement('div');cG.appendChild(caja);caja.appendChild(fObs);cG.insertBefore(interruptor('Agregar una nota para el pedido',caja,v),caja)}
+    if(fObs){const caja=document.createElement('div');caja.className='ckNota';cG.appendChild(caja);caja.appendChild(fObs);const lb=fObs.querySelector('label');if(lb)lb.textContent='Nota para el pedido';const ta=$('cObs');if(ta){ta.placeholder='Ej: sin cebolla, tocar el timbre, dejar en recepción…';ta.rows=3;ta.maxLength=300}}
     cards.appendChild(cG);
 
     /* Resúmenes que se actualizan solos */
@@ -7448,5 +7453,12 @@ if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostnam
   document.addEventListener('mouseup',fin);
 })();
 </script>
+<style id="pd-fix-salir">
+html body #pdGoogleAuthOverlay#pdGoogleAuthOverlay#pdGoogleAuthOverlay#pdGoogleAuthOverlay#pdGoogleAuthOverlay#pdGoogleAuthOverlay#pdGoogleAuthOverlay#pdGoogleAuthOverlay#pdGoogleAuthOverlay#pdGoogleAuthOverlay#pdGoogleAuthOverlay#pdGoogleAuthOverlay#pdGoogleAuthOverlay#pdGoogleAuthOverlay#pdGoogleAuthOverlay#pdGoogleAuthOverlay#pdGoogleAuthOverlay#pdGoogleAuthOverlay#pdGoogleAuthOverlay#pdGoogleAuthOverlay#pdGoogleAuthOverlay#pdGoogleAuthOverlay#pdGoogleAuthOverlay#pdGoogleAuthOverlay#pdGoogleAuthOverlay#pdGoogleAuthOverlay#pdGoogleAuthOverlay#pdGoogleAuthOverlay#pdGoogleAuthOverlay#pdGoogleAuthOverlay#pdGoogleAuthOverlay#pdGoogleAuthOverlay#pdGoogleAuthOverlay#pdGoogleAuthOverlay#pdGoogleAuthOverlay#pdGoogleAuthOverlay#pdGoogleAuthOverlay#pdGoogleAuthOverlay#pdGoogleAuthOverlay#pdGoogleAuthOverlay .pcFoot .pcBtn.light[data-acc="salir"]{background:var(--fr-surface,#FFF9F5) !important;border:1px solid var(--fr-line) !important;color:var(--fr-orange-dark) !important}
+</style>
+<style id="pd-fix-salir-blanco">
+html:root body .pdGoogleSignOutBtn, html:root body #modal .pdGoogleSignOutBtn, html:root body button.pdGoogleSignOutBtn[id]{background:var(--fr-surface,#FFF9F5) !important;border:1px solid var(--fr-line) !important;color:var(--fr-ink) !important;box-shadow:none !important}
+html:root body #modal .ckNota textarea{min-height:84px !important;padding:10px 12px !important;resize:vertical}
+</style>
 </body>
 </html>
