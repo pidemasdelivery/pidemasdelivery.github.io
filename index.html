@@ -2256,7 +2256,7 @@ async function loadData(){
     sb.from('productos_stock').select('*').eq('disponible',true).gt('stock',0).order('nombre',{ascending:true}),
     sb.from('categorias_negocio').select('*').order('orden',{ascending:true})
   ]);
-  restaurants=r.data||[];
+  restaurants=(r.data||[]).filter(n=>n&&n.visible_admin!==false); /* el administrador puede ocultar un negocio de la tienda */
   allProductCategories=c.data||[]; productCategories=allProductCategories.filter(x=>x.activo!==false);
   // Solo se publican en la Tienda los productos cuyo negocio está activo.
   // Esto evita que un negocio oculto siga apareciendo a través de su carta.
@@ -2633,7 +2633,7 @@ function renderProducts(list=products){
 
 async function showRestaurant(id){
   const r=restaurants.find(x=>String(x.id)===String(id));
-  if(!r || r.activo===false)return;
+  if(!r || r.activo===false || r.visible_admin===false)return;
 
   // Cargar primero la carta real de Supabase. Así no aparece por un instante
   // la vista previa horizontal de Inicio antes de abrir la carta completa.
@@ -4236,7 +4236,7 @@ async function abrirCartaDesdeEnlace(){
     // Consultar el registro exacto por ID aunque no aparezca en la lista general.
     const {data:negocio,error:negocioError}=await sb.from('negocios').select('*').eq('id',negocioId).maybeSingle();
     if(negocioError)throw negocioError;
-    if(!negocio || negocio.activo===false || String(negocio.activo).toLowerCase()==='false'){
+    if(!negocio || negocio.activo===false || negocio.visible_admin===false || String(negocio.activo).toLowerCase()==='false'){
       if(head)head.innerHTML='<h2>Carta no disponible</h2>';
       if(productsEl)productsEl.innerHTML='<div class="empty" style="padding:24px;text-align:center">Este negocio no está disponible o el enlace no es válido.</div>';
       return;
