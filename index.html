@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="es">
-<head><meta name="pd-version" content="20261111170000"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-antes-de-cargar">
+<head><meta name="pd-version" content="20261111180000"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-antes-de-cargar">
 .app > .hero.pdHero { display: none !important; }
 .app > header .search { display: none !important; }
 .app > header #pdCustomerAccountBtn { display: none !important; }
@@ -4275,7 +4275,10 @@ async function abrirCartaDesdeEnlace(){
         if(!document.documentElement.classList.contains('pdCartaEnlace')){
           document.documentElement.classList.add('pdCartaEnlace');
           const st=document.createElement('style');
-          st.textContent='html.pdCartaEnlace #cartaModalNegocio .carta-modal-close{display:none!important}'
+          st.textContent='html.pdCartaEnlace:root body #cartaModalNegocio .carta-modal-close{display:none!important}'
+            +'html.pdCartaEnlace:root,html.pdCartaEnlace:root body{overflow:hidden!important;height:100dvh!important;max-height:100dvh!important;overscroll-behavior:none!important}'
+            +'html.pdCartaEnlace:root body #cartaModalNegocio.carta-modal-overlay{overflow:hidden!important;touch-action:none}'
+            +'html.pdCartaEnlace:root body #cartaModalNegocio .carta-modal-body{touch-action:pan-y;overscroll-behavior:contain!important}'
             +'html.pdCartaEnlace:root body #cartaModalNegocio.carta-modal-overlay{background:var(--fr-surface,#fff)!important;z-index:2147483000!important}'
             +'html.pdCartaEnlace:root body #cartaModalNegocio .carta-modal-sheet{height:100dvh!important;max-height:100dvh!important;border-radius:0!important;box-shadow:none!important}'
             +'html.pdCartaEnlace body>.app{visibility:hidden}';
@@ -6838,7 +6841,7 @@ html body #modal .phSheet .phFoot .pdResBtn:active { background: var(--fr-peach-
 <script id="pidemas-version">
 /* Si el servidor ya tiene una versión más nueva de esta página, se recarga sola con la nueva (evita ver una versión guardada vieja). */
 (function(){
-  const V='20261111170000',K='pd_ver_'+location.pathname;
+  const V='20261111180000',K='pd_ver_'+location.pathname;
   async function revisar(){
     try{
       if(location.protocol==='file:')return;
@@ -7517,6 +7520,7 @@ if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostnam
   let g=null;
   function inicio(x,y,t){
     if(quieto)return;const h=t.closest&&t.closest(HOJAS);if(!h)return;
+    if(h.classList.contains('carta-modal-sheet')&&document.documentElement.classList.contains('pdCartaEnlace'))return;
     if(t.closest('input,textarea,select,[contenteditable],.pdpTabs,.pcaChips,.pvChips,[class*="Chips"]'))return;
     if(desplazado(t,h))return;
     g={h,x0:x,y0:y,dy:0,t0:Date.now(),activo:false};
