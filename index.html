@@ -6,7 +6,12 @@
 .app > header #pdCustomerAccountBtn { display: none !important; }
 .bottom nav .navbtn[onclick*="openOrderTracking"] { display: none !important; }
 html.piHomePre .app > section:has(#products) { display: none !important; }
-</style><script>(function(){try{if(!new URLSearchParams(location.search).get("negocio"))document.documentElement.classList.add("piHomePre")}catch(e){}})();</script>
+html.piCartaCarga, html.piCartaCarga body { background: #FFF9F5 !important; }
+html.piCartaCarga body > * { visibility: hidden !important; }
+html.piCartaCarga body::before { content: ""; position: fixed; inset: 0; z-index: 2147483646; background: #FFF9F5; visibility: visible !important; }
+html.piCartaCarga body::after { content: ""; position: fixed; top: 50%; left: 50%; width: 38px; height: 38px; margin: -19px 0 0 -19px; z-index: 2147483647; border-radius: 50%; border: 4px solid rgba(0,0,0,.10); border-top-color: #E8590C; animation: piCartaSpin .8s linear infinite; visibility: visible !important; }
+@keyframes piCartaSpin { to { transform: rotate(360deg); } }
+</style><script>(function(){try{if((new URLSearchParams(location.search).get("negocio")||"").trim()){document.documentElement.classList.add("piCartaCarga");window.piQuitarCarga=function(){document.documentElement.classList.remove("piCartaCarga")};setTimeout(window.piQuitarCarga,30000)}}catch(e){}})();</script><script>(function(){try{if(!new URLSearchParams(location.search).get("negocio"))document.documentElement.classList.add("piHomePre")}catch(e){}})();</script>
 <meta charset="utf-8">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
 <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
@@ -3704,7 +3709,8 @@ async function submitCartOrder(){
   const paymentObs=pago==='efectivo'
     ? `__PIDEMAS_PAGO_EFECTIVO__${JSON.stringify({monto:montoPago,vuelto:vuelto,subtotal:subtotal,delivery:finalDeliveryCost,total:total,delivery_original:deliveryCost,descuento_delivery:discountAmount,codigo_descuento:discountCode})}`
     : '';
-  const descMarca=descOn?'__PIDEMAS_DESCARTABLES__'+JSON.stringify({items:descItems.map(x=>({n:x.n,p:x.p})),cubiertos:cubOn,cubiertos_precio:descCub}):'';
+  const descProd=(typeof window.pdDescProdResumen==='function')?window.pdDescProdResumen():[];
+  const descMarca=(descOn||descProd.length)?'__PIDEMAS_DESCARTABLES__'+JSON.stringify({items:descItems.map(x=>({n:x.n,p:x.p})).concat(descProd.map(n=>({n,p:0}))),cubiertos:cubOn,cubiertos_precio:descCub}):'';
   const orderObservaciones=[baseObs,paymentObs,compMarca,descMarca].filter(Boolean).join(' · ');
 
   const order={id:orderId,cliente_auth_id:pdClienteSesion?.id||null,tipo_pedido:orderBusinessId?'negocio':'stock',negocio_id:orderBusinessId,estado:'pendiente',motorizado_id:null,pago_confirmado:false,nombre_cliente:name,telefono_cliente:tel,direccion_entrega:dir,referencia_entrega:document.getElementById('cReferencia').value,latitud_entrega:lat?Number(lat):null,longitud_entrega:lng?Number(lng):null,metodo_pago:pago,subtotal:subtotal,costo_delivery:finalDeliveryCost,total,observaciones:[orderObservaciones,(deliveryDistanceKm!==null||window.__pdProg)?`__PIDEMAS_DELIVERY__${JSON.stringify({aproximado:!!window.__pdDeliveryAprox,zona:(window.__pdTarifaUltima&&window.__pdTarifaUltima.zona)||null,detalle:(window.pdDetalleTxt?window.pdDetalleTxt():null),programado:(window.pdProgMarca&&window.pdProgMarca()?window.pdProgMarca().iso:null),programado_txt:(window.pdProgMarca&&window.pdProgMarca()?window.pdProgMarca().txt:null),km:deliveryDistanceKm,costo:finalDeliveryCost,delivery_original:deliveryCost,descuento_delivery:discountAmount,codigo_descuento:discountCode})}`:''].filter(Boolean).join(' · '),comprobante_pago_url:proofUrl};
@@ -4247,7 +4253,7 @@ async function abrirCartaDesdeEnlace(){
     const {data:negocio,error:negocioError}=await sb.from('negocios').select('*').eq('id',negocioId).maybeSingle();
     if(negocioError)throw negocioError;
     if(!negocio || negocio.activo===false || negocio.visible_admin===false || String(negocio.activo).toLowerCase()==='false'){
-      if(head)head.innerHTML='<h2>Carta no disponible</h2>';
+      if(head)head.innerHTML='<h2>Carta no disponible</h2>';try{window.piQuitarCarga&&window.piQuitarCarga()}catch(_){}
       if(productsEl)productsEl.innerHTML='<div class="empty" style="padding:24px;text-align:center">Este negocio no está disponible o el enlace no es válido.</div>';
       return;
     }
@@ -4369,7 +4375,7 @@ async function abrirCartaDesdeEnlace(){
         try{await window.showRestaurant(negocioId)}catch(err){console.warn('Reintentando abrir la carta:',err)}
       }
       if(abierta()){
-        aplicar();
+        aplicar();try{window.piQuitarCarga&&window.piQuitarCarga()}catch(_){}
         // Durante los primeros segundos, si otra parte de la tienda la cierra, se vuelve a abrir.
         let n=0;const guardia=setInterval(()=>{
           if(++n>16){clearInterval(guardia);return}
@@ -4377,9 +4383,10 @@ async function abrirCartaDesdeEnlace(){
         },500);
       }
     }catch(err){console.warn('No se pudo abrir la ventana de carta; se muestra la carta directa:',err)}
+    try{window.piQuitarCarga&&window.piQuitarCarga()}catch(_){}
   }catch(e){
     console.error('No se pudo cargar la carta del negocio enlazado:',e);
-    if(head)head.innerHTML='<h2>No se pudo cargar la carta</h2>';
+    if(head)head.innerHTML='<h2>No se pudo cargar la carta</h2>';try{window.piQuitarCarga&&window.piQuitarCarga()}catch(_){}
     if(productsEl)productsEl.innerHTML='<div class="empty" style="padding:24px;text-align:center">No se pudo cargar esta carta. Comprueba tu conexión e inténtalo nuevamente.</div>';
   }
 }
@@ -7789,7 +7796,7 @@ html body #modal .pdDesc .pdDescSw[aria-checked="true"]::after{transform:transla
     if(g!==null)o.push({k:'g',n:NOM[t]+' grande',p:g});return o}
   function elegido(t){const o=opciones(t);return o.length?(o.find(x=>x.k===st[t])||o[0]):null}
   /* Taper, vaso y bolsa: obligatorios cuando el negocio enciende su interruptor */
-  window.pdDescItems=function(){const r=[];['taper','vaso'].forEach(t=>{const e=elegido(t);if(e)r.push({n:e.n,p:e.p})});const b=P(cfg().bolsa);if(b!==null)r.push({n:'Bolsa',p:b});return r};
+  window.pdDescItems=function(){const r=[];const b=P(cfg().bolsa);if(b!==null)r.push({n:'Bolsa',p:b});return r};
   /* Cubiertos: opcionales, los elige el cliente */
   window.pdDescCubOfrece=function(){return P(cfg().cubiertos)!==null};
   window.pdDescCubPrecio=function(){return P(cfg().cubiertos)||0};
@@ -7808,7 +7815,7 @@ html body #modal .pdDesc .pdDescSw[aria-checked="true"]::after{transform:transla
   };
   function pintar(box){
     let h='<div class="pdDescH">Descartables incluidos en tu pedido</div>';
-    ['taper','vaso'].forEach(t=>{
+    [].forEach(t=>{
       const o=opciones(t);if(!o.length)return;
       if(o.length===1){h+='<div class="pdDescRow"><b>'+E(o[0].n)+'</b><em>'+(o[0].p>0?money(o[0].p):'Sin costo')+'</em></div>';return}
       const sel=elegido(t).k;
@@ -7823,6 +7830,55 @@ html body #modal .pdDesc .pdDescSw[aria-checked="true"]::after{transform:transla
     try{updatePaymentAmounts()}catch(e){}
     try{window.pdRefreshCheckoutSummary&&window.pdRefreshCheckoutSummary()}catch(e){}
   }
+  /* ===== Taper y vaso por producto =====
+     El negocio elige en cada producto si lleva taper y/o vaso (pequeño o grande).
+     Su precio se suma al producto en el carrito. Se guarda en descartables_config.prod = {idProducto:{taper:'p'|'g',vaso:'p'|'g'}} */
+  function negPorId(id){try{return (restaurants||[]).find(r=>String(r.id)===String(id))||null}catch(e){return null}}
+  function cfgDe(n){let c=n&&n.descartables_config;if(typeof c==='string'){try{c=JSON.parse(c)}catch(e){c=null}}return c&&typeof c==='object'?c:{}}
+  function itemsProducto(negocioId,pid){
+    const n=negPorId(negocioId)||negocio();
+    if(!n||n.descartables_activo!==true)return [];
+    const c=cfgDe(n),m=c.prod&&c.prod[String(pid)];if(!m)return [];
+    const r=[];
+    ['taper','vaso'].forEach(t=>{const k=m[t];if(k!=='p'&&k!=='g')return;const pr=P(c[t+'_'+k]);if(pr===null)return;r.push({t,k,n:NOM[t]+(k==='p'?' pequeño':' grande'),p:pr})});
+    return r;
+  }
+  const r2=v=>Math.round((Number(v)||0)*100)/100;
+  function normalizar(){
+    try{(cart||[]).forEach(x=>{
+      if(!x||x.origen!=='negocio')return;
+      if(x.pdBase===undefined){x.pdBase=Number(x.precio)||0;x.pdNom=x.nombre}
+      const it=itemsProducto(x.negocio_id,x.id);
+      const precio=r2(x.pdBase+it.reduce((a,i)=>a+i.p,0));
+      const nombre=x.pdNom+(it.length?' (con '+it.map(i=>i.n.toLowerCase()).join(' y ')+')':'');
+      if(x.precio!==precio)x.precio=precio;
+      if(x.nombre!==nombre)x.nombre=nombre;
+      x.pdDesc=it;
+    })}catch(e){}
+  }
+  window.pdDescNormalizar=normalizar;
+  /* Resumen para el aviso al negocio y al motorizado: "Taper grande ×2" */
+  window.pdDescProdResumen=function(){
+    normalizar();const m=new Map();
+    (cart||[]).forEach(x=>(x.pdDesc||[]).forEach(d=>m.set(d.n,(m.get(d.n)||0)+Number(x.cantidad||0))));
+    return [...m.entries()].filter(e=>e[1]>0).map(e=>e[0]+' ×'+e[1]);
+  };
+  ['saveCart','updateCart','getCartTotal','openCart','submitCartOrder'].forEach(nm=>{
+    const f=window[nm];if(typeof f!=='function')return;
+    window[nm]=function(){normalizar();return f.apply(this,arguments)};
+  });
+  (function(){
+    const f=window.addToCart;if(typeof f!=='function')return;
+    window.addToCart=function(id,origen){
+      const ok=f.apply(this,arguments);
+      if(ok){try{
+        normalizar();
+        const x=cart.find(l=>String(l.id)===String(id)&&l.origen===origen&&l.pdDesc&&l.pdDesc.length);
+        if(x){const sum=x.pdDesc.reduce((a,i)=>a+i.p,0);toast('Agregado con '+x.pdDesc.map(i=>i.n.toLowerCase()).join(' y ')+(sum>0?' · +'+money(sum)+' c/u':''))}
+      }catch(e){}}
+      return ok;
+    };
+  })();
   window.pdDescMontar=function(items){
     if(!items||!window.pdDescActivo())return;
     if(items.querySelector('#pdDesc'))return;
