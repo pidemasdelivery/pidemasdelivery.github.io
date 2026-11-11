@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="es">
-<head><meta name="pd-version" content="20261111200000"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-antes-de-cargar">
+<head><meta name="pd-version" content="20261111210000"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-antes-de-cargar">
 .app > .hero.pdHero { display: none !important; }
 .app > header .search { display: none !important; }
 .app > header #pdCustomerAccountBtn { display: none !important; }
@@ -4296,6 +4296,64 @@ async function abrirCartaDesdeEnlace(){
             }
           },true);
         }
+        if(!window.__pdBuscador){
+          window.__pdBuscador=true;
+          const st2=document.createElement('style');
+          st2.textContent='html.pdCartaEnlace:root body #cartaModalNegocio .pdBuscaCarta{display:flex;align-items:center;gap:10px;flex:0 0 auto;box-sizing:border-box;width:100%;height:48px;margin:0;padding:0 14px;border:1px solid var(--fr-line,#EFE3DA);border-radius:16px;background:#fff;cursor:text}'
+            +'html.pdCartaEnlace:root body #cartaModalNegocio .pdBuscaCarta svg{flex:0 0 auto;width:20px;height:20px;color:var(--fr-muted,#6F625A)}'
+            +'html.pdCartaEnlace:root body #cartaModalNegocio .pdBuscaCarta input{flex:1 1 0;min-width:0;height:100%;border:0;outline:0;background:transparent;box-shadow:none;padding:0;font:500 16px Inter,system-ui,-apple-system,Roboto,Arial,sans-serif;color:var(--fr-ink,#1F1A17);-webkit-appearance:none;appearance:none}'
+            +'html.pdCartaEnlace:root body #cartaModalNegocio .pdBuscaCarta input::placeholder{color:var(--fr-muted,#6F625A);opacity:1}'
+            +'html.pdCartaEnlace:root body #cartaModalNegocio .pdBuscaVacio{padding:18px 8px;text-align:center;font:600 14px Inter,system-ui,-apple-system,Roboto,Arial,sans-serif;color:var(--fr-muted,#6F625A)}';
+          document.head.appendChild(st2);
+          const norm=v=>String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();
+          const ocultar=(el,on)=>{if(on)el.style.setProperty('display','none','important');else el.style.removeProperty('display')};
+          const filtrar=()=>{
+            const inp=document.getElementById('pdBuscaCartaInput'),cont=document.getElementById('cartaModalProducts');
+            if(!inp||!cont)return;
+            const words=norm(inp.value).split(/\s+/).filter(Boolean);
+            let visibles=0;
+            cont.querySelectorAll('.productDetailCard').forEach(c=>{
+              const h=c.querySelector('h3'),d=c.querySelector('.pcaDesc');
+              const t=norm((h?h.textContent:c.textContent)+' '+(d?d.textContent:''));
+              const ok=!words.length||words.every(w=>t.includes(w));
+              ocultar(c,!ok);if(ok)visibles++;
+            });
+            cont.querySelectorAll('.categoryBlock').forEach(b=>{
+              const hay=[...b.querySelectorAll('.productDetailCard')].some(c=>c.style.display!=='none');
+              ocultar(b,words.length>0&&!hay);
+            });
+            const chips=document.querySelector('#cartaModalNegocio .pcaChips');
+            if(chips)ocultar(chips,words.length>0);
+            let v=document.getElementById('pdBuscaVacio');
+            if(words.length&&!visibles){
+              if(!v){v=document.createElement('div');v.id='pdBuscaVacio';v.className='pdBuscaVacio';cont.insertAdjacentElement('beforebegin',v)}
+              v.textContent='No encontramos productos para «'+inp.value.trim()+'».';
+            }else if(v)v.remove();
+          };
+          const montar=()=>{
+            const body=document.querySelector('#cartaModalNegocio .carta-modal-body');
+            if(!body||document.getElementById('pdBuscaCarta'))return;
+            const ref=body.querySelector('.pcaChips')||document.getElementById('cartaModalProducts');
+            if(!ref)return;
+            const box=document.createElement('label');
+            box.id='pdBuscaCarta';box.className='pdBuscaCarta';
+            box.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path></svg><input id="pdBuscaCartaInput" type="search" placeholder="Buscar productos..." aria-label="Buscar productos" autocomplete="off" enterkeyhint="search">';
+            ref.insertAdjacentElement('beforebegin',box);
+            box.querySelector('input').addEventListener('input',filtrar);
+          };
+          montar();
+          // La carta se vuelve a dibujar cuando cambia el carrito: se vuelve a montar y a filtrar.
+          setInterval(()=>{montar();const i=document.getElementById('pdBuscaCartaInput');if(i&&i.value)filtrar()},600);
+          // Botón «Buscar» del menú de abajo: sube al buscador de la carta.
+          document.addEventListener('click',e=>{
+            const b=e.target.closest&&e.target.closest('.bottom .navbtn');
+            if(!b||b.textContent.trim()!=='Buscar')return;
+            e.stopPropagation();e.preventDefault();
+            const bd=document.querySelector('#cartaModalNegocio .carta-modal-body'),i=document.getElementById('pdBuscaCartaInput');
+            if(bd)bd.scrollTo({top:0,behavior:'smooth'});
+            if(i)setTimeout(()=>i.focus(),250);
+          },true);
+        }
       };
       for(let i=0;i<12&&!abierta();i++){
         await new Promise(r=>setTimeout(r,i?700:200));
@@ -6239,7 +6297,7 @@ html body #modal#modal .sheet.pdCkV2 .ckToggle em{display:flex !important;align-
     const mk=(txt,svg,fn)=>{const b=document.createElement('button');b.type='button';b.className='navbtn';b.innerHTML='<svg class="pdNavIco" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+svg+'</svg><span>'+txt+'</span>';b.onclick=fn;return b};
     const buscar=mk('Buscar','<circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path>',()=>{try{closeModal()}catch(e){}window.scrollTo({top:0,behavior:'smooth'});setTimeout(()=>$('search')?.focus(),250)});
     const perfil=mk('Perfil','<path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"></path><path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path>',()=>{try{pdAbrirCuentaCliente()}catch(e){}});
-    if(btns[0]&&!(new URLSearchParams(location.search).get('negocio')||'').trim())btns[0].insertAdjacentElement('afterend',buscar);
+    if(btns[0])btns[0].insertAdjacentElement('afterend',buscar);
     if(seg)seg.replaceWith(perfil);else nav.appendChild(perfil);
     const pintarPerfil=()=>{let on=false;try{on=!!pdClienteSesion}catch(e){}perfil.classList.toggle('piConSesion',on)};pintarPerfil();setInterval(pintarPerfil,2000);
   }
@@ -6852,7 +6910,7 @@ html body #modal .phSheet .phFoot .pdResBtn:active { background: var(--fr-peach-
 <script id="pidemas-version">
 /* Si el servidor ya tiene una versión más nueva de esta página, se recarga sola con la nueva (evita ver una versión guardada vieja). */
 (function(){
-  const V='20261111200000',K='pd_ver_'+location.pathname;
+  const V='20261111210000',K='pd_ver_'+location.pathname;
   async function revisar(){
     try{
       if(location.protocol==='file:')return;
