@@ -7814,7 +7814,8 @@ html body #modal .pdDesc .pdDescSw[aria-checked="true"]::after{transform:transla
     return L.join('');
   };
   function pintar(box){
-    let h='<div class="pdDescH">Descartables incluidos en tu pedido</div>';
+    let h='<div class="pdDescH">Adicionales</div>';
+    try{window.pdDescNormalizar&&window.pdDescNormalizar();(cart||[]).forEach(x=>(x.pdDesc||[]).forEach(d=>{h+='<div class="pdDescRow"><b>'+E(d.n)+'</b><em>Incluido en '+E(x.pdNom||x.nombre)+(d.p>0?' · '+money(d.p)+' c/u':'')+'</em></div>'}))}catch(e){}
     [].forEach(t=>{
       const o=opciones(t);if(!o.length)return;
       if(o.length===1){h+='<div class="pdDescRow"><b>'+E(o[0].n)+'</b><em>'+(o[0].p>0?money(o[0].p):'Sin costo')+'</em></div>';return}
