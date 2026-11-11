@@ -4316,8 +4316,10 @@ if (pidemasNegocioEnlace) {
 
 <script id="pidemas-tienda-pedido-en-curso">
 (function(){
-  function render(){
+  async function render(){
     const box=document.getElementById('pdActiveOrder');if(!box)return;
+    /* Solo mostrar el pedido en curso si hay sesión de Google activa */
+    try{const {data}=await sb.auth.getSession();if(!data?.session?.user){box.hidden=true;return;}}catch(e){box.hidden=true;return;}
     let o=null;try{o=typeof getLastOrder==='function'?getLastOrder():null;}catch(e){}
     const st=String(o?.estado||'').toLowerCase();
     if(!o||!o.id||st==='entregado'||st==='cancelado'){box.hidden=true;return;}
@@ -4328,6 +4330,7 @@ if (pidemasNegocioEnlace) {
     box.hidden=false;
   }
   window.pdRenderActiveOrder=render;
+  setTimeout(function(){try{sb.auth.onAuthStateChange(function(){setTimeout(render,0)})}catch(e){}},800);
   async function tick(){try{if(typeof refreshLastOrderTracking==='function')await refreshLastOrderTracking();}catch(e){}render();}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(tick,600),{once:true});else setTimeout(tick,600);
   setInterval(()=>{if(!document.hidden)tick();},20000);
@@ -7614,7 +7617,7 @@ html:root body #modal .sheet.pdpTrack .pdpCarouselDots i{
 html:root body #modal .sheet.pdpTrack .pdpCarouselDots i.on{
   width:18px!important;flex-basis:18px!important;background:var(--fr-orange)!important;
 }
-</style>\n
+</style>
 <style id="pidemas-carrusel-indicador-debajo-tarjeta">
 html:root body #modal .sheet.pdpTrack .pdpBody .pdpCarouselHint{
   margin:10px 4px 2px!important;
