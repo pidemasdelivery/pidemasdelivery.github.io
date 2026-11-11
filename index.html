@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="es">
-<head><meta name="pd-version" content="20261111180000"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-antes-de-cargar">
+<head><meta name="pd-version" content="20261111190000"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-antes-de-cargar">
 .app > .hero.pdHero { display: none !important; }
 .app > header .search { display: none !important; }
 .app > header #pdCustomerAccountBtn { display: none !important; }
@@ -4279,12 +4279,23 @@ async function abrirCartaDesdeEnlace(){
             +'html.pdCartaEnlace:root,html.pdCartaEnlace:root body{overflow:hidden!important;height:100dvh!important;max-height:100dvh!important;overscroll-behavior:none!important}'
             +'html.pdCartaEnlace:root body #cartaModalNegocio.carta-modal-overlay{overflow:hidden!important;touch-action:none}'
             +'html.pdCartaEnlace:root body #cartaModalNegocio .carta-modal-body{touch-action:pan-y;overscroll-behavior:contain!important}'
-            +'html.pdCartaEnlace:root body #cartaModalNegocio.carta-modal-overlay{background:var(--fr-surface,#fff)!important;z-index:2147483000!important}'
-            +'html.pdCartaEnlace:root body #cartaModalNegocio .carta-modal-sheet{height:100dvh!important;max-height:100dvh!important;border-radius:0!important;box-shadow:none!important}'
+            +'html.pdCartaEnlace:root body #cartaModalNegocio.carta-modal-overlay{background:var(--fr-surface,#fff)!important;align-items:flex-start!important}'
+            +'html.pdCartaEnlace:root body .bottom{z-index:9050!important}'
+            +'html.pdCartaEnlace:root body #cartaModalNegocio .carta-modal-sheet{height:calc(100dvh - 84px - env(safe-area-inset-bottom,0px))!important;max-height:calc(100dvh - 84px - env(safe-area-inset-bottom,0px))!important;border-radius:0!important;box-shadow:none!important}'
             +'html.pdCartaEnlace body>.app{visibility:hidden}';
           document.head.appendChild(st);
         }
         if(productsSection)productsSection.classList.add('hidden');
+        if(!window.__pdInicioCarta){
+          window.__pdInicioCarta=true;
+          document.addEventListener('click',e=>{
+            const b=e.target.closest&&e.target.closest('.bottom .navbtn');
+            if(b&&/scrollToTop/.test(b.getAttribute('onclick')||'')){
+              const bd=document.querySelector('#cartaModalNegocio .carta-modal-body');
+              if(bd)bd.scrollTo({top:0,behavior:'smooth'});
+            }
+          },true);
+        }
       };
       for(let i=0;i<12&&!abierta();i++){
         await new Promise(r=>setTimeout(r,i?700:200));
@@ -6841,7 +6852,7 @@ html body #modal .phSheet .phFoot .pdResBtn:active { background: var(--fr-peach-
 <script id="pidemas-version">
 /* Si el servidor ya tiene una versión más nueva de esta página, se recarga sola con la nueva (evita ver una versión guardada vieja). */
 (function(){
-  const V='20261111180000',K='pd_ver_'+location.pathname;
+  const V='20261111190000',K='pd_ver_'+location.pathname;
   async function revisar(){
     try{
       if(location.protocol==='file:')return;
