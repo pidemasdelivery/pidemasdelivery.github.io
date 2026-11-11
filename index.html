@@ -3003,7 +3003,7 @@ function getDiscountedDeliveryCost(delivery=Number(currentDeliveryCost||0)){
   return Math.max(0,d-discount);
 }
 function getCheckoutTotal(){
-  return getCartTotal()+getDiscountedDeliveryCost();
+  return getCartTotal()+(window.pdDescMonto?window.pdDescMonto():0)+getDiscountedDeliveryCost();
 }
 
 function updatePaymentAmounts(){
@@ -3011,19 +3011,20 @@ function updatePaymentAmounts(){
   const deliveryOriginal=Number(currentDeliveryCost||0);
   const discount=Number(appliedDeliveryDiscount?.amount||0);
   const delivery=getDiscountedDeliveryCost(deliveryOriginal);
-  const total=subtotal+delivery;
+  const dsc=window.pdDescMonto?window.pdDescMonto():0;
+  const total=subtotal+dsc+delivery;
   const subtotalEl=document.getElementById('cMontoSubtotal');
   const deliveryEl=document.getElementById('cMontoDelivery');
   const pedido=document.getElementById('cMontoPedido');
   const yapeSubtotal=document.getElementById('cYapeSubtotal');
   const yapeDelivery=document.getElementById('cYapeDelivery');
   const yapeMonto=document.getElementById('cYapeMonto');
-  if(subtotalEl)subtotalEl.textContent=`S/ ${subtotal.toFixed(2)}`;
+  if(subtotalEl)subtotalEl.textContent=`S/ ${(subtotal+dsc).toFixed(2)}`;
   if(deliveryEl)deliveryEl.textContent=`S/ ${delivery.toFixed(2)}`;
   const msg=document.getElementById('cDiscountMsg');
   if(msg){msg.innerHTML=appliedDeliveryDiscount ? `<span class="discountApplied">✓ ${esc(appliedDeliveryDiscount.codigo)}: -S/ ${discount.toFixed(2)} en delivery</span>` : 'El descuento se aplica únicamente al delivery.';}
   if(pedido)pedido.textContent=`S/ ${total.toFixed(2)}`;
-  if(yapeSubtotal)yapeSubtotal.textContent=`S/ ${subtotal.toFixed(2)}`;
+  if(yapeSubtotal)yapeSubtotal.textContent=`S/ ${(subtotal+dsc).toFixed(2)}`;
   if(yapeDelivery)yapeDelivery.textContent=`S/ ${delivery.toFixed(2)}`;
   if(yapeMonto)yapeMonto.textContent=`S/ ${total.toFixed(2)}`;
   updateCashChange();
@@ -3615,7 +3616,12 @@ async function updateDeliveryFarePreview(){
 }
 
 async function submitCartOrder(){
-  const subtotal=cart.reduce((a,x)=>a+x.precio*x.cantidad,0);
+  const descOn=(typeof window.pdDescActivo==='function')&&window.pdDescActivo();
+  const descItems=descOn?window.pdDescItems():[];
+  const cubOn=descOn&&window.pdDescCubOn();
+  const descCub=cubOn?window.pdDescCubPrecio():0;
+  const descMonto=descItems.reduce((a,x)=>a+x.p,0)+descCub;
+  const subtotal=cart.reduce((a,x)=>a+x.precio*x.cantidad,0)+descMonto;
   let deliveryCost=0, deliveryDistanceKm=null;
   try{
     const delivery=await calculateCurrentDelivery();
@@ -3698,7 +3704,8 @@ async function submitCartOrder(){
   const paymentObs=pago==='efectivo'
     ? `__PIDEMAS_PAGO_EFECTIVO__${JSON.stringify({monto:montoPago,vuelto:vuelto,subtotal:subtotal,delivery:finalDeliveryCost,total:total,delivery_original:deliveryCost,descuento_delivery:discountAmount,codigo_descuento:discountCode})}`
     : '';
-  const orderObservaciones=[baseObs,paymentObs,compMarca].filter(Boolean).join(' · ');
+  const descMarca=descOn?'__PIDEMAS_DESCARTABLES__'+JSON.stringify({items:descItems.map(x=>({n:x.n,p:x.p})),cubiertos:cubOn,cubiertos_precio:descCub}):'';
+  const orderObservaciones=[baseObs,paymentObs,compMarca,descMarca].filter(Boolean).join(' · ');
 
   const order={id:orderId,cliente_auth_id:pdClienteSesion?.id||null,tipo_pedido:orderBusinessId?'negocio':'stock',negocio_id:orderBusinessId,estado:'pendiente',motorizado_id:null,pago_confirmado:false,nombre_cliente:name,telefono_cliente:tel,direccion_entrega:dir,referencia_entrega:document.getElementById('cReferencia').value,latitud_entrega:lat?Number(lat):null,longitud_entrega:lng?Number(lng):null,metodo_pago:pago,subtotal:subtotal,costo_delivery:finalDeliveryCost,total,observaciones:[orderObservaciones,(deliveryDistanceKm!==null||window.__pdProg)?`__PIDEMAS_DELIVERY__${JSON.stringify({aproximado:!!window.__pdDeliveryAprox,zona:(window.__pdTarifaUltima&&window.__pdTarifaUltima.zona)||null,detalle:(window.pdDetalleTxt?window.pdDetalleTxt():null),programado:(window.pdProgMarca&&window.pdProgMarca()?window.pdProgMarca().iso:null),programado_txt:(window.pdProgMarca&&window.pdProgMarca()?window.pdProgMarca().txt:null),km:deliveryDistanceKm,costo:finalDeliveryCost,delivery_original:deliveryCost,descuento_delivery:discountAmount,codigo_descuento:discountCode})}`:''].filter(Boolean).join(' · '),comprobante_pago_url:proofUrl};
 
@@ -3813,6 +3820,8 @@ async function submitCartOrder(){
     cantidad:x.cantidad,
     subtotal:x.precio*x.cantidad
   }));
+  descItems.filter(x=>x.p>0).forEach(x=>detalles.push({pedido_id:orderId,producto_id:null,nombre_producto:x.n,precio_unitario:x.p,cantidad:1,subtotal:x.p}));
+  if(descCub>0)detalles.push({pedido_id:orderId,producto_id:null,nombre_producto:'Cubiertos',precio_unitario:descCub,cantidad:1,subtotal:descCub});
   console.info('[Pidemás] Registrando productos del pedido…', orderId);
   const d=await sb.from('detalle_pedidos').insert(detalles);
   // No borrar el pedido principal si falla el detalle: el borrado provocaba que
@@ -3845,7 +3854,7 @@ async function submitCartOrder(){
     pago_confirmado:false,
   });
   if(discountCode&&appliedDeliveryDiscount?.id){try{const {data:promo}=await sb.from('codigos_delivery').select('usos').eq('id',appliedDeliveryDiscount.id).maybeSingle();if(promo)await sb.from('codigos_delivery').update({usos:Number(promo.usos||0)+1}).eq('id',appliedDeliveryDiscount.id);}catch(e){console.warn('No se pudo actualizar uso del código:',e);}}
-  cart=[];saveCart();updateCart();
+  cart=[];saveCart();updateCart();try{window.pdDescReset&&window.pdDescReset()}catch(e){}
   // Reemplazar el modal de checkout directamente evita que el popstate de closeModal()
   // cierre también el mensaje de éxito en móviles.
   showModal(`<div class="sheet pdOkSheet" role="dialog" aria-modal="true" aria-label="Pedido enviado">
@@ -4452,12 +4461,13 @@ if (pidemasNegocioEnlace) {
   }
   function refreshSummary(){
     const box=document.getElementById('pdCkSummary');if(!box)return;
-    const sub=getCartTotal(),dOrig=Number(currentDeliveryCost||0),del=getDiscountedDeliveryCost(dOrig),disc=Math.max(0,dOrig-del),tot=sub+del;
+    const sub=getCartTotal(),dsc=window.pdDescMonto?window.pdDescMonto():0,dOrig=Number(currentDeliveryCost||0),del=getDiscountedDeliveryCost(dOrig),disc=Math.max(0,dOrig-del),tot=sub+dsc+del;
     const km=Number(currentDeliveryDistanceKm);
     const pay=document.getElementById('cPago')?.value;
     const cambio=document.getElementById('cCambio')?.textContent||'';
     const monto=Number(document.getElementById('cMontoPago')?.value);
     box.innerHTML=`<div class="pdLine"><span>Subtotal</span><span>${money(sub)}</span></div>
+      ${window.pdDescLineas?window.pdDescLineas(money):''}
       <div class="pdLine"><span>Delivery${Number.isFinite(km)&&km>0?' · '+km.toFixed(1)+' km':''}</span><span>${dOrig>0?money(dOrig):'Por calcular'}</span></div>
       ${disc>0?`<div class="pdLine"><span>Descuento</span><span>− ${money(disc)}</span></div>`:''}
       ${pay==='efectivo'&&Number.isFinite(monto)&&monto>0?`<div class="pdLine"><span>Pagas con · tu cambio</span><strong>${money(monto)} · ${escH(cambio)}</strong></div>`:''}
@@ -4475,6 +4485,7 @@ if (pidemasNegocioEnlace) {
     const items=document.createElement('div');items.className='pdCkBlock';items.id='pdCkItems';
     items.innerHTML=`<div class="pdKicker">Productos</div><div id="pdCkList">${itemsHtml()}</div>`;
     top.insertAdjacentElement('afterend',items);
+    try{window.pdDescMontar&&window.pdDescMontar(items)}catch(e){console.warn('[Pidemás] descartables',e)}
     const k1=document.createElement('div');k1.className='pdKicker pdCkKicker';k1.textContent='Datos de entrega';
     nombre.closest('.field').insertAdjacentElement('beforebegin',k1);
     const sel=document.getElementById('cPago');const selField=sel?.closest('.field');
@@ -7745,5 +7756,91 @@ html:root body #modal .sheet.pdpTrack .pdpBody .pdpLine.t > span:last-child{
 <style id="pd-seguimiento-negocio-codigo">
 html body #modal#modal .pdpBody .pdpHero .k > span:first-child { font: 800 15px Inter, system-ui, -apple-system, Roboto, Arial, sans-serif !important; }
 </style>
+
+<style id="pidemas-descartables-css">
+html body #modal .pdDesc{margin:12px 0 0;padding:12px 14px;border:1.5px solid var(--fr-line,#EFE3DA);border-radius:16px;background:#fff;display:flex;flex-direction:column;gap:10px}
+html body #modal .pdDesc .pdDescH{font-size:11px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--fr-muted,#8A7466)}
+html body #modal .pdDesc .pdDescRow{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:14px;color:var(--fr-ink,#2B1B12)}
+html body #modal .pdDesc .pdDescRow b{font-weight:700}
+html body #modal .pdDesc .pdDescRow em{font-style:normal;color:var(--fr-muted,#8A7466);font-size:13px}
+html body #modal .pdDesc .pdDescSeg{display:flex;gap:6px;flex-wrap:wrap}
+html body #modal .pdDesc .pdDescSeg button{border:1.5px solid var(--fr-line,#EFE3DA);background:#fff;color:var(--fr-ink,#2B1B12);border-radius:999px;padding:6px 12px;font:600 13px inherit;cursor:pointer}
+html body #modal .pdDesc .pdDescSeg button[aria-pressed="true"]{border-color:var(--fr-orange,#F26A1B);background:var(--fr-peach-soft,#FDF0EA);color:var(--fr-orange,#F26A1B)}
+html body #modal .pdDesc .pdDescCub{padding-top:10px;border-top:1px dashed var(--fr-line,#EFE3DA)}
+html body #modal .pdDesc .pdDescTx{display:flex;flex-direction:column;gap:2px}
+html body #modal .pdDesc .pdDescTx small{font-size:12.5px;color:var(--fr-muted,#8A7466)}
+html body #modal .pdDesc .pdDescSw{flex:none;position:relative;width:48px;height:28px;border-radius:999px;border:0;padding:0;background:#D9CFC7;cursor:pointer;transition:background .18s}
+html body #modal .pdDesc .pdDescSw::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .18s}
+html body #modal .pdDesc .pdDescSw[aria-checked="true"]{background:var(--fr-orange,#F26A1B)}
+html body #modal .pdDesc .pdDescSw[aria-checked="true"]::after{transform:translateX(20px)}
+</style>
+<script id="pidemas-descartables-js">
+(function(){
+  const money=n=>'S/ '+(Number(n)||0).toFixed(2);
+  const P=v=>{if(v===null||v===undefined||v==='')return null;const n=Number(v);return Number.isFinite(n)&&n>=0?Math.round(n*100)/100:null};
+  const E=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const st={taper:null,vaso:null,cub:false};
+  function negocio(){try{return (typeof getRestaurantForCart==='function')?getRestaurantForCart():null}catch(e){return null}}
+  /* Precios que define cada negocio. Vacío = no lo ofrece; 0 = sin costo */
+  function cfg(){const n=negocio();if(!n)return {};let c=n.descartables_config;if(typeof c==='string'){try{c=JSON.parse(c)}catch(e){c=null}}return c&&typeof c==='object'?c:{}}
+  const NOM={taper:'Taper',vaso:'Vaso'};
+  function opciones(t){const c=cfg(),o=[];const p=P(c[t+'_p']),g=P(c[t+'_g']);
+    if(p!==null)o.push({k:'p',n:NOM[t]+' pequeño',p});
+    if(g!==null)o.push({k:'g',n:NOM[t]+' grande',p:g});return o}
+  function elegido(t){const o=opciones(t);return o.length?(o.find(x=>x.k===st[t])||o[0]):null}
+  /* Taper, vaso y bolsa: obligatorios cuando el negocio enciende su interruptor */
+  window.pdDescItems=function(){const r=[];['taper','vaso'].forEach(t=>{const e=elegido(t);if(e)r.push({n:e.n,p:e.p})});const b=P(cfg().bolsa);if(b!==null)r.push({n:'Bolsa',p:b});return r};
+  /* Cubiertos: opcionales, los elige el cliente */
+  window.pdDescCubOfrece=function(){return P(cfg().cubiertos)!==null};
+  window.pdDescCubPrecio=function(){return P(cfg().cubiertos)||0};
+  window.pdDescCubOn=function(){return st.cub===true&&window.pdDescCubOfrece()};
+  window.pdDescActivo=function(){const n=negocio();return !!n&&n.descartables_activo===true&&(window.pdDescItems().length>0||window.pdDescCubOfrece())};
+  window.pdDescMonto=function(){
+    if(!window.pdDescActivo())return 0;
+    return window.pdDescItems().reduce((a,x)=>a+x.p,0)+(window.pdDescCubOn()?window.pdDescCubPrecio():0);
+  };
+  window.pdDescReset=function(){st.taper=null;st.vaso=null;st.cub=false};
+  window.pdDescLineas=function(m){
+    if(!window.pdDescActivo())return '';
+    const L=window.pdDescItems().map(x=>'<div class="pdLine"><span>'+E(x.n)+'</span><span>'+(x.p>0?m(x.p):'Gratis')+'</span></div>');
+    if(window.pdDescCubOn()){const c=window.pdDescCubPrecio();L.push('<div class="pdLine"><span>Cubiertos</span><span>'+(c>0?m(c):'Gratis')+'</span></div>')}
+    return L.join('');
+  };
+  function pintar(box){
+    let h='<div class="pdDescH">Descartables incluidos en tu pedido</div>';
+    ['taper','vaso'].forEach(t=>{
+      const o=opciones(t);if(!o.length)return;
+      if(o.length===1){h+='<div class="pdDescRow"><b>'+E(o[0].n)+'</b><em>'+(o[0].p>0?money(o[0].p):'Sin costo')+'</em></div>';return}
+      const sel=elegido(t).k;
+      h+='<div><div class="pdDescRow" style="margin-bottom:6px"><b>'+NOM[t]+'</b></div><div class="pdDescSeg">'+o.map(x=>'<button type="button" data-seg="'+t+'" data-k="'+x.k+'" aria-pressed="'+(x.k===sel)+'">'+(x.k==='p'?'Pequeño':'Grande')+' · '+(x.p>0?money(x.p):'Sin costo')+'</button>').join('')+'</div></div>';
+    });
+    const b=P(cfg().bolsa);if(b!==null)h+='<div class="pdDescRow"><b>Bolsa</b><em>'+(b>0?money(b):'Sin costo')+'</em></div>';
+    if(window.pdDescCubOfrece()){const c=window.pdDescCubPrecio();
+      h+='<div class="pdDescRow pdDescCub"><div class="pdDescTx"><b>¿Necesitas cubiertos?</b><small>'+(c>0?'Se suman '+money(c)+' a tu pedido.':'Sin costo adicional.')+'</small></div><button type="button" class="pdDescSw" role="switch" aria-checked="'+(st.cub===true)+'" aria-label="Cubiertos"></button></div>';}
+    box.innerHTML=h;
+  }
+  function refrescar(){
+    try{updatePaymentAmounts()}catch(e){}
+    try{window.pdRefreshCheckoutSummary&&window.pdRefreshCheckoutSummary()}catch(e){}
+  }
+  window.pdDescMontar=function(items){
+    if(!items||!window.pdDescActivo())return;
+    if(items.querySelector('#pdDesc'))return;
+    window.pdDescReset();
+    const box=document.createElement('div');box.className='pdDesc';box.id='pdDesc';
+    pintar(box);
+    box.addEventListener('click',function(e){
+      const seg=e.target.closest('[data-seg]'),sw=e.target.closest('.pdDescSw');
+      if(!seg&&!sw)return;
+      e.preventDefault();e.stopPropagation();
+      if(seg)st[seg.dataset.seg]=seg.dataset.k;
+      if(sw)st.cub=!st.cub;
+      pintar(box);refrescar();
+    });
+    items.appendChild(box);
+    refrescar();
+  };
+})();
+</script>
 </body>
 </html>
