@@ -4833,7 +4833,14 @@ if (pidemasNegocioEnlace) {
     if(!bar){bar=document.createElement('div');bar.id='pdHorarioBar';bar.setAttribute('role','status');var hd=document.querySelector('header')||document.body;hd.appendChild(bar);}
     var m=limaMin();
     if(!abiertoGeneral(m)){bar.className='show closed';bar.innerHTML='<span class="pdHDot"></span><span>'+(window.pdHorarioBarraCerrado?window.pdHorarioBarraCerrado():'Cerrado · pedidos de 9:00 a. m. a 9:30 p. m.')+'</span>';}
-    else if(m>=H.aviso){var f=H.ultimoPedido-m;bar.className='show';bar.innerHTML='<span class="pdHDot"></span><span><b>Último pedido '+(window.pdHoraTxt?window.pdHoraTxt(H.ultimoPedido):'9:30 p. m.')+'</b> · quedan '+f+' min</span>';}
+    else if(m>=H.aviso){var f=H.ultimoPedido-m;bar.className='';bar.innerHTML='';
+      /* Aviso «Pidemás cierra pronto» con el mismo diseño de «[negocio] cierra pronto»: al entrar y a los 15, 10 y 5 min */
+      if(!window.__pdProg&&typeof window.mostrarAvisoHorario==='function'){
+        var prev=window.__pdAvisoCierre;
+        if(prev==null||[15,10,5].some(function(t){return f<=t&&prev>t;}))window.mostrarAvisoHorario('Pidemás cerrará en '+f+' min');
+        window.__pdAvisoCierre=f;
+      }
+    }
     else{bar.className='';bar.innerHTML='';}
   }
   var estado=abiertoGeneral();
@@ -5952,7 +5959,7 @@ html body #modal#modal .sheet.pdCkV2 .ckToggle em{display:flex !important;align-
   }
 
   /* ---------- Seguimiento ---------- */
-  let pedidosSeg=[],elegido=0,timer=null;
+  let pedidosSeg=[],elegido=0,timer=null,detAbiertos={};
   function pintarSeguimiento(){
     const sheet=document.querySelector('#modal .sheet.pdpTrack');if(!sheet)return;
     const o=pedidosSeg[elegido]||pedidosSeg[0];if(!o)return;
@@ -5962,7 +5969,8 @@ html body #modal#modal .sheet.pdCkV2 .ckToggle em{display:flex !important;align-
     h+='<div class="pdpHero"><div class="k"><span>'+E(negNombre(o))+' · '+E(code(o))+'</span>'+(canc?'':'<span class="pdpLive"><i></i>En vivo</span>')+'</div><h3>'+E(t1)+'</h3><p>'+E(t2)+'</p>'+(canc?'':'<div class="pdpBar">'+p.L.map((_,i)=>'<span class="'+(i<=p.cur?'on':'')+'"></span>').join('')+'</div>')+'</div>';
     if(pedidosSeg.length>1)h+='<div class="pdpCarouselHint"><span>Desliza para ver otro pedido</span><strong>'+String(elegido+1)+' / '+String(pedidosSeg.length)+'</strong></div><div class="pdpCarouselDots" aria-hidden="true">'+pedidosSeg.map((x,i)=>'<i class="'+(i===elegido?'on':'')+'"></i>').join('')+'</div>';
     if(!canc)h+='<div class="pdpCard"><div class="pdpTl">'+p.L.map((s,i)=>{const done=i<p.cur,cur=i===p.cur;return '<div class="pdpSt'+(done?' done':'')+(cur?' cur':'')+'"><span class="pdpDot"></span><div style="flex:1;min-width:0"><div class="pdpRow"><b>'+E(s.t)+'</b>'+((done||cur)&&hora(s.at)?'<time>'+hora(s.at)+'</time>':'')+'</div>'+(cur?'<small>'+E(s.d)+'</small>':'')+'</div></div>'}).join('')+'</div></div>';
-    h+='<div class="pdpSec">Detalle del pedido</div><div class="pdpCard">'+detalle(o)+'</div>';
+    const detAb=!!detAbiertos[String(o.id)];
+    h+='<div class="pdpCard"><button type="button" class="pdpLink" data-acc="detalle" data-id="'+E(o.id)+'" style="margin-top:0">'+(detAb?'Ocultar detalle':'Ver detalle')+'</button><div class="pdpDet"'+(detAb?'':' hidden')+'>'+detalle(o)+'</div></div>';
     sheet.innerHTML=top('Seguimiento',pedidosSeg.length>1?pedidosSeg.length+' pedidos en curso':'')+'<div class="pdpBody">'+h+'</div>';
     const nb=sheet.querySelector('.pdpBody');if(nb)nb.scrollTop=y;
     /* Carrusel táctil real: deslizar horizontalmente cambia el pedido.
@@ -5990,6 +5998,12 @@ html body #modal#modal .sheet.pdCkV2 .ckToggle em{display:flex !important;align-
       sheet.addEventListener('pointerup',e=>{
         if(e.pointerType==='mouse')finish(e.clientX,e.clientY);
       },{passive:true});
+      sheet.addEventListener('click',e=>{
+        const b=e.target.closest('[data-acc="detalle"]');if(!b)return;
+        const d=b.nextElementSibling;if(!d)return;
+        d.hidden=!d.hidden;b.textContent=d.hidden?'Ver detalle':'Ocultar detalle';
+        if(b.dataset.id)detAbiertos[b.dataset.id]=!d.hidden;
+      });
       sheet.dataset.pdpSwipeReady='1';
     }
   }
@@ -6362,7 +6376,8 @@ html body #modal#modal .sheet.pdCkV2 .ckToggle em{display:flex !important;align-
     const t=String(texto||'');const r=buscarNegocio(t);const nom=r?nombreDe(r):'';
     let tipo='off',ic=IC.info,tit='Aviso',cuerpo=t,acc=[];
     let m;
-    if((m=t.match(/cerrará en (\d+)/i))){tipo='warn';ic=IC.alerta;tit=nom+' cierra pronto';cuerpo='Recibe pedidos solo '+enMin(Number(m[1]))+' más. Si quieres pedir, hazlo ahora.';if(r)acc=[['Pedir ahora','dk',()=>{try{showRestaurant(r.id)}catch(e){}}],['Ver horario','',()=>window.showRestaurantSchedule(r.id)]]}
+    if((m=t.match(/^Pidemás cerrará en (\d+)/i))){tipo='warn';ic=IC.alerta;tit='Pidemás cierra pronto';cuerpo='Recibe pedidos solo '+enMin(Number(m[1]))+' más. Si quieres pedir, hazlo ahora.';acc=[['Pedir ahora','dk',()=>{try{const el=document.getElementById('restaurantsSection')||document.getElementById('restaurants');if(el)el.scrollIntoView({behavior:'smooth',block:'start'})}catch(e){}}]]}
+    else if((m=t.match(/cerrará en (\d+)/i))){tipo='warn';ic=IC.alerta;tit=nom+' cierra pronto';cuerpo='Recibe pedidos solo '+enMin(Number(m[1]))+' más. Si quieres pedir, hazlo ahora.';if(r)acc=[['Pedir ahora','dk',()=>{try{showRestaurant(r.id)}catch(e){}}],['Ver horario','',()=>window.showRestaurantSchedule(r.id)]]}
     else if((m=t.match(/abrirá en (\d+)/i))){tipo='';ic=IC.abre;tit=nom+' abre pronto';cuerpo='Empieza a recibir pedidos en '+enMin(Number(m[1]))+'. Ya puedes ver su carta.';if(r)acc=[['Ver la carta','dk',()=>{try{showRestaurant(r.id)}catch(e){}}]]}
     else if(/está cerrado/i.test(t)){tipo='off';ic=IC.candado;tit=(nom||'El negocio')+' está cerrado';const st=r?estado(r):null;cuerpo='Tu pedido no puede enviarse ahora. '+(st?st.txt:'Vuelve cuando abra.');if(r)acc=[['Ver horario','dk',()=>window.showRestaurantSchedule(r.id)]]}
     else if(/Pidemás (recibe pedidos|no atiende)/i.test(t)){tipo='off';ic=IC.candado;tit=/no atiende/i.test(t)?'Hoy no atendemos':'Fuera de horario';cuerpo=t}
@@ -7599,7 +7614,7 @@ html:root body #modal .sheet.pdpTrack .pdpCarouselDots i{
 html:root body #modal .sheet.pdpTrack .pdpCarouselDots i.on{
   width:18px!important;flex-basis:18px!important;background:var(--fr-orange)!important;
 }
-</style>
+</style>\n
 <style id="pidemas-carrusel-indicador-debajo-tarjeta">
 html:root body #modal .sheet.pdpTrack .pdpBody .pdpCarouselHint{
   margin:10px 4px 2px!important;
@@ -7619,5 +7634,8 @@ html:root body #modal .sheet.pdpTrack .pdpBody .pdpLine.t > span:last-child{
 }
 </style>
 
+<style id="pd-seguimiento-negocio-codigo">
+html body #modal#modal .pdpBody .pdpHero .k > span:first-child { font: 800 15px Inter, system-ui, -apple-system, Roboto, Arial, sans-serif !important; }
+</style>
 </body>
 </html>
