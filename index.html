@@ -2692,6 +2692,7 @@ function actualizarContenidoModalCarta(r){
 }
 
 function cerrarModalCarta(){
+  if(document.documentElement.classList.contains('pdCartaEnlace'))return;
   const modal=document.getElementById('cartaModalNegocio');
   if(modal){modal.className='hidden';modal.innerHTML='';}
   const regresarAListado=volverAListadoCercanosAlCerrarCarta;
@@ -4264,6 +4265,22 @@ async function abrirCartaDesdeEnlace(){
     // Impedir que los botones de volver de la carta directa muestren locales ajenos.
     document.title=`${pick(negocio,['nombre','nombre_negocio','razon_social'],'Carta')} | Pidemás`;
     window.scrollTo({top:0,behavior:'instant'});
+
+    // Abrir la misma ventana de carta (logo, estado, Lo más pedido) que se abre desde Inicio.
+    // Se espera a que terminen de cargar todos los scripts de la página para que se aplique el diseño completo.
+    try{
+      if(document.readyState==='loading')await new Promise(r=>document.addEventListener('DOMContentLoaded',r,{once:true}));
+      await new Promise(r=>setTimeout(r,200));
+      await window.showRestaurant(negocioId);
+      const m=document.getElementById('cartaModalNegocio');
+      if(m&&m.innerHTML.trim()){
+        document.documentElement.classList.add('pdCartaEnlace');
+        const st=document.createElement('style');
+        st.textContent='html.pdCartaEnlace #cartaModalNegocio .carta-modal-close{display:none!important}';
+        document.head.appendChild(st);
+        if(productsSection)productsSection.classList.add('hidden');
+      }
+    }catch(err){console.warn('No se pudo abrir la ventana de carta; se muestra la carta directa:',err)}
   }catch(e){
     console.error('No se pudo cargar la carta del negocio enlazado:',e);
     if(head)head.innerHTML='<h2>No se pudo cargar la carta</h2>';
