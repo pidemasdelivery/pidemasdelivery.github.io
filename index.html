@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="es">
-<head><meta name="pd-version" content="20261111190000"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-antes-de-cargar">
+<head><meta name="pd-version" content="20261111200000"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-antes-de-cargar">
 .app > .hero.pdHero { display: none !important; }
 .app > header .search { display: none !important; }
 .app > header #pdCustomerAccountBtn { display: none !important; }
@@ -2680,7 +2680,7 @@ function abrirModalCarta(r){
   const nombre=pick(r,['nombre','nombre_negocio','razon_social'],'Carta del negocio');
   modal.className='carta-modal-overlay';
   const pdLogo=pick(r,['logo_url','logo','imagen_logo_url','imagen_logo'],'');const pdCat=normalizeBusinessCategory(r)||'Negocio';const pdOpen=isRestaurantOpen(r);
-  modal.innerHTML=`<div class="carta-modal-sheet" role="dialog" aria-modal="true" aria-label="Carta de ${esc(nombre)}"><div class="carta-modal-head"><div class="pdCartaId">${pdLogo?`<img class="pdCartaLogo" src="${esc(pdLogo)}" alt="" onerror="this.remove()">`:''}<div class="pdCartaTxt"><span class="pdKicker">${esc(pdCat)}</span><h2>${esc(nombre)}</h2><span class="pdPill ${pdOpen?'is-dark':'is-off'}">${pdOpen?'Abierto':'Cerrado'}</span></div></div><button type="button" class="carta-modal-close" aria-label="Cerrar carta" onclick="cerrarModalCarta()">×</button></div><div class="carta-modal-body"><div id="cartaModalProducts"></div></div><button type="button" id="pdCartaCartBar" class="pdCartaCartBar" hidden onclick="openCart()"></button></div>`;
+  modal.innerHTML=`<div class="carta-modal-sheet" role="dialog" aria-modal="true" aria-label="Carta de ${esc(nombre)}"><div class="carta-modal-head"><div class="pdCartaId">${pdLogo?`<img class="pdCartaLogo" src="${esc(pdLogo)}" alt="" onerror="this.remove()">`:''}<div class="pdCartaTxt"><span class="pdKicker">${esc(pdCat)}</span><h2>${esc(nombre)}</h2><span class="pdPill ${pdOpen?'is-dark':'is-off'}">${pdOpen?'Abierto':'Cerrado'}</span></div></div>${(new URLSearchParams(location.search).get('negocio')||'').trim()?'':'<button type="button" class="carta-modal-close" aria-label="Cerrar carta" onclick="cerrarModalCarta()">×</button>'}</div><div class="carta-modal-body"><div id="cartaModalProducts"></div></div><button type="button" id="pdCartaCartBar" class="pdCartaCartBar" hidden onclick="openCart()"></button></div>`;
   pdUpdateCartaBar();
   actualizarContenidoModalCarta(r);
 }
@@ -6239,7 +6239,7 @@ html body #modal#modal .sheet.pdCkV2 .ckToggle em{display:flex !important;align-
     const mk=(txt,svg,fn)=>{const b=document.createElement('button');b.type='button';b.className='navbtn';b.innerHTML='<svg class="pdNavIco" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+svg+'</svg><span>'+txt+'</span>';b.onclick=fn;return b};
     const buscar=mk('Buscar','<circle cx="11" cy="11" r="7"></circle><path d="M20 20l-3.5-3.5"></path>',()=>{try{closeModal()}catch(e){}window.scrollTo({top:0,behavior:'smooth'});setTimeout(()=>$('search')?.focus(),250)});
     const perfil=mk('Perfil','<path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0"></path><path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path>',()=>{try{pdAbrirCuentaCliente()}catch(e){}});
-    if(btns[0])btns[0].insertAdjacentElement('afterend',buscar);
+    if(btns[0]&&!(new URLSearchParams(location.search).get('negocio')||'').trim())btns[0].insertAdjacentElement('afterend',buscar);
     if(seg)seg.replaceWith(perfil);else nav.appendChild(perfil);
     const pintarPerfil=()=>{let on=false;try{on=!!pdClienteSesion}catch(e){}perfil.classList.toggle('piConSesion',on)};pintarPerfil();setInterval(pintarPerfil,2000);
   }
@@ -6852,7 +6852,7 @@ html body #modal .phSheet .phFoot .pdResBtn:active { background: var(--fr-peach-
 <script id="pidemas-version">
 /* Si el servidor ya tiene una versión más nueva de esta página, se recarga sola con la nueva (evita ver una versión guardada vieja). */
 (function(){
-  const V='20261111190000',K='pd_ver_'+location.pathname;
+  const V='20261111200000',K='pd_ver_'+location.pathname;
   async function revisar(){
     try{
       if(location.protocol==='file:')return;
