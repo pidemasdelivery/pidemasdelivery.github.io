@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="es">
-<head><meta name="pd-version" content="20261106213000"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-antes-de-cargar">
+<head><meta name="pd-version" content="20261111170000"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-antes-de-cargar">
 .app > .hero.pdHero { display: none !important; }
 .app > header .search { display: none !important; }
 .app > header #pdCustomerAccountBtn { display: none !important; }
@@ -4267,18 +4267,33 @@ async function abrirCartaDesdeEnlace(){
     window.scrollTo({top:0,behavior:'instant'});
 
     // Abrir la misma ventana de carta (logo, estado, Lo más pedido) que se abre desde Inicio.
-    // Se espera a que terminen de cargar todos los scripts de la página para que se aplique el diseño completo.
+    // Se espera a que terminen de cargar todos los scripts de la página y se reintenta si algo la cierra.
     try{
       if(document.readyState==='loading')await new Promise(r=>document.addEventListener('DOMContentLoaded',r,{once:true}));
-      await new Promise(r=>setTimeout(r,200));
-      await window.showRestaurant(negocioId);
-      const m=document.getElementById('cartaModalNegocio');
-      if(m&&m.innerHTML.trim()){
-        document.documentElement.classList.add('pdCartaEnlace');
-        const st=document.createElement('style');
-        st.textContent='html.pdCartaEnlace #cartaModalNegocio .carta-modal-close{display:none!important}';
-        document.head.appendChild(st);
+      const abierta=()=>{const m=document.getElementById('cartaModalNegocio');return !!(m&&m.classList.contains('carta-modal-overlay')&&m.innerHTML.trim())};
+      const aplicar=()=>{
+        if(!document.documentElement.classList.contains('pdCartaEnlace')){
+          document.documentElement.classList.add('pdCartaEnlace');
+          const st=document.createElement('style');
+          st.textContent='html.pdCartaEnlace #cartaModalNegocio .carta-modal-close{display:none!important}'
+            +'html.pdCartaEnlace:root body #cartaModalNegocio.carta-modal-overlay{background:var(--fr-surface,#fff)!important;z-index:2147483000!important}'
+            +'html.pdCartaEnlace:root body #cartaModalNegocio .carta-modal-sheet{height:100dvh!important;max-height:100dvh!important;border-radius:0!important;box-shadow:none!important}'
+            +'html.pdCartaEnlace body>.app{visibility:hidden}';
+          document.head.appendChild(st);
+        }
         if(productsSection)productsSection.classList.add('hidden');
+      };
+      for(let i=0;i<12&&!abierta();i++){
+        await new Promise(r=>setTimeout(r,i?700:200));
+        try{await window.showRestaurant(negocioId)}catch(err){console.warn('Reintentando abrir la carta:',err)}
+      }
+      if(abierta()){
+        aplicar();
+        // Durante los primeros segundos, si otra parte de la tienda la cierra, se vuelve a abrir.
+        let n=0;const guardia=setInterval(()=>{
+          if(++n>16){clearInterval(guardia);return}
+          if(!abierta()){try{window.showRestaurant(negocioId)}catch(_){}}
+        },500);
       }
     }catch(err){console.warn('No se pudo abrir la ventana de carta; se muestra la carta directa:',err)}
   }catch(e){
@@ -6823,7 +6838,7 @@ html body #modal .phSheet .phFoot .pdResBtn:active { background: var(--fr-peach-
 <script id="pidemas-version">
 /* Si el servidor ya tiene una versión más nueva de esta página, se recarga sola con la nueva (evita ver una versión guardada vieja). */
 (function(){
-  const V='20261106213000',K='pd_ver_'+location.pathname;
+  const V='20261111170000',K='pd_ver_'+location.pathname;
   async function revisar(){
     try{
       if(location.protocol==='file:')return;
