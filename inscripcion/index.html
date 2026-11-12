@@ -14,9 +14,10 @@
 html{background:#EFE3DA}
 body{margin:0;color:var(--fr-ink);font:400 13px/1.5 var(--fr-font);-webkit-text-size-adjust:100%}
 button,input,select,textarea{font:inherit}
-.app{max-width:480px;min-height:100dvh;margin:0 auto;background:linear-gradient(#fff 0,var(--fr-peach-soft) 310px) var(--fr-peach-soft)}
-header{position:sticky;top:0;z-index:20;height:68px;display:flex;align-items:center;padding:0 14px;background:#FFF9F5;border-bottom:1px solid var(--fr-line)}
+.app{max-width:480px;min-height:100dvh;margin:0 auto;padding-top:68px;box-sizing:border-box;background:linear-gradient(#fff 0,var(--fr-peach-soft) 310px) var(--fr-peach-soft)}
+header{position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;box-sizing:border-box;z-index:20;height:68px;display:flex;align-items:center;padding:0 14px;background:#FFF9F5;border-bottom:1px solid var(--fr-line)}
 header img{display:block;width:112px;height:47px;max-width:112px;object-fit:contain;object-position:left center;margin-left:-3px}
+.foot{padding:22px 16px 28px;text-align:center;font-size:12px;font-weight:600;color:#7A6A60}
 html,body{overflow-x:hidden}
 html{overscroll-behavior-y:none}
 body{touch-action:manipulation}
@@ -178,6 +179,7 @@ button.next{flex:1;border:0;background:var(--fr-orange);color:#fff}button.next:h
     <a href="">Enviar otra solicitud</a>
   </div>
 </div>
+<footer class="foot">© Grupo Pidemás E.I.R.L.</footer>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
