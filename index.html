@@ -7976,5 +7976,12 @@ html body #modal .pcaStep,html body #modal .pdCkStep,html body #modal .pdtQty{ba
 html body #modal .ckLoc small a,html body #modal #cMapLink a,html body #pdGoogleAuthOverlay .pcLoc a{color:var(--fr-orange-dark)!important;font-weight:700!important;text-decoration:none!important}
 html,body{background-color:#FFF9F5}
 </style>
+<style id="pd-montos-una-linea">
+/* Montos siempre en una sola línea (S/ y número juntos) y el Total en el color de marca */
+html body #modal .pdpLine > span:first-child{min-width:0;flex:1 1 auto}
+html body #modal .pdpLine > span:last-child{flex:0 0 auto;white-space:nowrap;text-align:right}
+html body #modal .pdpLine.t > span:last-child{color:var(--fr-orange,#C4410C)}
+html body .pdLine > span:last-child,html body .pdHistFoot strong,html body .pdHistItems + .pdLine span:last-child{white-space:nowrap}
+</style>
 </body>
 </html>
