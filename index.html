@@ -7880,6 +7880,27 @@ html body #modal .pdDesc .pdDescSw[aria-checked="true"]::after{transform:transla
       return ok;
     };
   })();
+  /* El aviso se coloca siempre por encima de cualquier barra inferior visible
+     («Ver carrito», «Confirmar pedido», barra de la carta, menú de abajo), sin taparla */
+  (function(){
+    const t=window.toast;if(typeof t!=='function'||t.__pdAlto)return;
+    const BARRAS=['#pdCartaCartBar','#pcaBar','#modal .pdCkSubmit','#modal .pcaGo','#modal .phGo','#modal .pdtGo','#modal .pvGo','.bottom'];
+    function ajustar(){
+      try{
+        const el=document.getElementById('toast');if(!el)return;
+        const H=window.innerHeight;let top=H;
+        BARRAS.forEach(sel=>document.querySelectorAll(sel).forEach(n=>{
+          if(n.hidden)return;const cs=getComputedStyle(n);if(cs.display==='none'||cs.visibility==='hidden')return;
+          const r=n.getBoundingClientRect();
+          if(r.height>0&&r.width>0&&r.bottom>H*0.5&&r.top<H&&r.top>0&&r.top<top)top=r.top;
+        }));
+        if(top<H)el.style.setProperty('bottom',Math.round(H-top+12)+'px','important');
+        else el.style.removeProperty('bottom');
+      }catch(e){}
+    }
+    window.toast=function(){const x=t.apply(this,arguments);ajustar();setTimeout(ajustar,60);return x};
+    window.toast.__pdAlto=true;
+  })();
   window.pdDescMontar=function(items){
     if(!items||!window.pdDescActivo())return;
     if(items.querySelector('#pdDesc'))return;
