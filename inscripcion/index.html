@@ -129,6 +129,12 @@ button.next{flex:1;border:0;background:var(--fr-orange);color:#fff}button.next:h
           <label><input type="radio" name="maneja_stock" value="Sí, manual"> Sí, manual</label>
           <label><input type="radio" name="maneja_stock" value="No"> No</label>
         </div></div>
+      <div class="f"><span class="l">¿Tienes fotos o catálogo de tus productos?</span>
+        <div class="chips">
+          <label><input type="radio" name="tiene_fotos" value="Sí, de todos" required> Sí, de todos</label>
+          <label><input type="radio" name="tiene_fotos" value="Sí, de algunos"> Sí, de algunos</label>
+          <label><input type="radio" name="tiene_fotos" value="No"> No todavía</label>
+        </div></div>
     </fieldset>
 
     <fieldset class="step" data-step="4" data-title="Cómo atiendes">
@@ -207,7 +213,7 @@ form.addEventListener('submit',async e=>{
   const row={nombre_negocio:v('nombre_negocio'),razon_social:v('razon_social'),ruc:v('ruc'),categoria:v('categoria'),
     direccion:v('direccion'),distrito:v('distrito'),ciudad:v('ciudad'),referencia:v('referencia'),redes:v('redes'),
     rep_nombre:v('rep_nombre'),rep_dni:v('rep_dni'),rep_cargo:v('rep_cargo'),rep_celular:v('rep_celular'),rep_correo:v('rep_correo'),
-    productos:v('productos'),num_productos:v('num_productos'),stock_aprox:v('stock_aprox'),maneja_stock:v('maneja_stock'),
+    productos:v('productos'),num_productos:v('num_productos'),stock_aprox:v('stock_aprox'),maneja_stock:v('maneja_stock'),tiene_fotos:v('tiene_fotos'),
     horario:v('horario'),pedidos_dia:v('pedidos_dia'),tiempo_prep:Number(d.get('tiempo_prep')),delivery_propio:v('delivery_propio'),
     pagos,comentarios:v('comentarios')};
   btn.disabled=true;btn.textContent='Enviando…';
