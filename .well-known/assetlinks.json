@@ -34,5 +34,17 @@
         "A4:9B:51:B0:1B:E5:17:14:3A:8A:09:A0:81:0E:37:DD:97:5C:E4:FB:6B:3C:72:D4:E8:EA:FC:91:B6:10:8C:69"
       ]
     }
+  },
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "pe.pidemas.negocio",
+      "sha256_cert_fingerprints": [
+        "70:5A:54:EE:BE:48:C2:53:44:64:BF:D1:08:CA:98:AA:AF:5B:95:09:21:80:4A:54:06:E2:B1:08:05:71:76:86"
+      ]
+    }
   }
 ]
