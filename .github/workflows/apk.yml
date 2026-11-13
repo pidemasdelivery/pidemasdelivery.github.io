@@ -1,4 +1,4 @@
-# Construye el APK de la tienda (app de Android que abre tu tienda publicada en GitHub Pages).
+# Construye el APK de la tienda y publica assetlinks.json para la tienda y los 3 paneles.
 # Descarga directa: https://github.com/pidemasdelivery/pidemasdelivery.github.io/releases/latest/download/pidemas-tienda.apk
 name: Construir APK
 
@@ -178,7 +178,16 @@ jobs:
           mkdir -p ../salida
           cp app/build/outputs/apk/release/app-release.apk ../salida/pidemas-tienda.apk
           FP=$(keytool -list -v -keystore ../firma/pidemas.keystore -alias pidemas -storepass pidemas2026 | grep 'SHA256:' | head -1 | sed 's/.*SHA256: *//')
-          printf '[{\n  "relation": ["delegate_permission/common.handle_all_urls"],\n  "target": {\n    "namespace": "android_app",\n    "package_name": "pe.pidemas.tienda",\n    "sha256_cert_fingerprints": ["%s"]\n  }\n}]\n' "$FP" > ../salida/assetlinks.json
+          # Junta la huella de la tienda con la de los paneles (admin, motorizado, negocio)
+          echo "pe.pidemas.tienda $FP" > ../salida/huellas.txt
+          for P in admin motorizado negocio; do
+            curl -fsSL "https://raw.githubusercontent.com/$GITHUB_REPOSITORY_OWNER/$P/main/firma/huella.txt" 2>/dev/null \
+              | tr -d '\r' | grep -E '^[a-z0-9_.]+ [0-9A-F:]+$' >> ../salida/huellas.txt || echo "Aun no hay huella de $P"
+          done
+          cat ../salida/huellas.txt
+          jq -R -s 'split("\n") | map(select(length>0) | split(" ") | {relation:["delegate_permission/common.handle_all_urls"], target:{namespace:"android_app", package_name:.[0], sha256_cert_fingerprints:[.[1]]}})' \
+            ../salida/huellas.txt > ../salida/assetlinks.json
+          cat ../salida/assetlinks.json
           echo "Huella de la firma: $FP"
 
       - name: Publicar assetlinks.json (quita la barra de la direccion en la app)
