@@ -22,5 +22,17 @@
         "93:40:AA:54:BF:16:91:3A:1C:7E:C7:EE:1E:93:FE:2B:89:54:85:05:65:D2:17:E4:D5:AF:D8:A6:0F:1A:18:0C"
       ]
     }
+  },
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "pe.pidemas.motorizado",
+      "sha256_cert_fingerprints": [
+        "A4:9B:51:B0:1B:E5:17:14:3A:8A:09:A0:81:0E:37:DD:97:5C:E4:FB:6B:3C:72:D4:E8:EA:FC:91:B6:10:8C:69"
+      ]
+    }
   }
 ]
