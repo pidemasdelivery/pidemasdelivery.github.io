@@ -25,7 +25,8 @@ dialog[data-pdm-hoja]::backdrop{background:var(--pdmu-velo)!important;-webkit-ba
 [data-pdm-hoja="auto"]{height:auto!important}
 [data-pdm-hoja][data-pdm-grip]::before{content:""!important;display:block!important;position:absolute!important;top:8px!important;left:50%!important;width:40px!important;height:5px!important;margin:0 0 0 -20px!important;border-radius:3px!important;background:#E8D9CE!important;z-index:5!important;pointer-events:none!important;opacity:1!important;transform:none!important}
 [data-pdm-oculto]{display:none!important}
-[data-pdm-cab]{position:sticky!important;top:0!important;z-index:4!important;background-color:#fff!important}
+[data-pdm-cab]{position:sticky!important;top:0!important;z-index:4!important;background-color:#fff!important;box-shadow:0 -64px 0 0 #fff!important}
+[data-pdm-grip] > [data-pdm-cab]::after{content:""!important;display:block!important;position:absolute!important;top:-14px!important;left:50%!important;width:40px!important;height:5px!important;margin:0 0 0 -20px!important;border-radius:3px!important;background:#E8D9CE!important;pointer-events:none!important}
 [data-pdm-cab] [data-pdm-titulo]{margin:0!important;font:800 19px/1.25 var(--font,Inter,system-ui,sans-serif)!important;letter-spacing:-.2px!important;color:#C4410C!important;text-transform:none!important}
 [data-pdm-pie]{position:sticky!important;bottom:0!important;z-index:4!important;background-color:#fff!important}
 /* abrir y cerrar rápido */
@@ -87,6 +88,7 @@ body>.toast button{background:#FFF4EC!important;color:#C4410C!important;border:1
 @keyframes pdFhUp{from{transform:translateY(40px);opacity:0}}
 }
 </style>
+
 <style id="pd-cargando">
 html.pdCarga,html.pdCarga body{background:#FFF9F5!important}
 html.pdCarga body>*{visibility:hidden!important}
