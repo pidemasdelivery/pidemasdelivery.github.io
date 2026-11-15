@@ -88,6 +88,9 @@ input:focus,select:focus,textarea:focus{border-color:var(--o);box-shadow:0 0 0 4
 .mini button{min-height:34px;padding:0 12px;border-radius:999px;border:1px dashed #E9C9B8;background:#FFFCFA;color:var(--od);font:700 12.5px var(--f);cursor:pointer}
 .mini button.on{border-style:solid;border-color:var(--o);background:var(--soft);color:var(--o)}
 .hsum{display:flex;align-items:center;gap:10px;padding:12px 14px;margin:-4px 0 14px;border-radius:14px;background:var(--soft);font-weight:800;color:var(--o);font-size:15px}
+#categoria{height:56px;border:1.5px solid var(--ln);border-radius:16px;padding:0 48px 0 16px;font:800 17px var(--f);color:var(--ink);cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23C4410C' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")!important;background-repeat:no-repeat!important;background-position:right 16px center!important;background-size:20px!important}
+#categoria.vac{color:var(--mu);font-weight:700}
+.bad #categoria{border-color:var(--red)}
 .f[hidden]{display:none!important}
 fieldset.step{min-width:0;max-width:100%}
 #formArea,#f,.main > div{min-width:0;max-width:100%}
@@ -219,9 +222,8 @@ footer{padding:20px 0 40px;color:var(--mu);font-size:13.5px;text-align:center}
         <fieldset class="step" data-step="1" data-title="Tu negocio" style="border:0;padding:0;margin:0">
           <h2>Cuéntanos de tu negocio</h2><p class="sub">Así te encontrarán tus clientes en la tienda.</p>
           <div class="f"><label for="nombre_negocio">Nombre comercial</label><input type="text" id="nombre_negocio" name="nombre_negocio" required maxlength="120" autocomplete="organization" placeholder="Ej.: Sabor Piurano"><span class="msg">Escribe el nombre de tu negocio.</span></div>
-          <div class="f" data-radio="categoria" id="catF"><span class="l">¿Qué tipo de negocio es?</span>
-            <div class="tabs" id="catTabs" role="tablist"></div>
-            <div id="catChips"></div>
+          <div class="f" id="catF"><label for="categoria">¿Qué tipo de negocio es?</label>
+            <select id="categoria" name="categoria" required></select>
             <span class="msg">Elige el tipo de negocio.</span></div>
           <div class="row">
             <div class="f"><label for="razon_social">Razón social <span class="opt">(opcional)</span></label><input type="text" id="razon_social" name="razon_social" maxlength="160"></div>
@@ -667,11 +669,10 @@ const STOCK={
 const radio=(name,val,txt,req)=>'<label><input type="radio" name="'+name+'" value="'+E(val)+'"'+(req?' required':'')+'>'+E(txt)+'</label>';
 const pills=(name,arr)=>arr.map((x,i)=>Array.isArray(x)?radio(name,x[0],x[1],!i):radio(name,x,x,!i)).join('');
 document.querySelectorAll('[data-pills]').forEach(c=>{c.innerHTML=pills(c.dataset.pills,OPC[c.dataset.pills])});
-/* categorías en pestañas + pastillas */
-$('catTabs').innerHTML=GRUPOS.map((g,i)=>'<button type="button" role="tab" data-g="'+g[0]+'"'+(i?'':' class="on"')+'>'+E(g[1])+'</button>').join('');
-let first=true;
-$('catChips').innerHTML=GRUPOS.map((g,i)=>'<div class="chips catG" data-g="'+g[0]+'"'+(i?' hidden':'')+'>'+g[2].map(c=>{const h=radio('categoria',c,c,first);first=false;return h}).join('')+'</div>').join('');
-$('catTabs').addEventListener('click',e=>{const b=e.target.closest('[data-g]');if(!b)return;document.querySelectorAll('#catTabs button').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('.catG').forEach(x=>x.hidden=x.dataset.g!==b.dataset.g)});
+/* categorías: selector de Pidemás agrupado */
+const catVac=()=>$('categoria').classList.toggle('vac',!$('categoria').value);
+$('categoria').addEventListener('change',catVac);
+$('categoria').innerHTML='<option value="">Elige tu rubro</option>'+GRUPOS.map(g=>'<optgroup label="'+E(g[1])+'">'+g[2].map(c=>'<option>'+E(c)+'</option>').join('')+'</optgroup>').join('');
 function distritos(){
   const c=rv('ciudad');const arr=DISTRITOS[c]||['Otro'];const prev=rv('distrito');
   $('distChips').innerHTML=pills('distrito',arr);
@@ -718,7 +719,7 @@ cierres();
 
 /* ---------- lo que se pregunta según el rubro ---------- */
 function aplicarRubro(){
-  const c=rv('categoria'),g=grupoDe(c),serv=g==='servicios',com=g==='comida';
+  const c=$('categoria').value,g=grupoDe(c),serv=g==='servicios',com=g==='comida';
   $('s3T').textContent=serv?'¿Qué servicios ofreces?':com?'¿Qué hay en tu carta?':'¿Qué vendes?';
   $('s3S').textContent='Sepáralos con comas y mira cómo aparecen en tu tienda.';
   $('prodL').textContent=serv?'¿Qué servicios ofreces?':com?'¿Qué platos o productos vendes?':'¿Qué productos vendes?';
@@ -768,7 +769,6 @@ function stepOk(n,mostrar){
     const p=form.querySelectorAll('input[name="pagos"]:checked').length>0;if(mostrar)$('pagosF').classList.toggle('bad',!p);if(!p&&!primero)primero=form.querySelector('input[name="pagos"]');
   }
   if(primero&&mostrar){
-    if(primero.name==='categoria'){const g=primero.closest('.catG');if(g&&g.hidden){}}
     const box=primero.closest('.f')||primero.closest('.terms');(box||primero).scrollIntoView({behavior:'smooth',block:'center'});if(primero.type!=='radio'&&primero.type!=='checkbox')setTimeout(()=>primero.focus({preventScroll:true}),250)}
   return !primero;
 }
@@ -808,14 +808,14 @@ backB.addEventListener('click',()=>show(cur-1));
 /* ---------- resumen ---------- */
 function resumen(){
   const v=id=>($(id).value||'').trim();
-  const rows=[['Negocio',v('nombre_negocio')+(rv('categoria')?' · '+rv('categoria'):''),1],['Dirección',[v('direccion'),conOtro('distrito','distrito_otro'),conOtro('ciudad','ciudad_otro')].filter(Boolean).join(', '),1],['Representante',[v('rep_nombre'),v('rep_celular')].filter(Boolean).join(' · '),2],['Productos',v('productos').slice(0,80)+(v('productos').length>80?'…':''),3],['Atención',v('horario'),4]];
+  const rows=[['Negocio',v('nombre_negocio')+($('categoria').value?' · '+$('categoria').value:''),1],['Dirección',[v('direccion'),conOtro('distrito','distrito_otro'),conOtro('ciudad','ciudad_otro')].filter(Boolean).join(', '),1],['Representante',[v('rep_nombre'),v('rep_celular')].filter(Boolean).join(' · '),2],['Productos',v('productos').slice(0,80)+(v('productos').length>80?'…':''),3],['Atención',v('horario'),4]];
   $('resumen').innerHTML=rows.map(r=>'<div class="res"><span>'+r[0]+'</span><b>'+E(r[1]||'—')+(r[2]!==4?'<button type="button" data-go="'+r[2]+'">Editar</button>':'')+'</b></div>').join('');
 }
 $('resumen').addEventListener('click',e=>{const b=e.target.closest('[data-go]');if(b)show(+b.dataset.go)});
 /* ---------- vista previa ---------- */
 function preview(){
   const v=id=>($(id).value||'').trim();
-  const nom=v('nombre_negocio')||'Tu negocio',cat=rv('categoria'),ini=(v('nombre_negocio').trim()[0]||'').toUpperCase(),g=grupoDe(cat);
+  const nom=v('nombre_negocio')||'Tu negocio',cat=$('categoria').value,ini=(v('nombre_negocio').trim()[0]||'').toUpperCase(),g=grupoDe(cat);
   const tp=Number(rv('tiempo_prep'));const ent=g==='comida'&&tp>0?(tp+10)+'–'+(tp+20)+' min':g&&g!=='comida'?'30–45 min':'25–35 min';
   const prods=v('productos').split(/,|\n|;| y /).map(s=>s.trim()).filter(s=>s.length>1).slice(0,8);
   const pagos=[...form.querySelectorAll('input[name="pagos"]:checked')].map(x=>x.value);
@@ -845,7 +845,7 @@ form.addEventListener('submit',async e=>{
   const pagos=d.getAll('pagos');
   if(!pagos.length){$('pagosF').classList.add('bad');showErr('Elige al menos un método de pago.');return}
   const v=k=>(d.get(k)||'').toString().trim()||null;
-  const cat=rv('categoria'),g=grupoDe(cat);
+  const cat=$('categoria').value,g=grupoDe(cat);
   const extra=[];
   const vars=d.getAll('variantes').filter(x=>x!=='Ninguna');if(vars.length)extra.push((g==='servicios'?'Cobra: ':'Opciones de productos: ')+vars.join(', '));
   if(g==='servicios'&&rv('entrega_serv'))extra.push('Entrega del servicio: '+rv('entrega_serv'));
@@ -887,7 +887,7 @@ form.addEventListener('submit',async e=>{
   }
 });
 document.querySelector('#ok a[href=""]').addEventListener('click',e=>{e.preventDefault();location.reload()});
-aplicarRubro();show(1);preview();
+aplicarRubro();catVac();show(1);preview();
 /* tarjeta de ubicación (la misma del panel de negocio) */
 (function ini(){if(!window.pdMapa){setTimeout(ini,200);return}
   pdMapa.tarjeta($('mapaHost'),{lat:$('ins_lat'),lng:$('ins_lng'),maps:$('ins_maps'),dir:$('direccion'),titulo:'Ubicación de tu local',etiqueta:'Tu local',tip:'Mueve el mapa hasta tu local',gpsTxt:'Estoy en el local',
