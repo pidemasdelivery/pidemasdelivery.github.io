@@ -91,7 +91,7 @@ body>.toast button{background:#FFF4EC!important;color:#C4410C!important;border:1
 
 
 <meta name="pd-instalacion" content="1">
-<meta name="pd-version" content="202611161402"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
+<meta name="pd-version" content="202611161417"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
 /* ===== pd-sistema-diseno (tokens únicos) ===== */
 :root{
 /* ── Tipografía ── */
@@ -5454,12 +5454,12 @@ if (pidemasNegocioEnlace) {
     if(!String(d.nombre||'').trim()){msg('Escribe tu nombre completo.');$('pcNombre').focus();return}
     const tel=String(d.telefono||'').replace(/\D/g,'');
     if(tel&&tel.length<9){msg('Revisa tu número de celular (9 dígitos).');$('pcTel').focus();return}
-    btn.disabled=true;msg('Guardando…');
+    btn.disabled=true;const btTx=btn.textContent;btn.textContent='Guardando…';msg('');
     const data={full_name:d.nombre.trim(),phone:String(d.telefono||'').trim(),contact_email:String(d.correo||'').trim(),address:String(d.direccion||'').trim(),address_reference:String(d.referencia||'').trim(),delivery_lat:d.lat,delivery_lng:d.lng};
     LS.set({nombre_cliente:data.full_name,telefono_cliente:data.phone,direccion:data.address,referencia:data.address_reference,lat:data.delivery_lat,lng:data.delivery_lng});
-    try{const {data:r,error}=await sb.auth.updateUser({data});if(error)throw error;borrador=null;window.pdActualizarCuentaCliente(r.user||usuario());msg('Tus datos quedaron guardados. Se usarán en tus pedidos.',true)}
+    try{const {data:r,error}=await sb.auth.updateUser({data});if(error)throw error;borrador=null;window.pdActualizarCuentaCliente(r.user||usuario());msg('');const ov=document.getElementById('pdGoogleAuthOverlay');const x=ov&&[...ov.querySelectorAll('button')].find(z=>/^(×|✕)$/.test((z.textContent||'').trim())||/cerrar/i.test(z.getAttribute('aria-label')||''));if(x)x.click();toast('✓ Tus datos quedaron guardados')}
     catch(e){msg('Se guardó en este teléfono, pero no en tu cuenta: '+(e.message||'inténtalo de nuevo.'))}
-    finally{btn.disabled=false}
+    finally{btn.disabled=false;if(btn.isConnected)btn.textContent=btTx}
   }
   /* ===== Volver a la misma carta después de entrar con Google ===== */
   const VK='pd_volver_carta';
@@ -7773,15 +7773,17 @@ html body #modal .pdOkSheet > .ppOk{margin:66px 16px 0 !important;border-radius:
   const ua=navigator.userAgent||'';
   const iOS=/iphone|ipad|ipod/i.test(ua)||(/macintosh/i.test(ua)&&navigator.maxTouchPoints>1);
   const iOSSafari=iOS&&/safari/i.test(ua)&&!/crios|fxios|edgios|opios|gsa\//i.test(ua);
+  const android=/android/i.test(ua)&&!/wv\)|; wv/i.test(ua);
   const NO='pdInstalarNo',DIAS=14;
   const descartado=()=>{const t=Number(ls.get(NO)||0);return t&&Date.now()-t<DIAS*864e5};
   let aviso=null,card=null,intentos=0;
   addEventListener('beforeinstallprompt',e=>{e.preventDefault();aviso=e;programar(400)});
+  setTimeout(function(){if(!aviso&&android&&!instalada())programar(0)},3000);
   addEventListener('appinstalled',()=>{ls.set(NO,String(Date.now()+3650*864e5));if(card)card.hidden=true});
   function programar(ms){if(instalada()||descartado()||card&&!card.hidden)return;clearTimeout(programar.t);programar.t=setTimeout(intentar,ms)}
   function intentar(){
     if(instalada()||descartado())return;
-    if(!aviso&&!iOSSafari)return;
+    if(!aviso&&!iOSSafari&&!android)return;
     if(hayVentana()||document.activeElement&&/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)){if(++intentos<40)programar(1500);return}
     mostrarCard();
   }
@@ -7791,6 +7793,8 @@ html body #modal .pdOkSheet > .ppOk{margin:66px 16px 0 !important;border-radius:
     const ico='<span class="ico"'+(icono?' style="background-image:url(\''+icono.replace(/'/g,'%27')+'\')"':'')+'>'+(icono?'':'P')+'</span>';
     if(aviso){
       card.innerHTML=ico+'<span class="tx"><b>Instala Pidemás</b><small>Ábrela desde tu inicio, más rápida y a pantalla completa.</small></span><span class="bt"><button type="button" class="si">Instalar</button><button type="button" class="no">Ahora no</button></span>';
+    }else if(android){
+      card.innerHTML=ico+'<span class="tx"><b>Instala Pidemás</b><small>Toca ⋮ (arriba a la derecha) y luego «Instalar app» o «Agregar a pantalla principal». Si ya la tienes, ábrela desde tu inicio.</small></span><span class="bt"><button type="button" class="no">Entendido</button></span>';
     }else{
       card.innerHTML=ico+'<span class="tx"><b>Instala Pidemás</b><small>Toca <svg class="shr" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="m7 8 5-5 5 5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg> Compartir y luego «Agregar a inicio».</small></span><span class="bt"><button type="button" class="no">Entendido</button></span>';
     }
@@ -7988,8 +7992,9 @@ function cabecera(h){
   }
   /* pie con botones: el último bloque de abajo queda fijo */
   let cont=h;if(h.children.length===1&&h.firstElementChild!==head)cont=h.firstElementChild;
-  const ult=[...cont.children].filter(c=>visto(c)&&c!==head).pop();
-  if(ult&&ult!==head&&ult.querySelector('button,a,[role="button"]')){
+  h.querySelectorAll('[data-pdm-pie]').forEach(x=>x.removeAttribute('data-pdm-pie'));
+  const kids=[...cont.children].filter(c=>visto(c)&&c!==head);const ult=kids.length>1?kids[kids.length-1]:null;
+  if(ult&&ult!==head&&ult!==cont.firstElementChild&&!ult.matches(CERRAR)&&!ult.querySelector(CERRAR)&&!ult.querySelector('[data-pdm-titulo],h1,h2')&&ult.querySelector('button,a,[role="button"]')){
     const r=ult.getBoundingClientRect();
     if(r.height<230&&!ult.querySelector('ul,ol,table')&&ult.querySelectorAll('button,a').length<=4){const p=getComputedStyle(ult).position;if(p!=='fixed'&&p!=='absolute')ult.setAttribute('data-pdm-pie','')}
   }
@@ -8310,6 +8315,9 @@ buscar();
 })();
 </script>
 <style id="pd-hojas-sin-brinco">
+/* el fondo aparece de una vez (sin desvanecer) para que la ventana no se vea transparente al subir */
+@keyframes pdAppFade{from{opacity:1}to{opacity:1}}
+@keyframes pdSelFade{from{opacity:1}to{opacity:1}}
 /* Las ventanas suben desde abajo en un solo movimiento, sin saltito ni parpadeo */
 @keyframes pcSube{from{transform:translateY(100%);opacity:1}to{transform:none;opacity:1}}
 @keyframes pdAppSheetUp{from{transform:translateY(100%);opacity:1}to{transform:none;opacity:1}}
@@ -8327,9 +8335,12 @@ var NO=/(no se|no pud|error|falt|intenta|revisa|se guardar[áa]|guardar\b|en viv
 var MSG=/msg|Msg|mensaje|Mensaje|aviso|Aviso|status|estado|Ok\b|exito|Exito|ok\b/;
 var HOJA='[data-pdm-hoja],.pdnSh,.pdsmHoja,.pdPwHoja,.pdxSheetCard,.pcSheet,.sheet,[role=dialog],.pdmSheet,.pdoSheet,.pdpm-sheet';
 var CERRAR='.pdnX,.pdsmX,.pdPwX,.pcX,.pdpm-x,.pdoX,[data-close],[aria-label="Cerrar"],[aria-label="cerrar"],.close,.closeBtn,.x-icon';
-var ocupado=0;
+var ocupado=0,yaAviso=0,mio=false;
+function envolver(n){var f=window[n];if(typeof f!=='function'||f.__pdGA)return;var w=function(){if(!mio)yaAviso=Date.now();return f.apply(this,arguments)};w.__pdGA=1;try{window[n]=w}catch(_){}}
+setInterval(function(){envolver('pdExito');envolver('toast')},700);
 function avisar(t){
-  ocupado=Date.now();
+  if(Date.now()-yaAviso<3000)return;/* la app ya mostró su propio aviso: no se repite */
+  mio=true;setTimeout(function(){mio=false},0);
   t=String(t||'Guardado').trim().replace(/^✓\s*/,'');
   try{if(typeof window.pdExito==='function'){window.pdExito(t);return}}catch(_){}
   try{if(typeof window.toast==='function'){window.toast('✓ '+t);return}}catch(_){}
@@ -8344,17 +8355,27 @@ function cerrarHoja(h){
   try{document.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true}))}catch(_){}
 }
 var hechos=new WeakMap();
+var PROG=/^(guardando|actualizando|enviando|subiendo|procesando|registrando)\b/i;
+function esMensaje(el,txt){return el.getAttribute('role')==='status'||el.hasAttribute('aria-live')||MSG.test((el.id||'')+' '+(typeof el.className==='string'?el.className:''))||/^✓/.test(txt)}
+function ocultar(el,si){if(si){el.setAttribute('data-pd-msg-oculto','');el.style.setProperty('display','none','important')}else if(el.hasAttribute('data-pd-msg-oculto')){el.removeAttribute('data-pd-msg-oculto');el.style.removeProperty('display')}}
 function revisar(el){
-  if(!el||el.nodeType!==1)return;if(Date.now()-ocupado<2500)return;
-  var txt=(el.textContent||'').trim();if(txt.length<5||txt.length>170)return;
-  if(!OK.test(txt)||NO.test(txt))return;
-  if(el.closest('button,label,h1,h2,h3,strong.title,input,textarea,select'))return;
-  var esMsg=el.getAttribute('role')==='status'||el.hasAttribute('aria-live')||MSG.test((el.id||'')+' '+(typeof el.className==='string'?el.className:''))||/^✓/.test(txt);
-  if(!esMsg)return;
-  var h=el.closest(HOJA);if(!h||!h.getClientRects().length)return;
-  if(hechos.get(el)===txt)return;hechos.set(el,txt);
-  avisar(txt);
-  setTimeout(function(){if(h.isConnected&&h.getClientRects().length)cerrarHoja(h)},450);
+  if(!el||el.nodeType!==1)return;
+  var txt=(el.textContent||'').trim();
+  if(el.closest('button,label,h1,h2,h3,input,textarea,select'))return;
+  var h=el.closest(HOJA);if(!h)return;
+  if(txt.length>170)return;
+  if(!txt){return}
+  var msg=esMensaje(el,txt);
+  /* mensaje de «guardando…»: no se muestra, el botón ya indica que está trabajando */
+  if(msg&&PROG.test(txt)){ocultar(el,true);return}
+  if(msg&&OK.test(txt)&&!NO.test(txt)){
+    ocultar(el,true);
+    if(Date.now()-ocupado<2500||hechos.get(el)===txt)return;hechos.set(el,txt);ocupado=Date.now();
+    if(h.getClientRects().length)cerrarHoja(h);
+    setTimeout(function(){avisar(txt)},260);
+    return;
+  }
+  if(msg)ocultar(el,false);/* los errores sí se ven en la ventana */
 }
 new MutationObserver(function(ms){for(var i=0;i<ms.length;i++){var m=ms[i];var t=m.type==='characterData'?m.target.parentElement:m.target;revisar(t);if(m.type==='childList'){for(var j=0;j<m.addedNodes.length;j++){var n=m.addedNodes[j];if(n.nodeType===1){revisar(n);var k=n.querySelectorAll&&n.querySelectorAll('[role=status],[aria-live]');if(k)for(var q=0;q<k.length;q++)revisar(k[q])}}}}}).observe(document.documentElement,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['class']});
 })();
