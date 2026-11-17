@@ -1,0 +1,4 @@
+# Nunca subir claves de firma
+*.keystore
+*.jks
+firma/
