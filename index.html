@@ -91,7 +91,7 @@ body>.toast button{background:#FFF4EC!important;color:#C4410C!important;border:1
 
 
 <meta name="pd-instalacion" content="1">
-<meta name="pd-version" content="202611161417"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
+<meta name="pd-version" content="202611161652"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
 /* ===== pd-sistema-diseno (tokens únicos) ===== */
 :root{
 /* ── Tipografía ── */
@@ -8226,7 +8226,7 @@ try{const orig=HTMLInputElement.prototype.showPicker;if(orig)HTMLInputElement.pr
   const E=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const C=new Map(),pend=new Set();
   window.pdCodigoHtml=function(o){
-    if(!o||!o.id||['entregado','cancelado','anulado','rechazado'].includes(String(o.estado||'').toLowerCase()))return '';
+    if(!o||!o.id||!o.negocio_id||['entregado','cancelado','anulado','rechazado'].includes(String(o.estado||'').toLowerCase()))return '';
     const id=String(o.id);
     if(!C.has(id)&&!pend.has(id)){pend.add(id);Promise.resolve(sb.rpc('codigo_entrega',{p_pedido:id})).then(r=>{C.set(id,r&&!r.error&&r.data?String(r.data):'')}).catch(()=>C.set(id,'')).finally(()=>pend.delete(id))}
     const c=C.get(id);if(!c)return '';
