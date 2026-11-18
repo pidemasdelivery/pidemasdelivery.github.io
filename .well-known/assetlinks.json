@@ -7,7 +7,7 @@
       "namespace": "android_app",
       "package_name": "pe.pidemas.tienda",
       "sha256_cert_fingerprints": [
-        "C7:56:D7:9F:B7:62:CA:0F:5C:3B:9E:8B:E7:42:20:8C:3A:A9:1D:6A:8E:85:ED:1C:5E:F8:5A:92:50:AD:07:8E"
+        "6F:D6:72:3A:5E:B3:75:A7:98:CD:64:E1:5C:1E:A5:F5:47:2D:32:DC:2D:03:4B:D1:4C:9C:71:EF:4A:0E:63:C0"
       ]
     }
   },
@@ -19,7 +19,7 @@
       "namespace": "android_app",
       "package_name": "pe.pidemas.admin",
       "sha256_cert_fingerprints": [
-        "93:40:AA:54:BF:16:91:3A:1C:7E:C7:EE:1E:93:FE:2B:89:54:85:05:65:D2:17:E4:D5:AF:D8:A6:0F:1A:18:0C"
+        "6F:D6:72:3A:5E:B3:75:A7:98:CD:64:E1:5C:1E:A5:F5:47:2D:32:DC:2D:03:4B:D1:4C:9C:71:EF:4A:0E:63:C0"
       ]
     }
   },
@@ -31,7 +31,7 @@
       "namespace": "android_app",
       "package_name": "pe.pidemas.motorizado",
       "sha256_cert_fingerprints": [
-        "A4:9B:51:B0:1B:E5:17:14:3A:8A:09:A0:81:0E:37:DD:97:5C:E4:FB:6B:3C:72:D4:E8:EA:FC:91:B6:10:8C:69"
+        "6F:D6:72:3A:5E:B3:75:A7:98:CD:64:E1:5C:1E:A5:F5:47:2D:32:DC:2D:03:4B:D1:4C:9C:71:EF:4A:0E:63:C0"
       ]
     }
   },
@@ -43,7 +43,7 @@
       "namespace": "android_app",
       "package_name": "pe.pidemas.negocio",
       "sha256_cert_fingerprints": [
-        "70:5A:54:EE:BE:48:C2:53:44:64:BF:D1:08:CA:98:AA:AF:5B:95:09:21:80:4A:54:06:E2:B1:08:05:71:76:86"
+        "6F:D6:72:3A:5E:B3:75:A7:98:CD:64:E1:5C:1E:A5:F5:47:2D:32:DC:2D:03:4B:D1:4C:9C:71:EF:4A:0E:63:C0"
       ]
     }
   }
