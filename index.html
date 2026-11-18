@@ -91,7 +91,7 @@ body>.toast button{background:#FFF4EC!important;color:#C4410C!important;border:1
 
 
 <meta name="pd-instalacion" content="1">
-<meta name="pd-version" content="202611181855"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
+<meta name="pd-version" content="202611181905"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
 /* ===== pd-sistema-diseno (tokens únicos) ===== */
 :root{
 /* ── Tipografía ── */
@@ -8949,6 +8949,7 @@ button{font-family:inherit;-webkit-tap-highlight-color:transparent}
 .sec{display:flex;align-items:baseline;justify-content:space-between;margin-top:4px}
 .sec h2{margin:0;font-size:22px;font-weight:800}
 .sec span{font-size:14px;color:#6B5E55;font-weight:600}
+.catH{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:18px 0 2px;padding:12px 14px;border-radius:16px;background:#FDEBDF;border-left:5px solid #C4410C;scroll-margin-top:8px}.catN{font-size:19px;font-weight:800;color:#1F1A17;line-height:1.2;overflow-wrap:anywhere}.catC{flex:0 0 auto;font-size:12.5px;font-weight:800;color:#9A330A;background:#FFFFFF;border-radius:999px;padding:5px 10px}
 .lbl2{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#6B5E55}
 .cats{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -14px;padding:0 14px}
 .cats::-webkit-scrollbar{display:none}
@@ -9195,7 +9196,7 @@ html.pdtRes #ppSlots{display:none!important}
     const ql=F.nq.trim().toLowerCase(),ab=abierto(r);
     const grupos=gruposCarta(c.data.cats,c.data.prods).map(g=>({...g,L:g.L.filter(p=>!ql||String(p.nombre||'').toLowerCase().includes(ql)||String(p.descripcion||'').toLowerCase().includes(ql))})).filter(g=>g.L.length);
     if(!grupos.length)return `<div class="vac">No encontramos «${E(F.nq.trim())}» en esta carta.</div>`;
-    return grupos.map(g=>`<div class="lbl2" id="g-${E(g.id)}" style="margin-top:4px;scroll-margin-top:8px">${E(g.n)} · ${g.L.length}</div>`+g.L.map(p=>{
+    return grupos.map((g,gi)=>`<div class="catH" id="g-${E(g.id)}"${gi?'':' style="margin-top:2px"'}><span class="catN">${E(g.n)}</span><span class="catC">${g.L.length} producto${g.L.length===1?'':'s'}</span></div>`+g.L.map(p=>{
       const n=enCarrito(p.id),st=stockP(p),ago=st!==null&&st<=0,ft=fotoP(p),d=descP(p).description,an=antesP(p);
       return `<div class="pc${n?' en':''}" role="group" aria-label="${E(p.nombre)}"><button type="button" data-prod="${E(p.id)}" style="all:unset;flex:1 1 0%;min-width:0;cursor:pointer;display:flex"><span class="tx"><b>${E(p.nombre||p.nombre_producto||'Producto')}</b>${n?`<span class="enc">${n} en tu pedido</span>`:d?`<span class="ds">${E(d)}</span>`:''}${ago?'<span class="agot">Agotado</span>':''}<span class="pr">${M(precioP(p))}${an?`<s>${M(an)}</s>`:''}</span></span></button><span class="ph"><i${ft?` style="background-image:url('${E(ft)}')"`:' class="no"'}>${ft?'':ICFOTO}</i>${ago?'':`<button type="button" class="ad${ab?'':' off'}" data-add="${E(p.id)}" aria-label="Agregar ${E(p.nombre)}">${IC.plus}</button>`}</span></div>`}).join('')).join('');
   }
