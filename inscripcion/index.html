@@ -242,6 +242,42 @@ fieldset.step{min-width:0;max-width:100%}
 .pTx b{display:block;font-size:14px;font-weight:800;overflow-wrap:anywhere}
 .pTx small{display:block;font-size:12px;color:var(--mu)}
 .add{flex:0 0 34px;height:34px;border-radius:11px;background:var(--o);color:#fff;font-size:19px;font-weight:700;display:flex;align-items:center;justify-content:center}
+
+.scr{position:relative}
+.app{display:flex;flex-direction:column}
+.qTop{background:#fff;padding:6px 14px 12px;border-bottom:1px solid var(--ln)}
+.qRow{display:flex;gap:12px;align-items:center}
+.qRow .tLogo{flex:0 0 50px;height:50px;border-radius:14px;font-size:21px}
+.qRow .qN{flex:1;min-width:0}
+.qRow .qN b{display:block;font-size:17px;font-weight:800;line-height:1.2;overflow-wrap:anywhere}
+.qRow .qN small{display:block;font-size:12px;color:var(--mu);font-weight:500;margin-top:2px}
+.qCart{flex:0 0 40px;height:40px;border-radius:12px;border:1px solid var(--ln);display:flex;align-items:center;justify-content:center;background:#fff}
+.qCart svg{width:20px;height:20px;stroke:#1F1A17}
+.qBus{margin-top:12px;height:40px;border-radius:12px;border:1px solid var(--ln);background:#FFF9F5;display:flex;align-items:center;gap:8px;padding:0 12px;font-size:13px;color:#9B8E85}
+.qBus svg{width:16px;height:16px;stroke:#6B5E55}
+.qEst{display:flex;justify-content:space-between;align-items:center;padding:12px 14px 4px}
+.qEst .est{margin:0}
+.qEst u{font-size:12px;font-weight:700;color:var(--o)}
+.qChips{display:flex;gap:7px;padding:8px 14px;overflow-x:auto;scrollbar-width:none}
+.qChips span{flex:0 0 auto;height:32px;padding:0 13px;border-radius:999px;border:1px solid var(--ln);background:#fff;font-size:12.5px;font-weight:700;display:flex;align-items:center}
+.qChips span.on{background:var(--o);border-color:var(--o);color:#fff}
+.qInfo{display:flex;flex-direction:column;gap:5px;padding:4px 14px 6px}
+.qInfo div{display:flex;gap:7px;font-size:11.5px;color:#6B5E55;line-height:1.35}
+.qInfo svg{flex:0 0 14px;width:14px;height:14px;stroke:var(--o);margin-top:1px}
+.qLbl{padding:10px 14px 2px;font-size:11px;font-weight:800;letter-spacing:.08em;color:#6B5E55;text-transform:uppercase}
+.qP{display:flex;gap:10px;margin:8px 14px;padding:12px;background:#fff;border:1px solid var(--ln);border-radius:16px}
+.qP .qT{flex:1;min-width:0}
+.qP .qT b{display:block;font-size:14px;font-weight:800;overflow-wrap:anywhere}
+.qP .qT small{display:block;font-size:11.5px;color:var(--mu);margin-top:2px;line-height:1.3}
+.qP .qT i{display:block;font-style:normal;font-size:13.5px;font-weight:800;margin-top:8px}
+.qImg{position:relative;flex:0 0 78px;height:78px;border-radius:14px;background:#FDEBDF;color:var(--o);font-size:26px;font-weight:900;display:flex;align-items:center;justify-content:center}
+.qImg em{position:absolute;right:-4px;bottom:-4px;width:28px;height:28px;border-radius:9px;background:var(--o);color:#fff;font-style:normal;font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;border:2px solid #fff}
+.qBody{flex:1}
+.qNav{flex:0 0 auto;display:flex;border-top:1px solid var(--ln);background:#fff;padding:6px 0 10px;position:sticky;bottom:0}
+.qNav div{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;font-weight:600;color:#6B5E55}
+.qNav div span{width:44px;height:26px;border-radius:999px;display:flex;align-items:center;justify-content:center}
+.qNav svg{width:18px;height:18px;stroke:currentColor}
+.qNav div.on{color:var(--o);font-weight:800}.qNav div.on span{background:#FDEBDF}
 .ghost{margin:8px 16px;padding:18px 12px;border:1.5px dashed #E9C9B8;border-radius:16px;text-align:center;font-size:13px;color:var(--mu);line-height:1.4;background:#fff}
 .chipsP{display:flex;flex-wrap:wrap;gap:6px;padding:0 16px 12px}
 .chipsP span{height:26px;padding:0 10px;border-radius:999px;background:#fff;border:1px solid var(--ln);font-size:11.5px;font-weight:700;display:inline-flex;align-items:center;gap:5px}
@@ -924,13 +960,16 @@ function preview(){
   const prods=v('productos').split(/,|\n|;| y /).map(s=>s.trim()).filter(s=>s.length>1).slice(0,8);
   const pagos=[...form.querySelectorAll('input[name="pagos"]:checked')].map(x=>x.value);
   const logo=ini?'<span class="tLogo">'+E(ini)+'</span>':'<span class="tLogo">'+ICO.tienda+'</span>';
-  let h='<div class="tHead"><div class="tNeg">'+logo+'<span><b>'+E(nom)+'</b><small>'+E(cat||'Tu rubro')+' · Delivery '+ent+'</small><span class="est"><i></i>Abierto ahora</span></span></div></div>';
+  const sec=g==='comida'||!g?'Carta':g==='servicios'?'Servicios':'Productos';
+  let h='<div class="qBody"><div class="qTop"><div class="qRow">'+logo+'<span class="qN"><b>'+E(nom)+'</b><small>'+E(cat||'Tu rubro')+' · Delivery '+ent+'</small></span><span class="qCart"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/><path d="M2 3h3l2.6 12.2a2 2 0 0 0 2 1.6h8.2a2 2 0 0 0 2-1.5L21.5 8H6"/></svg></span></div><div class="qBus"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg> Buscar en la '+(sec==='Carta'?'carta':'tienda')+'</div></div>';
+  h+='<div class="qEst"><span class="est"><i></i>Abierto · '+ent+'</span><u>Ver horario</u></div>';
   const info=[];const dir=[v('direccion'),conOtro('distrito','distrito_otro')].filter(Boolean).join(', ');if(dir)info.push([ICO.pin,dir]);if(v('horario'))info.push([ICO.reloj,v('horario')]);info.push([ICO.moto,'Entrega con motorizados de Pidemás']);
-  h+='<div class="tInfo">'+info.map(x=>'<div>'+x[0]+'<span>'+E(x[1])+'</span></div>').join('')+'</div>';
+  h+='<div class="qInfo">'+info.map(x=>'<div>'+x[0]+'<span>'+E(x[1])+'</span></div>').join('')+'</div>';
   if(pagos.length)h+='<div class="chipsP">'+pagos.map(p=>'<span>'+ICO.ok+E(p)+'</span>').join('')+'</div>';
-  h+='<div class="tSec">'+(g==='comida'||!g?'Tu carta':g==='servicios'?'Tus servicios':'Tus productos')+'</div>';
-  h+=prods.length?prods.map(p=>'<div class="tProd"><span class="pImg">'+E(p[0].toUpperCase())+'</span><span class="pTx"><b>'+E(p[0].toUpperCase()+p.slice(1))+'</b><small>Precio en S/ que tú eliges</small></span><span class="add">+</span></div>').join(''):'<div class="ghost">Escribe lo que vendes en el paso 3 y aparecerá aquí.</div>';
-  h+='<div style="height:20px"></div>';
+  if(prods.length)h+='<div class="qChips"><span class="on">Todo</span><span>Más pedidos</span><span>Promociones</span></div>';
+  h+='<div class="qLbl">'+(sec==='Carta'?'Tu carta':'Tus '+sec.toLowerCase())+'</div>';
+  h+=prods.length?prods.map(p=>'<div class="qP"><span class="qT"><b>'+E(p[0].toUpperCase()+p.slice(1))+'</b><small>Descripción que tú escribes</small><i>S/ tu precio</i></span><span class="qImg">'+E(p[0].toUpperCase())+'<em>+</em></span></div>').join(''):'<div class="ghost">Escribe lo que vendes en el paso 3 y aparecerá aquí.</div>';
+  h+='<div style="height:14px"></div></div><div class="qNav"><div class="on"><span><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h16l-1-5H5L4 9Z"/><path d="M5 9v11h14V9"/><path d="M9 20v-6h6v6"/></svg></span>Tienda</div><div><span><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span>Mis pedidos</div></div>';
   $('pv').innerHTML=h;
   $('mLogo').innerHTML=ini?E(ini):ICO.tienda;$('mName').textContent=nom;$('mCat').textContent=(cat?cat+' · ':'')+(prods.length?prods.length+' producto'+(prods.length===1?'':'s'):'Así se verá en Pidemás');
 }
