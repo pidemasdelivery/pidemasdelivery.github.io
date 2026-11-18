@@ -91,7 +91,7 @@ body>.toast button{background:#FFF4EC!important;color:#C4410C!important;border:1
 
 
 <meta name="pd-instalacion" content="1">
-<meta name="pd-version" content="202611181915"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
+<meta name="pd-version" content="202611181925"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
 /* ===== pd-sistema-diseno (tokens únicos) ===== */
 :root{
 /* ── Tipografía ── */
@@ -8796,7 +8796,7 @@ button{font-family:inherit;-webkit-tap-highlight-color:transparent}
   };
 
   /* Filas que se deslizan de lado (chips, categorías): sin barra de scroll y con una flecha que avanza */
-  const FL_CSS='.pdfW{position:relative}.pdfW>.pdfS{scrollbar-width:none;padding-right:52px!important}.pdfW>.pdfS::-webkit-scrollbar{display:none}.pdfA{position:absolute;right:0;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;border:1px solid #F1E4DA;background:#FFFFFF;color:#C4410C;display:flex;align-items:center;justify-content:center;box-shadow:-14px 0 14px rgba(255,249,245,.95),0 2px 6px rgba(31,26,23,.12);cursor:pointer;z-index:2;padding:0;margin:0}.pdfA svg{width:20px;height:20px;transition:transform .2s}.pdfA.fin svg{transform:rotate(180deg)}.pdfA[hidden]{display:none!important}';
+  const FL_CSS='.pdfW{position:relative}.pdfW>.pdfS{scrollbar-width:none}.pdfW>.pdfS::-webkit-scrollbar{display:none}.pdfA{position:absolute;right:0;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;border:1px solid #F1E4DA;background:#FFFFFF;color:#C4410C;display:flex;align-items:center;justify-content:center;box-shadow:-14px 0 14px rgba(255,249,245,.95),0 2px 6px rgba(31,26,23,.12);cursor:pointer;z-index:2;padding:0;margin:0}.pdfA svg{width:20px;height:20px;transition:transform .2s}.pdfA.fin svg{transform:rotate(180deg)}.pdfA[hidden]{display:none!important}';
   const FL_SEL='.chips,.cats,.chs,.dias,.qChips,.tCats';
   function flechas(root){
     if(!root||root.__pdf)return;root.__pdf=1;
@@ -8808,9 +8808,7 @@ button{font-family:inherit;-webkit-tap-highlight-color:transparent}
         if(el.closest('.chW')||(el.parentElement&&el.parentElement.classList.contains('pdfW')))return;
         const cs=getComputedStyle(el);if(cs.flexWrap==='wrap'||!/auto|scroll/.test(cs.overflowX))return;
         const w=document.createElement('div');w.className='pdfW';el.parentNode.insertBefore(w,el);w.appendChild(el);el.classList.add('pdfS');
-        const b=document.createElement('button');b.type='button';b.className='pdfA';b.setAttribute('aria-label','Ver más');b.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>';w.appendChild(b);
-        b.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();el.scrollTo({left:fin(el)?0:el.scrollLeft+Math.max(160,el.clientWidth*.6),behavior:'smooth'})});
-        el.addEventListener('scroll',()=>ver(el,b),{passive:true});ver(el,b);
+
       });
       root.querySelectorAll('.pdfW').forEach(w=>{const el=w.querySelector('.pdfS'),b=w.querySelector('.pdfA');if(el&&b)ver(el,b)});
     };
@@ -8950,7 +8948,7 @@ button{font-family:inherit;-webkit-tap-highlight-color:transparent}
 .sec h2{margin:0;font-size:22px;font-weight:800}
 .sec span{font-size:14px;color:#6B5E55;font-weight:600}
 .chsBar{position:sticky;top:-16px;z-index:6;background:#FFF9F5;margin:0 -16px;padding:20px 16px 8px;box-shadow:0 6px 10px -8px rgba(31,26,23,.18)}
-.catH{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:18px 0 2px;padding:12px 14px;border-radius:16px;background:#FDEBDF;border-left:5px solid #C4410C;scroll-margin-top:72px}.catN{font-size:19px;font-weight:800;color:#1F1A17;line-height:1.2;overflow-wrap:anywhere}.catC{flex:0 0 auto;font-size:12.5px;font-weight:800;color:#9A330A;background:#FFFFFF;border-radius:999px;padding:5px 10px}
+.catH{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:18px 0 2px;padding:12px 14px;border-radius:16px;background:#FFFFFF;border:1px solid #F1E4DA;border-left:5px solid #C4410C;scroll-margin-top:72px}.catN{font-size:19px;font-weight:800;color:#1F1A17;line-height:1.2;overflow-wrap:anywhere}.catC{flex:0 0 auto;font-size:12.5px;font-weight:800;color:#9A330A;background:#FDEBDF;border-radius:999px;padding:5px 10px}
 .lbl2{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#6B5E55}
 .cats{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -14px;padding:0 14px}
 .cats::-webkit-scrollbar{display:none}
