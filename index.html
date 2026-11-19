@@ -91,7 +91,7 @@ body>.toast button{background:#FFF4EC!important;color:#C4410C!important;border:1
 
 
 <meta name="pd-instalacion" content="1">
-<meta name="pd-version" content="202611190105"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
+<meta name="pd-version" content="202611190950"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
 /* ===== pd-sistema-diseno (tokens únicos) ===== */
 :root{
 /* ── Tipografía ── */
@@ -9543,7 +9543,7 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
   /* ---------- seguimiento como alerta (la página completa queda para «Ver detalle completo») ---------- */
   let segIv=null;
   function seguirAlerta(){
-    if(!SES()){abrir('seguir');return}
+    if(sub==='seguir'){key='';pintar();return}abrir('seguir');return;
     hojaAbrir({t:'segal',view(){
       const v=seguimiento();const d=document.createElement('div');d.innerHTML=v.head+'<div class="__b">'+v.body+'</div>';
       const q=x=>d.querySelector(x);const kick=q('.top .kick'),tit=q('.top .h1'),bar=q('.top .bar5');const paso=bar&&bar.nextElementSibling?bar.nextElementSibling.outerHTML:'';
