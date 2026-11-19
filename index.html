@@ -91,7 +91,7 @@ body>.toast button{background:#FFF4EC!important;color:#C4410C!important;border:1
 
 
 <meta name="pd-instalacion" content="1">
-<meta name="pd-version" content="202611190045"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
+<meta name="pd-version" content="202611190050"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
 /* ===== pd-sistema-diseno (tokens únicos) ===== */
 :root{
 /* ── Tipografía ── */
@@ -7919,7 +7919,7 @@ html body #modal .pdOkSheet > .ppOk{margin:66px 16px 0 !important;border-radius:
 (function(){
 if(window.__pdmu)return;window.__pdmu=1;
 /* Pantallas completas que NO son ventanas: carga, ingreso, mapas grandes, menú lateral, avisos arriba */
-const NO=/cartaModalNegocio|carta-modal|pdCarga|piCartaCarga|loginView|login|Login|pdmcFull|pdubMapa|pdmpMapa|pdVerMapa|Mapa|Suspend|PermGate|Confeti|confeti|MenuShade|pdMenu|sideMenu|drawer|Drawer|pdxAlerts|toast|Toast|pdfx|pdInstalar|pdUpd|pdA\b|splash|Splash/;
+const NO=/ppCerrado|cartaModalNegocio|carta-modal|pdCarga|piCartaCarga|loginView|login|Login|pdmcFull|pdubMapa|pdmpMapa|pdVerMapa|Mapa|Suspend|PermGate|Confeti|confeti|MenuShade|pdMenu|sideMenu|drawer|Drawer|pdxAlerts|toast|Toast|pdfx|pdInstalar|pdUpd|pdA\b|splash|Splash/;
 const POSIBLE=/modal|Modal|sheet|Sheet|overlay|Overlay|dialog|Dialog|hoja|Hoja|velo|Velo|popup|Popup|Bg\b|Fondo|Wrap\b|pdpm|pdcf|pdDlg|pdExito|Exito|Shade/;
 const vw=()=>innerWidth,vh=()=>innerHeight;
 function nombre(e){return (e.id||'')+' '+(typeof e.className==='string'?e.className:'')}
@@ -9273,7 +9273,28 @@ html.pdtApp #cartaModalNegocio,html.pdtApp #pdCartaCartBar,html.pdtApp #pcaBar{d
 html.pdtCk #modal{visibility:hidden!important;pointer-events:none!important}
 html.pdtApp #toast,html.pdtApp .toast{z-index:2147483600!important}
 html.pdtRes #ppSlots{display:none!important}
-#toast{display:none!important}`;
+#toast{display:none!important}
+/* «Estamos cerrados» como alerta, con la tienda nueva detrás */
+html.pdtApp body #ppCerrado#ppCerrado#ppCerrado{position:fixed!important;inset:0!important;left:0!important;right:0!important;top:0!important;bottom:0!important;width:auto!important;max-width:none!important;z-index:2147483200!important;background:rgba(31,26,23,.45)!important;-webkit-backdrop-filter:none!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:16px!important;box-sizing:border-box;overflow:hidden!important;backdrop-filter:none!important;font-family:PdInter,Inter,system-ui,sans-serif!important}
+html.pdtApp body #ppCerrado#ppCerrado#ppCerrado[hidden]{display:none!important}
+html.pdtApp body #ppCerrado#ppCerrado#ppCerrado .in{background:#FFFFFF!important;border-radius:22px!important;width:100%!important;max-width:400px!important;flex:0 0 auto!important;align-self:center!important;margin:auto!important;padding:20px 16px 14px!important;max-height:calc(100vh - 32px);overflow:auto;box-shadow:0 20px 50px rgba(31,26,23,.25)!important;border:0!important;animation:ppIn .22s cubic-bezier(.2,.9,.3,1.1)}
+@keyframes ppIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
+html.pdtApp body #ppCerrado#ppCerrado#ppCerrado .in::before{display:none!important}
+html.pdtApp body #ppCerrado#ppCerrado#ppCerrado .logo{display:none!important}
+html.pdtApp body #ppCerrado#ppCerrado#ppCerrado .luna{width:56px!important;height:56px!important;border-radius:50%!important;background:#FDEBDF!important;color:#C4410C!important;margin:0 auto!important;display:flex!important}
+html.pdtApp body #ppCerrado#ppCerrado#ppCerrado .luna svg{width:28px!important;height:28px!important;stroke:#C4410C!important}
+html.pdtApp body #ppCerrado#ppCerrado#ppCerrado h1{font:800 20px/1.25 PdInter,Inter,system-ui,sans-serif!important;color:#1F1A17!important;margin:12px 0 0!important;letter-spacing:0!important}
+html.pdtApp body #ppCerrado#ppCerrado#ppCerrado .vuelve{font:500 15px/1.45 PdInter,Inter,system-ui,sans-serif!important;color:#6B5E55!important;margin:6px 0 14px!important}
+html.pdtApp body #ppCerrado#ppCerrado#ppCerrado .vuelve b{color:#1F1A17!important;font-weight:800}
+html.pdtApp body #ppCerrado#ppCerrado#ppCerrado .sem{border:1px solid #F1E4DA!important;border-radius:14px!important;background:#FFFFFF!important;padding:4px!important;margin:0!important}
+html.pdtApp body #ppCerrado#ppCerrado#ppCerrado .sem div{border:0!important;padding:8px 10px!important;font:600 14px PdInter,Inter,system-ui,sans-serif!important;color:#1F1A17!important;border-radius:10px!important;background:transparent!important;box-shadow:none!important}
+html.pdtApp body #ppCerrado#ppCerrado#ppCerrado .sem div::before{display:none!important}
+html.pdtApp body #ppCerrado#ppCerrado#ppCerrado .sem .hoy{background:#FDEBDF!important;color:#9A330A!important;font-weight:800!important}
+html.pdtApp body #ppCerrado#ppCerrado#ppCerrado .sem .off{color:#6B5E55!important}
+html.pdtApp body #ppCerrado#ppCerrado#ppCerrado .bt{height:48px!important;border-radius:14px!important;font:800 15px PdInter,Inter,system-ui,sans-serif!important;margin:10px 0 0!important;box-shadow:none!important}
+html.pdtApp body #ppCerrado#ppCerrado#ppCerrado .bt.lt{background:#FFFFFF!important;border:1px solid #F1E4DA!important;color:#1F1A17!important}
+html.pdtApp body #ppCerrado#ppCerrado#ppCerrado .sem div span:last-child{white-space:nowrap;flex:0 0 auto}html.pdtApp body #ppCerrado#ppCerrado#ppCerrado .sem div span:first-child{min-width:0}html.pdtApp body #ppCerrado#ppCerrado#ppCerrado .sem div{font-size:13.5px!important;gap:8px!important}html.pdtApp body #ppCerrado#ppCerrado#ppCerrado .luna,html:root body #ppCerrado#ppCerrado#ppCerrado .luna{background:#FDEBDF!important}html.pdtApp body #ppCerrado#ppCerrado#ppCerrado .luna svg{stroke:#C4410C!important;fill:none!important}html.pdtApp body #ppCerrado#ppCerrado#ppCerrado .bt.lt{background:#FFFFFF!important;border:1px solid #F1E4DA!important;color:#1F1A17!important}
+html.pdtApp body #ppCerrado#ppCerrado#ppCerrado .nota{font:500 12.5px/1.4 PdInter,Inter,system-ui,sans-serif!important;color:#6B5E55!important;margin:10px 0 0!important}`;
 
   let cerrT=0,tapT=0,eraTapada=false,host=null,root=null,tab='inicio',sub=null,key='',scrollMem={},tocando=false,ignorarPop=false;
   const F={q:'',cat:'',filtro:'todos',nq:'',ncat:'',neg:null,pid:null,qty:1,seg:null,lim:40};
@@ -9856,7 +9877,7 @@ html.pdtRes #ppSlots{display:none!important}
     const curso=ultimoPedido();
     return `<nav class="nv" aria-label="Menú principal">${it.map(x=>`<button type="button" data-t="${x[0]}" class="${!sub&&tab===x[0]?'on':''}"${!sub&&tab===x[0]?' aria-current="page"':''}><span class="i">${x[2]}</span>${x[1]}${x[0]==='pedidos'&&curso?'<span class="bd" style="top:2px;right:calc(50% - 26px)">1</span>':''}</button>`).join('')}</nav>`;
   }
-  const IGN=new Set(['pdAppShell','cartaModalNegocio','pdCartaCartBar','toast']);
+  const IGN=new Set(['pdAppShell','ppCerrado','cartaModalNegocio','pdCartaCartBar','toast']);
   function tapada(){
     const W=innerWidth,H=innerHeight;
     for(const el of document.body.children){
