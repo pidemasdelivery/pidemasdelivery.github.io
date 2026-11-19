@@ -91,7 +91,7 @@ body>.toast button{background:#FFF4EC!important;color:#C4410C!important;border:1
 
 
 <meta name="pd-instalacion" content="1">
-<meta name="pd-version" content="202611182235"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
+<meta name="pd-version" content="202611182245"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
 /* ===== pd-sistema-diseno (tokens únicos) ===== */
 :root{
 /* ── Tipografía ── */
@@ -9129,6 +9129,7 @@ button{font-family:inherit;-webkit-tap-highlight-color:transparent}
 .ng .tx b{font-size:16px}.ng .tx span{font-size:13px}
 .lg{width:62px;height:62px}
 .ng>svg{display:none}.ng{padding-right:52px}
+.pc .tx .pr{color:#C4410C}.catN{color:#C4410C}.sec h2{color:#C4410C}.catC{background:#FDEBDF;color:#9A330A}
 `;
   /* Lo de la tienda vieja que queda debajo se esconde mientras se ve la app nueva */
   const ESTILO_DOC=`html.pdtApp body{overflow:hidden!important}
@@ -9197,7 +9198,7 @@ html.pdtRes #ppSlots{display:none!important}
   function inicio(){
     const dir=dirTxt();
     const head=`<div class="hd"><div class="hrow"><button type="button" class="dir" data-a="cuenta"><span class="pi">${IC.pin}</span><span class="tx"><small>Entregar en</small><b>${E(dir||'Agrega tu dirección')}</b></span></button>${cartBtn()}</div>
-      <label class="srch">${IC.search}<span style="position:absolute;width:1px;height:1px;overflow:hidden">Buscar</span><input id="tQ" type="search" placeholder="Busca un negocio o un plato" value="${E(F.q)}" data-in="q" autocomplete="off"></label></div>`;
+      <label class="srch">${IC.search}<span style="position:absolute;width:1px;height:1px;overflow:hidden">Buscar</span><input id="tQ" type="search" placeholder="Busca un negocio o un producto" value="${E(F.q)}" data-in="q" autocomplete="off"></label></div>`;
     const L=negs();
     if(!L.length)return {head,body:'<div class="load">Cargando los negocios…</div>'};
     let h='';
@@ -9238,11 +9239,12 @@ html.pdtRes #ppSlots{display:none!important}
     const fv=favs().includes(String(r.id));
     const head=top(catN(r)||'Negocio',nomN(r),back('inicio','Volver al inicio'));
     const s=estado(r),c=carta(r.id);
-    let h=`<div class="hero">${logoHtml(r,true)}<div class="tx"><span class="st ${E(s.tipo)}">${E(s.pill)}</span>${s.txt?`<span class="m" style="color:#1F1A17">${E(s.txt)}</span>`:''}<span class="m">${E([tiempo(r),r.direccion].filter(Boolean).join(' · '))}</span><button type="button" class="lnk" data-a="horario">Ver horario de la semana</button></div><button type="button" class="fav${fv?' on':''}" data-fav="${E(r.id)}" aria-label="${fv?'Quitar de favoritos':'Guardar en favoritos'}" aria-pressed="${fv}">${IC.heart}</button></div>`;
+    let h='';
     if(!c.data)return {head,body:h+(c.err?`<div class="err">No se pudo cargar la carta: ${E(c.err)}</div>`:'<div class="load">Cargando la carta…</div>')};
     const {cats,prods}=c.data;
     if(!prods.length)return {head,body:h+'<div class="vac">Este negocio todavía no tiene productos en su carta.</div>'};
-    h+=`<label class="srch">${IC.search}<span style="position:absolute;width:1px;height:1px;overflow:hidden">Buscar en la carta</span><input id="tNq" type="search" placeholder="Buscar en la carta" value="${E(F.nq)}" data-in="nq" autocomplete="off"></label>`;
+    const phC=/belleza|cuidado|farmac|botica|ropa|moda|tecnolog|celular|ferreter|librer|mascota|veterin|regalo|perfum|cosm|hogar|bazar|juguet|calzad|zapat|accesori|joyer|óptic|optic/i.test(catN(r)||'')?'Buscar un producto':'Buscar en la carta';
+    h+=`<label class="srch">${IC.search}<span style="position:absolute;width:1px;height:1px;overflow:hidden">${E(phC)}</span><input id="tNq" type="search" placeholder="${E(phC)}" value="${E(F.nq)}" data-in="nq" autocomplete="off"></label>`;
     const grupos=gruposCarta(cats,prods);
     if(grupos.length>1)h+=`<div class="chsBar"><div class="chs" role="tablist" aria-label="Categorías de la carta">${grupos.map((g,i)=>`<button type="button" role="tab" aria-selected="false" data-ncat="${E(g.id)}">${E(g.n)}</button>`).join('')}</div></div>`;
     h+=`<div id="tCarta" style="display:flex;flex-direction:column;gap:10px">${cartaLista(r)}</div>`;
