@@ -91,7 +91,7 @@ body>.toast button{background:#FFF4EC!important;color:#C4410C!important;border:1
 
 
 <meta name="pd-instalacion" content="1">
-<meta name="pd-version" content="202611182245"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
+<meta name="pd-version" content="202611182250"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
 /* ===== pd-sistema-diseno (tokens únicos) ===== */
 :root{
 /* ── Tipografía ── */
@@ -9130,6 +9130,7 @@ button{font-family:inherit;-webkit-tap-highlight-color:transparent}
 .lg{width:62px;height:62px}
 .ng>svg{display:none}.ng{padding-right:52px}
 .pc .tx .pr{color:#C4410C}.catN{color:#C4410C}.sec h2{color:#C4410C}.catC{background:#FDEBDF;color:#9A330A}
+.it>b,.it .tx>span,.ln b,.pt2,.sug button span{color:#C4410C}.ln.t b{color:#C4410C;font-weight:800}
 `;
   /* Lo de la tienda vieja que queda debajo se esconde mientras se ve la app nueva */
   const ESTILO_DOC=`html.pdtApp body{overflow:hidden!important}
@@ -9735,7 +9736,7 @@ html.pdtRes #ppSlots{display:none!important}
         root.addEventListener('scroll',e=>{if(sub!=='negocio')return;if(e.target&&e.target.classList&&e.target.classList.contains('chs'))return;if(bloq){soltar();return}clearTimeout(tsp);tsp=setTimeout(()=>{
         const bar=root.querySelector('.chsBar');if(!bar)return;const lim=bar.getBoundingClientRect().bottom+12;let act=null;
         root.querySelectorAll('.catH').forEach(h=>{if(h.getBoundingClientRect().top<=lim)act=h.id.slice(2)});
-        if(!act){const f=root.querySelector('.catH');act=f&&f.id.slice(2)}if(!act||act===F.ncat)return;F.ncat=act;
+        if(!act){const f=root.querySelector('.catH');act=f&&f.id.slice(2)}{const L=root.querySelector('.list');if(L&&L.scrollTop+L.clientHeight>=L.scrollHeight-6){const hs=[...root.querySelectorAll('.catH')];const vis=hs.filter(h=>h.getBoundingClientRect().top<L.getBoundingClientRect().bottom-40);if(vis.length)act=vis[vis.length-1].id.slice(2)}}if(!act||act===F.ncat)return;F.ncat=act;
         root.querySelectorAll('[data-ncat]').forEach(b=>{const on=b.dataset.ncat===act;b.classList.toggle('on',on);b.setAttribute('aria-selected',on);if(on&&Date.now()>toca)alIzq(b)});
       },80)},true);root.__pdBloqueoSpy=()=>{bloq=true;clearTimeout(qt);qt=setTimeout(()=>{bloq=false},1200)}}
       root.addEventListener('pointerdown',()=>{tocando=true});root.addEventListener('click',()=>setTimeout(()=>{tocando=false},60),true);root.addEventListener('pointercancel',()=>{tocando=false});
