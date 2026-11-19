@@ -91,7 +91,7 @@ body>.toast button{background:#FFF4EC!important;color:#C4410C!important;border:1
 
 
 <meta name="pd-instalacion" content="1">
-<meta name="pd-version" content="202611182045"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
+<meta name="pd-version" content="202611182100"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
 /* ===== pd-sistema-diseno (tokens únicos) ===== */
 :root{
 /* ── Tipografía ── */
@@ -8980,7 +8980,7 @@ button{font-family:inherit;-webkit-tap-highlight-color:transparent}
 .hero .tx .st{background:#FFFFFF}
 .hero .tx span.m{font-size:14px;color:#6B5E55;font-weight:600}
 .lnk{align-self:flex-start;border:0;background:transparent;padding:0;color:#9A330A;font-size:14px;font-weight:800;text-decoration:underline;cursor:pointer;font-family:inherit}
-.chs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -14px;padding:0 14px}
+.chs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -14px;padding:0 14px}.chs::after{content:'';flex:0 0 var(--fin,0px)}
 .chs::-webkit-scrollbar{display:none}
 .chs button{flex:0 0 auto;height:40px;padding:0 16px;border-radius:999px;border:1px solid #F1E4DA;background:#FFFFFF;color:#1F1A17;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
 .chs button.on{border:0;background:#C4410C;color:#FFFFFF;font-weight:800}
@@ -9672,7 +9672,7 @@ html.pdtRes #ppSlots{display:none!important}
         const bar=root.querySelector('.chsBar');if(!bar)return;const lim=bar.getBoundingClientRect().bottom+12;let act=null;
         root.querySelectorAll('.catH').forEach(h=>{if(h.getBoundingClientRect().top<=lim)act=h.id.slice(2)});
         if(!act){const f=root.querySelector('.catH');act=f&&f.id.slice(2)}if(!act||act===F.ncat)return;F.ncat=act;
-        root.querySelectorAll('[data-ncat]').forEach(b=>{const on=b.dataset.ncat===act;b.classList.toggle('on',on);b.setAttribute('aria-selected',on);if(on&&Date.now()>toca){const sc=b.parentElement;const l=b.offsetLeft-sc.offsetLeft-sc.clientWidth/2+b.offsetWidth/2;sc.scrollTo({left:Math.max(0,l),behavior:'smooth'})}});
+        root.querySelectorAll('[data-ncat]').forEach(b=>{const on=b.dataset.ncat===act;b.classList.toggle('on',on);b.setAttribute('aria-selected',on);if(on&&Date.now()>toca)alIzq(b)});
       },80)},true);root.__pdBloqueoSpy=()=>{bloq=true;clearTimeout(qt);qt=setTimeout(()=>{bloq=false},1200)}}
       root.addEventListener('pointerdown',()=>{tocando=true});root.addEventListener('click',()=>setTimeout(()=>{tocando=false},60),true);root.addEventListener('pointercancel',()=>{tocando=false});
     }
@@ -9697,6 +9697,8 @@ html.pdtRes #ppSlots{display:none!important}
     tab=t;if(t==='pedidos')historial(true);key='';pintar();
   }
   function abrir(s){if(!sub)try{history.pushState({pdt:1},'')}catch(_){}sub=s;key='';pintar()}
+  /* La categoría elegida pasa al primer lugar visible de la barra */
+  function alIzq(b){try{const sc=b.parentElement;const pl=parseFloat(getComputedStyle(sc).paddingLeft)||0;const u=sc.querySelector('[data-ncat]:last-of-type');if(u)sc.style.setProperty('--fin',Math.max(0,sc.clientWidth-u.offsetWidth-pl-16)+'px');sc.scrollTo({left:Math.max(0,b.offsetLeft-sc.offsetLeft-pl),behavior:'smooth'})}catch(_){}}
   function abrirNeg(id){F.neg=String(id);F.nq='';F.ncat='';carta(id);abrir('negocio')}
   function abrirProd(id){const p=PR().find(x=>String(x.id)===String(id)&&x.origen==='negocio');if(!p)return;
     if(varsP(p).length){try{window.openProductDetails(p.id,'negocio')}catch(e){}return}
@@ -9723,7 +9725,7 @@ html.pdtRes #ppSlots{display:none!important}
     const pr=e.target.closest('[data-prod]');if(pr){if(pr.dataset.pneg){const id=pr.dataset.prod;F.neg=pr.dataset.pneg;carta(F.neg);if(!sub)try{history.pushState({pdt:1},'')}catch(_){}sub='negocio';const w=setInterval(()=>{if(PR().some(x=>String(x.id)===String(id))){clearInterval(w);abrirProd(id)}},150);setTimeout(()=>clearInterval(w),8000);return}abrirProd(pr.dataset.prod);return}
     const ct=e.target.closest('[data-cat]');if(ct){F.cat=ct.dataset.cat;key='';pintar();return}
     const fl=e.target.closest('[data-fl]');if(fl){F.filtro=fl.dataset.fl;if(F.filtro==='cerca'){try{if(!customerNearbyCoords&&window.useCurrentLocation)window.useCurrentLocation('nearby')}catch(_){}}key='';pintar();return}
-    const nc=e.target.closest('[data-ncat]');if(nc){F.ncat=nc.dataset.ncat;root.querySelectorAll('[data-ncat]').forEach(b=>{const on=b===nc;b.classList.toggle('on',on);b.setAttribute('aria-selected',on)});const g=root.getElementById('g-'+nc.dataset.ncat);if(g){root.__pdBloqueoSpy&&root.__pdBloqueoSpy();g.scrollIntoView({behavior:'smooth',block:'start'})}return}
+    const nc=e.target.closest('[data-ncat]');if(nc){F.ncat=nc.dataset.ncat;root.querySelectorAll('[data-ncat]').forEach(b=>{const on=b===nc;b.classList.toggle('on',on);b.setAttribute('aria-selected',on)});alIzq(nc);const g=root.getElementById('g-'+nc.dataset.ncat);if(g){root.__pdBloqueoSpy&&root.__pdBloqueoSpy();g.scrollIntoView({behavior:'smooth',block:'start'})}return}
     const q=e.target.closest('[data-q]');if(q){F.qty=Math.max(1,F.qty+Number(q.dataset.q));key='';pintar();return}
     const ci=e.target.closest('[data-ci]');if(ci){const [i,d]=ci.dataset.ci.split(':').map(Number);const L=CART(),x=L[i];if(!x)return;
       if(d>0){const p=PR().find(y=>String(y.id)===String(x.id)&&y.origen===x.origen),st=p?stockP(p):null;if(st!==null&&enCarrito(x.id)+1>st){try{toast('No hay más stock de este producto.')}catch(_){}return}}
