@@ -91,7 +91,7 @@ body>.toast button{background:#FFF4EC!important;color:#C4410C!important;border:1
 
 
 <meta name="pd-instalacion" content="1">
-<meta name="pd-version" content="202611191340"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
+<meta name="pd-version" content="202611191440"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
 /* ===== pd-sistema-diseno (tokens únicos) ===== */
 :root{
 /* ── Tipografía ── */
@@ -8760,7 +8760,7 @@ button{font-family:inherit;-webkit-tap-highlight-color:transparent}
     const root=host.attachShadow({mode:'open'});try{flechas(root)}catch(_){}
     document.body.appendChild(host);
     /* en el motorizado el menú de abajo queda visible también en el detalle */
-    try{const nh=(()=>{const A=window.pdAppMoto||window.pdAppNeg||window.pdAppAdm;return A&&A.navH?A.navH():0})();if(nh>0)host.style.bottom=nh+'px'}catch(_){}
+    try{const nh=(()=>{const A=window.pdAppMoto||window.pdAppNeg||window.pdAppAdm;return A&&A.navH&&A.navEnDetalle!==false?A.navH():0})();if(nh>0)host.style.bottom=nh+'px'}catch(_){}
     cur={host,root,model,ocultas:[],open:{},key:null,lastActive:-2,onClose:opts&&opts.onClose,ov:document.documentElement.style.overflow};
     document.documentElement.style.overflow='hidden';
     cur.propio=propio();
@@ -9417,8 +9417,8 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
     const {cats,prods}=c.data;
     if(!prods.length)return {head,body:h+'<div class="vac">Este negocio todavía no tiene productos en su carta.</div>'};
     const phC=/belleza|cuidado|farmac|botica|ropa|moda|tecnolog|celular|ferreter|librer|mascota|veterin|regalo|perfum|cosm|hogar|bazar|juguet|calzad|zapat|accesori|joyer|óptic|optic/i.test(catN(r)||'')?'Buscar un producto':'Buscar en la carta';
-    h+=`<label class="srch">${IC.search}<span style="position:absolute;width:1px;height:1px;overflow:hidden">${E(phC)}</span><input id="tNq" type="search" placeholder="${E(phC)}" value="${E(F.nq)}" data-in="nq" autocomplete="off"></label>`;
     {const fv2=favs().includes(String(r.id));h+=`<div class="hero neg">${logoHtml(r,true)}<div class="tx"><span class="st ${E(s.tipo)}">${E(s.pill)}</span>${s.txt?`<span class="m" style="color:#1F1A17;font-weight:700">${E(s.txt)}</span>`:''}<span class="m">${E([tiempo(r),r.ubicacion_publica===false?'Solo delivery':r.direccion].filter(Boolean).join(' · '))}</span><button type="button" class="lnk" data-a="horario">Ver horario de la semana</button></div><button type="button" class="fav${fv2?' on':''}" data-fav="${E(r.id)}" aria-label="${fv2?'Quitar de favoritos':'Guardar en favoritos'}" aria-pressed="${fv2}">${IC.heart}</button></div>`}
+    h+=`<label class="srch">${IC.search}<span style="position:absolute;width:1px;height:1px;overflow:hidden">${E(phC)}</span><input id="tNq" type="search" placeholder="${E(phC)}" value="${E(F.nq)}" data-in="nq" autocomplete="off"></label>`;
     const grupos=gruposCarta(cats,prods);
     if(grupos.length>1)h+=`<div class="chsBar"><div class="chs" role="tablist" aria-label="Categorías de la carta">${grupos.map((g,i)=>`<button type="button" role="tab" aria-selected="false" data-ncat="${E(g.id)}">${E(g.n)}</button>`).join('')}</div></div>`;
     h+=`<div id="tCarta" style="display:flex;flex-direction:column;gap:10px">${cartaLista(r)}</div>`;
@@ -9585,7 +9585,8 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
     const d=(window.pdDatosClienteGuardados&&window.pdDatosClienteGuardados())||{};
     let h=`<div class="cd" style="flex-direction:row;align-items:center;gap:14px"><span class="lg" style="border-radius:50%${m.avatar_url||m.picture?`;background-image:url('${E(m.avatar_url||m.picture)}')`:''}">${m.avatar_url||m.picture?'':ini(nom||'Cliente')}</span><span style="display:flex;flex-direction:column;min-width:0"><b style="font-size:17px">${E(nom||'Cliente')}</b><span style="font-size:14px;color:#6B5E55;overflow:hidden;text-overflow:ellipsis">${E(u.email||'')}</span></span></div>`;
     h+=`<div class="cd"><div class="lbl">Datos de entrega</div><div class="li"><span>Celular</span><b>${E(d.telefono||'—')}</b></div><div class="li"><span>Dirección</span><b style="text-align:right">${E(d.direccion||'—')}</b></div></div>`;
-    h+=`<div class="cd"><div class="lnks"><button type="button" data-a="cuenta">${IC.user}<span>Editar mis datos y direcciones</span>${IC.chev}</button><button type="button" data-t="pedidos">${IC.box}<span>Mis pedidos</span>${IC.chev}</button></div></div>`;
+    h+=`<div class="cd"><div class="lnks"><button type="button" data-a="cuenta">${IC.user}<span>Editar mis datos y direcciones</span>${IC.chev}</button></div></div>`;
+    h+=`<button type="button" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:54px;border-radius:14px;border:1px solid #F4C7C3;background:#FFFFFF;color:#B42318;font:800 16px PdInter,Inter,system-ui,sans-serif;cursor:pointer" data-a="salirCuenta"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h4v16h-4"/><path d="M10 8l-4 4 4 4M6 12h10"/></svg>Cerrar sesión</button>`;
     return {head,body:h};
   }
 
@@ -9839,7 +9840,7 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
             <div class="cdh"><div class="lbh">Dirección de entrega</div><div class="fh"><label for="hDi">Dirección</label><input id="hDi" value="${E(f.direccion)}" data-hin="direccion" placeholder="Ej. Av. Grau 1234, Piura" autocomplete="street-address"></div><div class="fh"><label for="hRe">Referencia</label><input id="hRe" value="${E(f.referencia)}" data-hin="referencia" placeholder="Ej. Frente al parque, portón negro"></div>
             <div class="lc${on?' on':''}${this.busc?' busc':''}${this.okFx?' fx':''}"><span class="i">${this.busc?'<span class="spin"></span>':on?IC.check:IC.pin}</span><span class="tx"><b>${this.busc?'Buscando tu ubicación…':on?'Ubicación guardada':'Sin ubicación guardada'}</b><span>${this.busc?'Acepta el permiso de ubicación si tu celular lo pide.':E(this.locMsg||(on?'El delivery se calcula con este punto.':'Márcala para que el delivery se calcule solo.'))}</span></span></div>
             <div class="two2"><button type="button" class="bs${this.busc?' cargando':''}" data-h="gps"${this.busc?' disabled':''}>${this.busc?'<span class="spin"></span>Buscando…':IC.gps+'Mi ubicación'}</button><button type="button" class="bs" data-h="mapa">${IC.map}${on?'Cambiar':'Marcar'} en mapa</button></div></div>`+(this.msg?`<div class="ms${this.ok?' ok':''}">${E(this.msg)}</div>`:''),
-          foot:`<button type="button" class="bp" data-h="guardar"${this.busy?' disabled':''}>${this.busy?'Guardando…':'Guardar mis datos'}</button>${u?`<button type="button" class="bt r" data-h="salir">Cerrar sesión</button>`:''}`}},
+          foot:`<button type="button" class="bp" data-h="guardar"${this.busy?' disabled':''}>${this.busy?'Guardando…':'Guardar mis datos'}</button>${u?`<button type="button" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:54px;border-radius:14px;border:1px solid #F4C7C3;background:#FFFFFF;color:#B42318;font:800 16px PdInter,Inter,system-ui,sans-serif;cursor:pointer;margin-top:8px" data-h="salir"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h4v16h-4"/><path d="M10 8l-4 4 4 4M6 12h10"/></svg>Cerrar sesión</button>`:''}`}},
       async guardarUb(lat,lng){this.lat=lat;this.lng=lng;LSC.set({lat,lng});const u=SES();if(u){const {data:r,error}=await SB().auth.updateUser({data:{delivery_lat:lat,delivery_lng:lng}});if(error)throw error;try{pdClienteSesion=r.user||u}catch(_){}}},
       async on(a){const f=this.f;
         if(a==='gps'){if(!navigator.geolocation){this.locMsg='Este teléfono no permite obtener la ubicación.';repintarHoja();return}this.locMsg='Buscando tu ubicación… acepta el permiso si tu celular lo pide.';this.busc=true;this.okFx=false;this.n++;repintarHoja();
@@ -10019,6 +10020,7 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
       case 'agregar':{const ok=agregar(F.pid,F.qty);if(ok){sub='negocio';key='';pintar()}break}
       case 'horario':{try{window.showRestaurantSchedule(F.neg)}catch(_){}break}
       case 'cuenta':{try{window.pdAbrirCuentaCliente()}catch(_){}break}
+      case 'salirCuenta':{if(!(await window.pdConfirmar('¿Cerrar sesión en este teléfono?')))break;try{const {error}=await SB().auth.signOut();if(error)throw error;try{window.pdActualizarCuentaCliente&&window.pdActualizarCuentaCliente(null)}catch(_){}aviso('Sesión cerrada.');C.hist=null;key='';pintar()}catch(e){aviso('No se pudo cerrar la sesión: '+(e.message||''))}break}
       case 'google':{try{window.pdIngresarConGoogle()}catch(_){try{window.pdAbrirCuentaCliente()}catch(__){}}break}
       case 'seguirult':F.seg=null;if(C.seg)C.seg.t=0;seguirAlerta();break;
       case 'hact':historial(true);key='';pintar();break;
