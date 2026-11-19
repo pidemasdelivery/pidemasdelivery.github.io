@@ -91,7 +91,7 @@ body>.toast button{background:#FFF4EC!important;color:#C4410C!important;border:1
 
 
 <meta name="pd-instalacion" content="1">
-<meta name="pd-version" content="202611182105"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
+<meta name="pd-version" content="202611182120"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
 /* ===== pd-sistema-diseno (tokens únicos) ===== */
 :root{
 /* ── Tipografía ── */
@@ -8980,7 +8980,7 @@ button{font-family:inherit;-webkit-tap-highlight-color:transparent}
 .hero .tx .st{background:#FFFFFF}
 .hero .tx span.m{font-size:14px;color:#6B5E55;font-weight:600}
 .lnk{align-self:flex-start;border:0;background:transparent;padding:0;color:#9A330A;font-size:14px;font-weight:800;text-decoration:underline;cursor:pointer;font-family:inherit}
-.chs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -14px;padding:0 14px}.chs::after{content:'';flex:0 0 var(--fin,0px)}
+.chs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -14px;padding:0 14px}.chs::after,.chsHome::after{content:'';flex:0 0 var(--fin,0px)}
 .chs::-webkit-scrollbar{display:none}
 .chs button{flex:0 0 auto;height:40px;padding:0 16px;border-radius:999px;border:1px solid #F1E4DA;background:#FFFFFF;color:#1F1A17;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
 .chs button.on{border:0;background:#C4410C;color:#FFFFFF;font-weight:800}
@@ -9150,7 +9150,7 @@ html.pdtRes #ppSlots{display:none!important}
     const o=ultimoPedido();
     if(o){const n=negPorId(o.negocio_id);h+=`<button type="button" class="curso" data-seg="${E(o.id)}"><span style="display:flex;justify-content:space-between;align-items:baseline;gap:10px"><b style="font-size:16px">${E(n?nomN(n):'Tu pedido')}</b>${o.total!=null?`<b style="font-size:16px">${M(o.total)}</b>`:''}</span><span class="vivo"><i></i>Pedido en curso · ${E(etiqueta(o))}</span><span style="font-size:14px;font-weight:800;color:#C4410C">Ver seguimiento →</span></button>`}
     const cats=[...new Set(L.map(catN).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'es'));
-    if(cats.length>1)h+=`<div class="lbl2">¿Qué se te antoja?</div><div class="cats" role="group" aria-label="Categorías"><button type="button" class="${!F.cat?'on':''}" data-cat="">${IC.all}<span>Todos</span></button>${cats.map(c=>`<button type="button" class="${F.cat===c?'on':''}" data-cat="${E(c)}">${catIcon(c)}<span>${E(c)}</span></button>`).join('')}</div>`;
+    if(cats.length>1)h+=`<div class="chsBar"><div class="chs chsHome" role="group" aria-label="Categorías"><button type="button" class="${!F.cat?'on':''}" data-cat="">Todos</button>${cats.map(c=>`<button type="button" class="${F.cat===c?'on':''}" data-cat="${E(c)}">${E(c)}</button>`).join('')}</div></div>`;
     h+=`<div class="sec"><h2>Negocios</h2><span>${L.length} en Piura</span></div>`;
     h+=`<div class="seg" style="grid-template-columns:repeat(3,minmax(0,1fr))">${[['todos','Todos'],['abiertos','Abiertos'],['cerca','Más cerca']].map(x=>`<button type="button" class="${F.filtro===x[0]?'on':''}" data-fl="${x[0]}">${x[1]}</button>`).join('')}</div>`;
     h+=`<div id="tL" style="display:flex;flex-direction:column;gap:10px">${filas()}</div>`;
@@ -9166,8 +9166,14 @@ html.pdtRes #ppSlots{display:none!important}
     if(F.filtro==='abiertos')L=L.filter(abierto);
     const d=r=>{const x=dist(r);return x==null?1e9:x};
     L=L.slice().sort((a,b)=>F.filtro==='cerca'?d(a)-d(b):(abierto(b)-abierto(a))||(fv.includes(String(b.id))-fv.includes(String(a.id)))||nomN(a).localeCompare(nomN(b),'es'));
-    let h=L.map(r=>{const s=estado(r),km=dist(r),t=tiempo(r),f=fv.includes(String(r.id));
-      return `<div style="position:relative"><button type="button" class="ng${s.tipo==='off'?' off':''}" data-neg="${E(r.id)}">${logoHtml(r)}<span class="tx"><b>${E(nomN(r))}</b><span>${E([catN(r),t,km!=null?km.toFixed(1)+' km':''].filter(Boolean).join(' · '))}</span><span class="st ${E(s.tipo)}">${E(s.tipo==='off'&&s.txt?s.pill+' · '+s.txt.replace(/^Abre /,'abre ').replace(/\.$/,''):s.pill)}</span></span>${IC.chev}</button><button type="button" class="fav${f?' on':''}" data-fav="${E(r.id)}" aria-label="${f?'Quitar de favoritos':'Guardar en favoritos'}" aria-pressed="${f}" style="position:absolute;top:8px;right:36px">${IC.heart}</button></div>`}).join('');
+    const filaNeg=(r,s,km,t,f)=>`<div style="position:relative"><button type="button" class="ng${s.tipo==='off'?' off':''}" data-neg="${E(r.id)}">${logoHtml(r)}<span class="tx"><b>${E(nomN(r))}</b><span>${E([catN(r),t,km!=null?km.toFixed(1)+' km':''].filter(Boolean).join(' · '))}</span><span class="st ${E(s.tipo)}">${E(s.tipo==='off'&&s.txt?s.pill+' · '+s.txt.replace(/^Abre /,'abre ').replace(/\.$/,''):s.pill)}</span></span>${IC.chev}</button><button type="button" class="fav${f?' on':''}" data-fav="${E(r.id)}" aria-label="${f?'Quitar de favoritos':'Guardar en favoritos'}" aria-pressed="${f}" style="position:absolute;top:8px;right:36px">${IC.heart}</button></div>`;
+    let h=L.map(r=>{const s=estado(r),km=dist(r),t=tiempo(r),f=fv.includes(String(r.id));return filaNeg(r,s,km,t,f)}).join('');
+    /* Igual que la carta de un negocio: los negocios van separados por categoría */
+    const cs=[...new Set(L.map(catN).filter(Boolean))];
+    if(!ql&&!F.cat&&F.filtro!=='cerca'&&cs.length>1){cs.sort((a,b)=>a.localeCompare(b,'es'));
+      const partes=L.map(r=>{const s=estado(r),km=dist(r),t=tiempo(r),f=fv.includes(String(r.id));return filaNeg(r,s,km,t,f)});
+      h=cs.map(c=>{const G=L.filter(r=>catN(r)===c);return `<div class="catH"><span class="catN">${E(c)}</span><span class="catC">${G.length} negocio${G.length===1?'':'s'}</span></div>`+G.map(r=>partes[L.indexOf(r)]).join('')}).join('');
+      const sin=L.filter(r=>!catN(r));if(sin.length)h+=`<div class="catH"><span class="catN">Otros</span><span class="catC">${sin.length}</span></div>`+sin.map(r=>partes[L.indexOf(r)]).join('');}
     if(prodHits.length)h=`<div class="lbl2">Platos</div>`+prodHits.map(p=>{const r=negPorId(p.negocio_id);return `<button type="button" class="pc" data-prod="${E(p.id)}" data-pneg="${E(p.negocio_id)}"><span class="tx"><b>${E(p.nombre||p.nombre_producto)}</b><span class="ds">${E(r?nomN(r):'')}</span><span class="pr">${M(precioP(p))}</span></span></button>`}).join('')+(L.length?`<div class="lbl2" style="margin-top:6px">Negocios</div>`:'')+h;
     return h||`<div class="vac">${ql?'No encontramos «'+E(F.q.trim())+'».':F.filtro==='abiertos'?'No hay negocios abiertos ahora.':'No hay negocios en esta categoría.'}</div>`;
   }
@@ -9685,10 +9691,10 @@ html.pdtRes #ppSlots{display:none!important}
     const k=pag+'|'+v.head+v.body+(v.foot||'')+nav();
     if(k===key)return;key=k;
     const lst=root.querySelector('.list');if(lst&&root.__pag)scrollMem[root.__pag]=lst.scrollTop;
-    const cx=(root.querySelector('.cats')||{}).scrollLeft||0;
+    const cx=(root.querySelector('.chsHome')||{}).scrollLeft||0;
     root.innerHTML=`<style>${ESTILO}</style><div class="app">${v.head}<div class="list">${v.body}</div>${v.foot?`<div class="foot">${v.foot}</div>`:''}${nav()}</div>`;
     const nl=root.querySelector('.list');if(nl)nl.scrollTop=root.__pag===pag?(scrollMem[pag]||0):(scrollMem[pag]=0,0);root.__pag=pag;
-    {const c2=root.querySelector('.cats');if(c2){c2.scrollLeft=cx;if(alCat){alCat=false;const on=c2.querySelector('button.on');if(on)setTimeout(()=>alIzq(on),120)}}}
+    {const c2=root.querySelector('.chsHome');if(c2){c2.scrollLeft=cx;if(alCat){alCat=false;const on=c2.querySelector('button.on');if(on)setTimeout(()=>alIzq(on),120)}}}
     {const cs=[...root.querySelectorAll('[data-ncat]')];if(cs.length){const act=cs.some(b=>b.dataset.ncat===F.ncat)?F.ncat:cs[0].dataset.ncat;cs.forEach(b=>{const on=b.dataset.ncat===act;b.classList.toggle('on',on);b.setAttribute('aria-selected',on)})}}
     if(pag==='buscar'||(tab==='buscar'&&!sub)){}
   }
