@@ -91,7 +91,7 @@ body>.toast button{background:#FFF4EC!important;color:#C4410C!important;border:1
 
 
 <meta name="pd-instalacion" content="1">
-<meta name="pd-version" content="202611182125"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
+<meta name="pd-version" content="202611182145"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
 /* ===== pd-sistema-diseno (tokens únicos) ===== */
 :root{
 /* ── Tipografía ── */
@@ -8944,6 +8944,10 @@ button{font-family:inherit;-webkit-tap-highlight-color:transparent}
 .dir .tx b{font-size:17px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ib{position:relative;width:48px;height:48px;flex:0 0 48px;border-radius:14px;border:1px solid #F1E4DA;background:#FFFFFF;display:flex;align-items:center;justify-content:center;color:#1F1A17;padding:0;cursor:pointer;text-decoration:none}
 .ib.on{color:#C4410C;background:#FFF4EC;border-color:#F6D9C4}
+.top .row>.ib[data-a]:first-child{width:44px;height:44px;flex:0 0 44px;border:0;background:#FDEBDF;color:#C4410C}
+.top .kick{color:#6B5E55;font-weight:800}
+.top .h1{font-size:18px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hero{position:relative}.hero>.fav{position:absolute;top:10px;right:10px}.hero .tx{padding-right:30px}
 .bd{position:absolute;top:-6px;right:-6px;min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:#C4410C;color:#FFFFFF;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;border:2px solid #FFFFFF;box-sizing:border-box}
 .srch{display:flex;align-items:center;gap:10px;height:50px;border-radius:14px;border:1.5px solid #F1E4DA;background:#FFF9F5;padding:0 14px;color:#6B5E55;box-sizing:border-box}
 .srch input{flex:1 1 0%;min-width:0;border:0;background:transparent;outline:none;font:500 16px PdInter,Inter,system-ui,sans-serif;color:#1F1A17;height:100%;padding:0}
@@ -9182,13 +9186,13 @@ html.pdtRes #ppSlots{display:none!important}
     const r=negPorId(F.neg);
     if(!r)return {head:top('Negocio','Cargando…',back('inicio')),body:'<div class="load">Cargando…</div>'};
     const fv=favs().includes(String(r.id));
-    const head=top(catN(r)||'Negocio',nomN(r),back('inicio','Volver al inicio'),`<button type="button" class="ib${fv?' on':''}" data-fav="${E(r.id)}" aria-label="${fv?'Quitar de favoritos':'Guardar en favoritos'}" aria-pressed="${fv}">${IC.heart}</button>`);
+    const head=top(catN(r)||'Negocio',nomN(r),back('inicio','Volver al inicio'),cartBtn());
     const s=estado(r),c=carta(r.id);
-    let h=`<div class="hero">${logoHtml(r,true)}<div class="tx"><span class="st ${E(s.tipo)}">${E(s.pill)}</span>${s.txt?`<span class="m" style="color:#1F1A17">${E(s.txt)}</span>`:''}<span class="m">${E([tiempo(r),r.direccion].filter(Boolean).join(' · '))}</span><button type="button" class="lnk" data-a="horario">Ver horario de la semana</button></div></div>`;
+    let h=`<div class="hero">${logoHtml(r,true)}<div class="tx"><span class="st ${E(s.tipo)}">${E(s.pill)}</span>${s.txt?`<span class="m" style="color:#1F1A17">${E(s.txt)}</span>`:''}<span class="m">${E([tiempo(r),r.direccion].filter(Boolean).join(' · '))}</span><button type="button" class="lnk" data-a="horario">Ver horario de la semana</button></div><button type="button" class="fav${fv?' on':''}" data-fav="${E(r.id)}" aria-label="${fv?'Quitar de favoritos':'Guardar en favoritos'}" aria-pressed="${fv}">${IC.heart}</button></div>`;
     if(!c.data)return {head,body:h+(c.err?`<div class="err">No se pudo cargar la carta: ${E(c.err)}</div>`:'<div class="load">Cargando la carta…</div>')};
     const {cats,prods}=c.data;
     if(!prods.length)return {head,body:h+'<div class="vac">Este negocio todavía no tiene productos en su carta.</div>'};
-    h+=`<label class="srch w">${IC.search}<span style="position:absolute;width:1px;height:1px;overflow:hidden">Buscar en la carta</span><input id="tNq" type="search" placeholder="Buscar en la carta" value="${E(F.nq)}" data-in="nq" autocomplete="off"></label>`;
+    h+=`<label class="srch">${IC.search}<span style="position:absolute;width:1px;height:1px;overflow:hidden">Buscar en la carta</span><input id="tNq" type="search" placeholder="Buscar en la carta" value="${E(F.nq)}" data-in="nq" autocomplete="off"></label>`;
     const grupos=gruposCarta(cats,prods);
     if(grupos.length>1)h+=`<div class="chsBar"><div class="chs" role="tablist" aria-label="Categorías de la carta">${grupos.map((g,i)=>`<button type="button" role="tab" aria-selected="false" data-ncat="${E(g.id)}">${E(g.n)}</button>`).join('')}</div></div>`;
     h+=`<div id="tCarta" style="display:flex;flex-direction:column;gap:10px">${cartaLista(r)}</div>`;
@@ -9349,9 +9353,9 @@ html.pdtRes #ppSlots{display:none!important}
 .qs .hh{display:flex;align-items:center;gap:12px;padding:12px 16px;flex:0 0 auto}
 .qs.full .hh{padding-top:calc(env(safe-area-inset-top,0px) + 12px);background:#FFFFFF;border-bottom:1px solid #F1E4DA}
 .qs .hh .tt{flex:1 1 0%;min-width:0}
-.qs .hh .k{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#C4410C;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.qs .hh h2{margin:0;font-size:22px;font-weight:800;line-height:1.2}
-.qx{width:44px;height:44px;border-radius:14px;border:1px solid #F1E4DA;background:#FFFFFF;color:#1F1A17;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;flex:0 0 auto}
+.qs .hh .k{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#6B5E55;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qs .hh h2{margin:0;font-size:18px;font-weight:800;line-height:1.2}
+.qx{width:44px;height:44px;border-radius:14px;border:0;background:#FDEBDF;color:#C4410C;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;flex:0 0 auto}
 .hb{flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:4px 16px 16px;display:flex;flex-direction:column;gap:12px;scrollbar-width:none}
 .hb::-webkit-scrollbar{display:none}
 .hf{flex:0 0 auto;padding:12px 16px calc(env(safe-area-inset-bottom,0px) + 14px);background:#FFFFFF;border-top:1px solid #F1E4DA;display:flex;flex-direction:column;gap:8px}
