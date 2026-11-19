@@ -91,7 +91,7 @@ body>.toast button{background:#FFF4EC!important;color:#C4410C!important;border:1
 
 
 <meta name="pd-instalacion" content="1">
-<meta name="pd-version" content="202611190030"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
+<meta name="pd-version" content="202611190035"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
 /* ===== pd-sistema-diseno (tokens únicos) ===== */
 :root{
 /* ── Tipografía ── */
@@ -9245,6 +9245,13 @@ button{font-family:inherit;-webkit-tap-highlight-color:transparent}
 .lc.fx,.loc.fx{animation:pdOkFx .6s cubic-bezier(.3,1.6,.5,1)}
 @keyframes pdOkFx{0%{transform:scale(.96)}50%{transform:scale(1.03)}100%{transform:scale(1)}}
 [data-h="gps"]:active,[data-a="ubic"]:active,[data-h="mapa"]:active,[data-a="mapa"]:active{transform:scale(.95)}
+/* --- Seguimiento como alerta --- */
+.dlg .segal{width:100%;text-align:left;display:flex;flex-direction:column;gap:10px;max-height:66vh;overflow:auto}
+.dlg .segal .sk{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#6B5E55}
+.dlg .segal .st2{font-size:20px;font-weight:800;color:#1F1A17;margin-top:-6px}
+.dlg .segal .cdg{padding:12px!important;border-radius:14px}.dlg .segal .cdn{font-size:34px!important}
+.dlg .segal .cd{padding:10px 12px;border-radius:14px;border:1px solid #F1E4DA}
+.dlg .segal .stot{display:flex;justify-content:space-between;align-items:baseline;padding:10px 12px;border:1.5px dashed #EADFD6;border-radius:14px;font-weight:800;font-size:15px}.dlg .segal .stot b{color:#C4410C;font-size:18px}
 `;
   /* Lo de la tienda vieja que queda debajo se esconde mientras se ve la app nueva */
   const ESTILO_DOC=`html.pdtApp body{overflow:hidden!important}
@@ -9495,6 +9502,22 @@ html.pdtRes #ppSlots{display:none!important}
     return {head,body:h};
   }
 
+
+  /* ---------- seguimiento como alerta (la página completa queda para «Ver detalle completo») ---------- */
+  let segIv=null;
+  function seguirAlerta(){
+    if(!SES()){abrir('seguir');return}
+    hojaAbrir({t:'segal',view(){
+      const v=seguimiento();const d=document.createElement('div');d.innerHTML=v.head+'<div class="__b">'+v.body+'</div>';
+      const q=x=>d.querySelector(x);const kick=q('.top .kick'),tit=q('.top .h1'),bar=q('.top .bar5');const paso=bar&&bar.nextElementSibling?bar.nextElementSibling.outerHTML:'';
+      const b=q('.__b');const cod=b.querySelector('.cdg'),tl=[...b.children].find(x=>x.querySelector&&x.querySelector('.tln')),tot=b.querySelector('.ln.t b');
+      if(!tit){return {dlg:true,title:'Tu pedido',body:`<span class="ic">${IC.box}</span><h2>Tu pedido</h2><div style="width:100%;text-align:left">${b.innerHTML}</div>`,btns:'<div class="bb u"><button type="button" class="bs" data-h="x" style="height:50px;border-radius:14px;font-size:15px">Cerrar</button></div>'}}
+      return {dlg:true,title:tit.textContent,body:`<div class="segal"><div class="sk">${kick?kick.innerHTML:''}</div><div class="st2">${tit.innerHTML}</div>${bar?bar.outerHTML:''}${paso}${cod?cod.outerHTML:''}${tl?tl.outerHTML:''}${tot?`<div class="stot"><span>Total</span><b>${tot.textContent}</b></div>`:''}</div>`,
+        btns:'<div class="bb u"><button type="button" class="bp" data-h="det">Ver detalle completo</button><button type="button" class="bs" data-h="x" style="height:50px;border-radius:14px;font-size:15px">Cerrar</button></div>'}},
+      on(a){if(a==='det'){hojaCerrar();abrir('seguir')}},
+      alCerrar(){clearInterval(segIv)}});
+    clearInterval(segIv);segIv=setInterval(()=>{if(!HO||HO.t!=='segal'){clearInterval(segIv);return}try{pintarHoja()}catch(_){}},2000);
+  }
   function listo(){const o=F.ok||{tit:'¡Pedido enviado!',txt:'',cod:''};
     const h=`<div class="cdg" style="padding:24px 16px"><span style="width:64px;height:64px;border-radius:50%;background:#15803D;color:#FFFFFF;display:flex;align-items:center;justify-content:center">${S('<path d="m5 12 5 5 9-10"/>').replace('width="22" height="22"','width="34" height="34"')}</span><div style="font-size:24px;font-weight:800;margin-top:6px;color:#1F1A17">${E(o.tit)}</div><div class="cds" style="font-size:15px">${E(o.txt)}</div>${o.cod?`<div class="cdk" style="margin-top:8px">N.º de pedido</div><div style="font-size:26px;font-weight:800;letter-spacing:.08em;color:#1F1A17">${E(o.cod)}</div>`:''}</div>`+(SES()?'':U.note('Inicia sesión con Google para seguir tu pedido paso a paso desde cualquier teléfono.'));
     const foot=SES()?`<button type="button" class="cbar c" data-a="seguirult">Ver seguimiento</button><button type="button" class="b" data-a="inicio">Volver al inicio</button>`:`<button type="button" class="cbar c" data-a="google">Iniciar sesión para seguirlo</button><button type="button" class="b" data-a="inicio">Volver al inicio</button>`;
@@ -9503,7 +9526,7 @@ html.pdtRes #ppSlots{display:none!important}
     hojaAbrir({t:'listo',view(){return {dlg:true,title:o.tit,
       body:`<span class="ic g">${S('<path d="m5 12 5 5 9-10"/>')}</span><h2>${E(o.tit)}</h2>${o.txt?`<p>${E(o.txt)}</p>`:''}${o.cod?`<div class="okcod"><span>N.º de pedido</span><b>${E(o.cod)}</b></div>`:''}${SES()?'':`<p style="font-size:13px">Inicia sesión con Google para seguir tu pedido paso a paso.</p>`}`,
       btns:'<div class="bb u">'+(SES()?`<button type="button" class="bp" data-h="seg">Ver seguimiento</button>`:`<button type="button" class="bp" data-h="g">Iniciar sesión para seguirlo</button>`)+`<button type="button" class="bs" data-h="x" style="height:50px;border-radius:14px;font-size:15px">Seguir comprando</button></div>`}},
-      on(a){if(a==='seg'){hojaCerrar();F.seg=null;if(C.seg)C.seg.t=0;abrir('seguir')}if(a==='g'){hojaCerrar();try{window.pdIngresarConGoogle()}catch(_){}}}})}
+      on(a){if(a==='seg'){hojaCerrar();F.seg=null;if(C.seg)C.seg.t=0;setTimeout(seguirAlerta,60)}if(a==='g'){hojaCerrar();try{window.pdIngresarConGoogle()}catch(_){}}}})}
   function perfil(){
     const u=SES(),m=(u&&u.user_metadata)||{},nom=m.full_name||m.name||'';
     const head=top('Mi cuenta',nom||'Perfil');
@@ -9930,7 +9953,7 @@ html.pdtRes #ppSlots{display:none!important}
     const pg=e.target.closest('[data-pago]');if(pg){const b=btnTxt(pg.dataset.pago==='yape'?/^Yape$/i:/^Efectivo$/i);if(b)b.click();else{setVal('cPago',pg.dataset.pago);try{togglePaymentProof()}catch(_){}}setTimeout(()=>{key='';pintar()},60);return}
     const yp=e.target.closest('[data-yape]');if(yp){const r2=document.querySelector(`#modal input[name="pdYapeModo"][value="${CSS.escape(yp.dataset.yape)}"]`);if(r2){r2.checked=true;r2.dispatchEvent(new Event('change',{bubbles:true}));r2.click()}setTimeout(()=>{key='';pintar()},60);return}
     const cp=e.target.closest('[data-comp]');if(cp){const cur=val('cCompTipo');try{if(cur===cp.dataset.comp){setVal('cCompTipo','ninguno');window.pdCompSel&&window.pdCompSel('ninguno')}else window.pdCompSel(cp.dataset.comp)}catch(_){}setTimeout(()=>{key='';pintar()},60);return}
-    const sg=e.target.closest('[data-seg]');if(sg){F.seg=sg.dataset.seg;if(C.seg)C.seg.t=0;abrir('seguir');return}
+    const sg=e.target.closest('[data-seg]');if(sg){F.seg=sg.dataset.seg;if(C.seg)C.seg.t=0;if(sub==='seguir'){key='';pintar()}else seguirAlerta();return}
     const rp=e.target.closest('[data-rep]');if(rp){try{await window.pdReorder(rp.dataset.rep)}catch(_){}setTimeout(()=>{const id=cartNeg();if(id&&!document.querySelector('#modal.overlay')){F.neg=id;carta(id);sub=null;abrir('carrito')}},700);return}
     const cl=e.target.closest('[data-cal]');if(cl){try{window.pdOpenRating(cl.dataset.cal)}catch(_){}return}
     const a=e.target.closest('[data-a]');if(!a)return;
@@ -9944,7 +9967,7 @@ html.pdtRes #ppSlots{display:none!important}
       case 'horario':{try{window.showRestaurantSchedule(F.neg)}catch(_){}break}
       case 'cuenta':{try{window.pdAbrirCuentaCliente()}catch(_){}break}
       case 'google':{try{window.pdIngresarConGoogle()}catch(_){try{window.pdAbrirCuentaCliente()}catch(__){}}break}
-      case 'seguirult':F.seg=null;if(C.seg)C.seg.t=0;sub='seguir';key='';pintar();break;
+      case 'seguirult':F.seg=null;if(C.seg)C.seg.t=0;seguirAlerta();break;
       case 'hact':historial(true);key='';pintar();break;
       case 'hmas':F.lim+=40;key='';pintar();break;
       case 'ubic':{ubicPrev=!!(val('cLat')&&val('cLng'));ubicT=Date.now();key='';pintar();const b=document.querySelector('#modal .ckLocBtn')||document.querySelector('#modal .locationBtn');if(b)b.click();else try{useCurrentLocation('cart')}catch(_){}[400,1500,2600,3500,6000,9000,12200].forEach(ms=>setTimeout(()=>{key='';pintar()},ms));break}
