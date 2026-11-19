@@ -91,7 +91,7 @@ body>.toast button{background:#FFF4EC!important;color:#C4410C!important;border:1
 
 
 <meta name="pd-instalacion" content="1">
-<meta name="pd-version" content="202611190950"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
+<meta name="pd-version" content="202611190955"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
 /* ===== pd-sistema-diseno (tokens únicos) ===== */
 :root{
 /* ── Tipografía ── */
@@ -9268,6 +9268,17 @@ button{font-family:inherit;-webkit-tap-highlight-color:transparent}
 .dlg:has(.segal) .bb .bp,.dlg:has(.segal) .bb .bs{height:46px!important}
 /* --- Programar pedido: página completa, sin menú, con botón atrás --- */
 .qs.full.sinnav{bottom:0!important}
+/* --- Categorías con íconos en la tienda principal («¿Qué se te antoja?») --- */
+.sec.antoja h2{font-size:17px!important}
+.chsHome.cti{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:2px 16px 4px;scroll-behavior:smooth}
+.chsHome.cti::-webkit-scrollbar{display:none}
+.chsHome.cti button{flex:0 0 76px;display:flex;flex-direction:column;align-items:center;gap:6px;border:0;background:transparent;padding:0;font:inherit;color:#1F1A17;cursor:pointer;transition:transform .14s ease}
+.chsHome.cti button:active{transform:scale(.94)}
+.chsHome.cti .ico{width:64px;height:64px;border-radius:18px;background:#FFF1E8;border:1px solid #F6CDB3;color:#C4410C;display:flex;align-items:center;justify-content:center;box-sizing:border-box;transition:background-color .2s ease,color .2s ease}
+.chsHome.cti .ico svg{width:28px;height:28px}
+.chsHome.cti .lb{font-size:12.5px;font-weight:600;line-height:1.2;text-align:center;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.chsHome.cti button.on .ico{background:#C4410C;border-color:#C4410C;color:#FFFFFF}
+.chsHome.cti button.on .lb{color:#C4410C;font-weight:800}
 `;
   /* Lo de la tienda vieja que queda debajo se esconde mientras se ve la app nueva */
   const ESTILO_DOC=`html.pdtApp body{overflow:hidden!important}
@@ -9365,15 +9376,15 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
     const o=ultimoPedido();
     if(o){const n=negPorId(o.negocio_id);h+=`<button type="button" class="curso" data-seg="${E(o.id)}"><span class="ci">${S('<path d="M6 8h12l-1 12H7z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>')}</span><span class="ct"><span class="vivo"><i></i>Pedido en curso · ${E(etiqueta(o))}</span><b style="font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${E(n?nomN(n):'Tu pedido')}${o.total!=null?' · '+M(o.total):''}</b><span style="font-size:14px;font-weight:800;color:#C4410C">Ver seguimiento</span></span>${S('<path d="m9 6 6 6-6 6"/>')}</button>`}
     const cats=[...new Set(L.map(catN).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'es'));
-    if(false)h+=`<div class="chsBar"><div class="chs chsHome" role="group" aria-label="Categorías"><button type="button" class="${!F.cat?'on':''}" data-cat="">Todos</button>${cats.map(c=>`<button type="button" class="${F.cat===c?'on':''}" data-cat="${E(c)}">${E(c)}</button>`).join('')}</div></div>`;
-    h+=`<div class="sec"><h2>Negocios</h2><span>${L.length} en Piura</span></div>`;
+    if(cats.length>1)h+=`<div class="sec antoja"><h2>¿Qué se te antoja?</h2></div><div class="chsHome cti" role="group" aria-label="Categorías"><button type="button" class="${!F.cat?'on':''}" data-cat="" aria-pressed="${!F.cat}"><span class="ico">${S('<rect x="4" y="4" width="6.5" height="6.5" rx="2"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="2"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="2"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="2"/>')}</span><span class="lb">Todos</span></button>${cats.map(c=>`<button type="button" class="${F.cat===c?'on':''}" data-cat="${E(c)}" aria-pressed="${F.cat===c}"><span class="ico">${catIcon(c)}</span><span class="lb">${E(c)}</span></button>`).join('')}</div>`;
+    {const nf=F.cat?L.filter(r=>catN(r)===F.cat).length:L.length;h+=`<div class="sec"><h2>${E(F.cat||'Negocios')}</h2><span>${nf} ${F.cat?(nf===1?'negocio':'negocios'):'en Piura'}</span></div>`}
     {const si=Math.max(0,['todos','abiertos','cerca'].indexOf(F.filtro));h+=`<div class="seg an" style="grid-template-columns:repeat(3,minmax(0,1fr))"><span class="ind" data-i="${si}" style="width:calc((100% - 16px) / 3)"></span>${[['todos','Todos'],['abiertos','Abiertos'],['cerca','Más cerca']].map(x=>`<button type="button" class="${F.filtro===x[0]?'on':''}" data-fl="${x[0]}">${x[1]}</button>`).join('')}</div>`;}
     h+=`<div id="tL" style="display:flex;flex-direction:column;gap:10px">${filas()}</div>`;
     return {head,body:h};
   }
   function filas(){
     const ql=F.q.trim().toLowerCase(),fv=favs();
-    F.cat='';let L=negs();
+    let L=negs().filter(r=>!F.cat||catN(r)===F.cat);
     let prodHits=[];
     if(ql){const byName=L.filter(r=>(nomN(r)+' '+catN(r)).toLowerCase().includes(ql));
       prodHits=PR().filter(p=>p.origen==='negocio'&&String(p.nombre||p.nombre_producto||'').toLowerCase().includes(ql)&&L.some(r=>String(r.id)===String(p.negocio_id))).slice(0,8);
