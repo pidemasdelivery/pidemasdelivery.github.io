@@ -91,7 +91,7 @@ body>.toast button{background:#FFF4EC!important;color:#C4410C!important;border:1
 
 
 <meta name="pd-instalacion" content="1">
-<meta name="pd-version" content="202611190040"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
+<meta name="pd-version" content="202611190045"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
 /* ===== pd-sistema-diseno (tokens únicos) ===== */
 :root{
 /* ── Tipografía ── */
@@ -9252,6 +9252,20 @@ button{font-family:inherit;-webkit-tap-highlight-color:transparent}
 .dlg .segal .cdg{padding:12px!important;border-radius:14px}.dlg .segal .cdn{font-size:34px!important}
 .dlg .segal .cd{padding:10px 12px;border-radius:14px;border:1px solid #F1E4DA}
 .dlg .segal .stot{display:flex;justify-content:space-between;align-items:baseline;padding:10px 12px;border:1.5px dashed #EADFD6;border-radius:14px;font-weight:800;font-size:15px}.dlg .segal .stot b{color:#C4410C;font-size:18px}
+/* --- Seguimiento en alerta: compacto, entra en la pantalla sin deslizar --- */
+.dlg:has(.segal){top:50%;padding:16px 14px 12px;gap:10px}
+.dlg .segal{max-height:none!important;overflow:visible!important;gap:8px!important}
+.dlg .segal .st2{font-size:18px!important;margin-top:-4px}
+.dlg .segal .bar5{margin:2px 0 0}
+.dlg .segal .cdg{display:grid!important;grid-template-columns:1fr auto;align-items:center;gap:0 10px;padding:10px 12px!important;text-align:left}
+.dlg .segal .cdg .cdk{font-size:11.5px}.dlg .segal .cdg .cdn{font-size:26px!important;letter-spacing:.14em;grid-row:1/3;grid-column:2;line-height:1}
+.dlg .segal .cdg .cds{font-size:12px;line-height:1.3;margin:0}
+.dlg .segal .cd{padding:6px 10px!important}
+.dlg .segal .tln .p{padding:4px 0!important;gap:10px;align-items:center}
+.dlg .segal .tln .p .d{width:24px;height:24px;font-size:12px}.dlg .segal .tln .p .d svg{width:14px;height:14px}
+.dlg .segal .tln .p .tx b{font-size:14px}.dlg .segal .tln .p .tx span{font-size:12px}
+.dlg .segal .stot{padding:8px 12px!important}.dlg .segal .stot b{font-size:17px!important}
+.dlg:has(.segal) .bb .bp,.dlg:has(.segal) .bb .bs{height:46px!important}
 `;
   /* Lo de la tienda vieja que queda debajo se esconde mientras se ve la app nueva */
   const ESTILO_DOC=`html.pdtApp body{overflow:hidden!important}
@@ -9494,7 +9508,7 @@ html.pdtRes #ppSlots{display:none!important}
     const head=`<div class="top"><div class="row">${back('volver')}<div class="ttl" style="flex:1 1 0%;min-width:0"><div class="kick">${E(codP(o))} · ${E(r?nomN(r):'Pedido')}</div><div class="h1" style="font-size:22px">${E(tit)}</div></div></div>${canc?'':`<div class="bar5" style="grid-template-columns:repeat(${p.L.length},minmax(0,1fr))" role="img" aria-label="Paso ${p.cur+1} de ${p.L.length}">${p.L.map((_,i)=>`<i class="${i<p.cur||s==='entregado'?'d':i===p.cur?'c':''}"></i>`).join('')}</div><div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:14px;color:#6B5E55;font-weight:600">Paso ${p.cur+1} de ${p.L.length}${s==='negocio'&&o.tiempo_preparacion_min?' · listo en unos '+o.tiempo_preparacion_min+' min':''}</span>${FIN.includes(s)?'':'<span class="vivo"><i></i>En vivo</span>'}</div>`}</div>`;
     let h='';
     if(canc)h+=`<div class="err">Si ya pagaste, Pidemás se comunicará contigo.</div>`;
-    if(!canc&&!FIN.includes(s)&&o.negocio_id){const cc=cargar('cod:'+o.id,async()=>{const x=await SB().rpc('codigo_entrega',{p_pedido:o.id});return x&&!x.error&&x.data?String(x.data):''});if(cc.data)h+=`<div class="cdg"><div class="cdk">Tu código de entrega</div><div class="cdn">${E(cc.data)}</div><div class="cds">Dáselo al motorizado solo cuando tengas tu pedido en la mano.</div></div>`}
+    if(!canc&&!FIN.includes(s)&&o.negocio_id){const cc=cargar('cod:'+o.id,async()=>{const x=await SB().rpc('codigo_entrega',{p_pedido:o.id});return x&&!x.error&&x.data?String(x.data):''});h+=`<div class="cdg"><div class="cdk">Tu código de entrega</div><div class="cdn">${cc.data?E(cc.data):'····'}</div><div class="cds">Dáselo al motorizado solo cuando tengas tu pedido en la mano.</div></div>`}
     if(!canc)h+=`<div class="cd"><div class="tln">${p.L.map((x,i)=>{const ok=i<p.cur||s==='entregado',cu=i===p.cur&&s!=='entregado';return `<div class="p${ok?' ok':cu?' cur':' no'}"><span class="d">${ok?IC.check:i+1}</span><span class="tx"><b>${E(x.t)}</b><span>${E(ok&&x.at?hora(x.at):cu?x.d:'')}</span></span></div>`}).join('')}</div></div>`;
     const sub2=Number(o.subtotal),del=Number(o.delivery_cost??o.costo_delivery);
     h+=`<div class="cd dash"><div class="lbl">Detalle</div>${(o.items||[]).map(x=>`<div class="ln"><span style="color:#1F1A17">${Number(x.cantidad||1)} × ${E(x.nombre)}</span><b>${M(Number(x.precio||0)*Number(x.cantidad||1))}</b></div>`).join('')}${sub2>0?`<div class="ln"><span>Subtotal</span><b>${M(sub2)}</b></div>`:''}${Number.isFinite(del)?`<div class="ln"><span>Delivery</span><b>${M(del)}</b></div>`:''}${o.metodo_pago?`<div class="ln"><span>Pago</span><b class="pgm ${/yape/i.test(o.metodo_pago)?'y':'e'}">${E(String(o.metodo_pago).replace(/^./,m=>m.toUpperCase()))}${o.pago_confirmado?' · confirmado':''}</b></div>`:''}<div class="ln t"><span>Total</span><b>${M(o.total)}</b></div></div>`;
