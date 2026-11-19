@@ -91,7 +91,7 @@ body>.toast button{background:#FFF4EC!important;color:#C4410C!important;border:1
 
 
 <meta name="pd-instalacion" content="1">
-<meta name="pd-version" content="202611182255"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
+<meta name="pd-version" content="202611182305"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
 /* ===== pd-sistema-diseno (tokens únicos) ===== */
 :root{
 /* ── Tipografía ── */
@@ -9131,6 +9131,15 @@ button{font-family:inherit;-webkit-tap-highlight-color:transparent}
 .ng>svg{display:none}.ng{padding-right:52px}
 .pc .tx .pr{color:#C4410C}.catN{color:#C4410C}.sec h2{color:#C4410C}.catC{background:#FDEBDF;color:#9A330A}
 .it>b,.it .tx>span,.ln b,.pt2,.sug button span{color:#C4410C}.ln.t b{color:#C4410C;font-weight:800}
+.ln{align-items:baseline;font-size:16px}.ln span{flex:1 1 auto;min-width:0;line-height:1.35}.ln b{flex:0 0 auto;white-space:nowrap;text-align:right;font-weight:800}
+.ln b.pgm{font-size:13px;padding:3px 10px;border-radius:999px;align-self:center}.ln b.pgm.y{background:#F1E8FD;color:#6D28D9}.ln b.pgm.e{background:#E9F6EE;color:#15803D}
+.ln.t b{font-size:22px}
+.it .tx>span{font-size:15px;font-weight:700}.it>b{font-size:17px;font-weight:800;white-space:nowrap}
+.vto{display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding:12px 14px;border-radius:14px;background:#E9F6EE;color:#15803D;font-weight:700;font-size:15px;animation:pdUp .3s ease both}.vto b{font-size:20px;font-weight:800;color:#15803D}
+.vto.bad{background:#FDE8E8;color:#B42318}.vto.bad b{color:#B42318}
+@keyframes pdSpin{to{transform:rotate(360deg)}}
+.spin{width:18px;height:18px;border:2.5px solid currentColor;border-right-color:transparent;border-radius:50%;animation:pdSpin .8s linear infinite;box-sizing:border-box;flex:0 0 auto}
+.b.cargando{opacity:1;background:#FFF4EC;color:#C4410C;border-color:#F6CDB3}
 `;
   /* Lo de la tienda vieja que queda debajo se esconde mientras se ve la app nueva */
   const ESTILO_DOC=`html.pdtApp body{overflow:hidden!important}
@@ -9293,6 +9302,8 @@ html.pdtRes #ppSlots{display:none!important}
   const sheetCk=()=>{const e=$('cNombre');return e&&e.closest('.sheet')};
   const btnTxt=re=>{const s=sheetCk();return s?[...s.querySelectorAll('button')].find(b=>re.test((b.textContent||'').trim())):null};
   function lineasResumen(){const s=$('pdCkSummary');if(!s)return null;const L=[...s.querySelectorAll('.pdLine,.pdTotal')].map(l=>{const a=l.children;return [String(a[0]&&a[0].textContent||'').trim(),String(a[a.length-1]&&a[a.length-1].textContent||'').trim(),l.className]}).filter(x=>x[0]);return L.length?L:null}
+  function vueltoH(){try{const n=x=>Number(String(x||'').replace(',','.').replace(/[^\d.]/g,''))||0;const res=lineasResumen();const tot=res?n(res[res.length-1][1]):totCart();const m=n(val('cMontoPago'));if(!m||!tot)return '';const d=Math.round((m-tot)*100)/100;
+    return d<0?`<div class="vto bad"><span>Te faltan</span><b>${M(-d)}</b></div>`:`<div class="vto"><span>Tu vuelto</span><b>${M(d)}</b></div>`}catch(_){return ''}}
   function carrito(){
     const head=top(cartNeg()?nomN(negPorId(cartNeg())):'Tu carrito','Tu pedido',back('volver'));
     const L=CART();
@@ -9301,11 +9312,12 @@ html.pdtRes #ppSlots{display:none!important}
     let h=`<div class="cd"><div class="lbl">Productos</div>${L.map((x,i)=>`<div class="it"><span class="tx"><b>${E(x.nombre)}</b><span>${M(x.precio)} c/u</span></span><span class="qty s"><button type="button" data-ci="${i}:-1" aria-label="${x.cantidad>1?'Quitar uno':'Quitar del pedido'}">${x.cantidad>1?IC.minus:IC.trash}</button><b>${x.cantidad}</b><button type="button" data-ci="${i}:1" aria-label="Agregar uno">${IC.plus}</button></span><b>${M(x.precio*x.cantidad)}</b></div>`).join('')}<button type="button" class="lnk" data-a="anegocio2" style="text-decoration:none">+ Agregar más productos</button></div>`;
     if(!ck())return {head,body:h+'<div class="load">Preparando tu pedido…</div>'};
     const la=val('cLat'),ln=val('cLng'),on=!!(la&&ln),stx=String(($('cLocationStatus')||{}).textContent||'');
+    const busc=ubicT&&Date.now()-ubicT<(ubicPrev?2500:12000)&&!(on&&!ubicPrev);if(on&&ubicT&&(!ubicPrev||Date.now()-ubicT>2500)){ubicT=0;setTimeout(()=>aviso('Listo, tomamos tu ubicación.'),50)}if(ubicT&&!busc)ubicT=0;
     h+=`<div class="cd"><div class="lbl">Entrega</div>
       <div class="fld"><label for="tDir">Dirección de entrega</label><input id="tDir" value="${E(val('cDireccion'))}" data-ck="cDireccion" placeholder="Ej. Urb. Miraflores Mz B Lt 7" autocomplete="street-address"></div>
       <div class="fld"><label for="tRef">Referencia</label><input id="tRef" value="${E(val('cReferencia'))}" data-ck="cReferencia" placeholder="Ej. Casa de dos pisos, reja negra"></div>
-      <div class="loc${on?' on':''}"><span class="i">${on?IC.check:IC.pin}</span><span class="tx"><b>${on?'Ubicación lista':'Falta tu ubicación'}</b><span>${on?'El delivery se calcula con este punto.':/Obteniendo|Buscando/i.test(stx)?E(stx):'Necesaria para calcular el delivery.'}</span></span></div>
-      <div class="btns b2"><button type="button" class="b${on?'':' o'}" data-a="ubic">${IC.gps}Mi ubicación</button><button type="button" class="b" data-a="mapa">${IC.map}${on?'Cambiar en mapa':'Marcar en mapa'}</button></div></div>`;
+      <div class="loc${on?' on':''}"><span class="i">${on?IC.check:IC.pin}</span><span class="tx"><b>${busc?'Buscando tu ubicación…':on?'Ubicación lista':'Falta tu ubicación'}</b><span>${busc?'Acepta el permiso de ubicación si tu celular lo pide.':on?'El delivery se calcula con este punto.':/Obteniendo|Buscando/i.test(stx)?E(stx):'Necesaria para calcular el delivery.'}</span></span></div>
+      <div class="btns b2"><button type="button" class="b${on?'':' o'}${busc?' cargando':''}" data-a="ubic"${busc?' disabled':''}>${busc?'<span class="spin"></span>Buscando…':IC.gps+'Mi ubicación'}</button><button type="button" class="b" data-a="mapa">${IC.map}${on?'Cambiar en mapa':'Marcar en mapa'}</button></div></div>`;
     h+=`<div class="cd"><div class="lbl">Tus datos</div><div class="fld"><label for="tNom">Nombre</label><input id="tNom" value="${E(val('cNombre'))}" data-ck="cNombre" autocomplete="name"></div><div class="fld"><label for="tTel">Celular</label><input id="tTel" inputmode="tel" value="${E(val('cTelefono'))}" data-ck="cTelefono" autocomplete="tel" placeholder="9 dígitos"></div>
       ${$('cObs')?`<div class="fld"><label for="tObs">Nota para el pedido (opcional)</label><input id="tObs" value="${E(val('cObs'))}" data-ck="cObs" maxlength="300" placeholder="Ej. Tocar el timbre"></div>`:''}</div>`;
     const sw=document.querySelector('#modal .pdDescSw');
@@ -9313,7 +9325,7 @@ html.pdtRes #ppSlots{display:none!important}
       h+=`<div class="cd"><button type="button" class="sw${on2?' on':''}" data-a="cubiertos" aria-pressed="${on2}"><span class="tx">${E(t.length>60?'Cubiertos descartables':t)}</span><i aria-hidden="true"></i></button></div>`}
     const pago=val('cPago');
     h+=`<div class="cd"><div class="lbl">Pago</div><div class="pay"><button type="button" class="${pago==='efectivo'?'on':''}" data-pago="efectivo" aria-pressed="${pago==='efectivo'}">Efectivo</button><button type="button" class="${pago==='yape'?'on':''}" data-pago="yape" aria-pressed="${pago==='yape'}">Yape</button></div>`;
-    if(pago==='efectivo')h+=`<div class="fld"><label for="tMon">¿Con cuánto pagas? (para tu vuelto)</label><input id="tMon" inputmode="decimal" value="${E(val('cMontoPago'))}" data-ck="cMontoPago" placeholder="Ej. 100"></div>${$('cCambio')&&val('cMontoPago')?`<div class="ln"><span>Tu vuelto</span><b>${E($('cCambio').textContent)}</b></div>`:''}`;
+    if(pago==='efectivo')h+=`<div class="fld"><label for="tMon">¿Con cuánto pagas? (para tu vuelto)</label><input id="tMon" inputmode="decimal" value="${E(val('cMontoPago'))}" data-ck="cMontoPago" placeholder="Ej. 100"></div><div id="tVto">${vueltoH()}</div>`;
     if(pago==='yape'){const rs=[...document.querySelectorAll('#modal input[name="pdYapeModo"]')];
       if(rs.length)h+=`<div class="opts">${rs.map(x=>{const lb=x.closest('label');const tt=lb?[...lb.querySelectorAll('b,strong')].map(z=>z.textContent.trim())[0]||'':'';const ds=lb?String(lb.textContent||'').replace(tt,'').trim():'';const hid=lb&&(lb.classList.contains('pdOff')||lb.closest('.pdOff'));return hid?'':`<button type="button" class="opt${x.checked?' on':''}" data-yape="${E(x.value)}"><b>${E(tt||(x.value==='negocio'?'Coordinar con el negocio':'Al motorizado al recibir'))}</b><span>${E(ds)}</span></button>`}).join('')}</div>`}
     h+=`</div>`;
@@ -9371,7 +9383,7 @@ html.pdtRes #ppSlots{display:none!important}
     if(!canc&&!FIN.includes(s)&&o.negocio_id){const cc=cargar('cod:'+o.id,async()=>{const x=await SB().rpc('codigo_entrega',{p_pedido:o.id});return x&&!x.error&&x.data?String(x.data):''});if(cc.data)h+=`<div class="cdg"><div class="cdk">Tu código de entrega</div><div class="cdn">${E(cc.data)}</div><div class="cds">Dáselo al motorizado solo cuando tengas tu pedido en la mano.</div></div>`}
     if(!canc)h+=`<div class="cd"><div class="tln">${p.L.map((x,i)=>{const ok=i<p.cur||s==='entregado',cu=i===p.cur&&s!=='entregado';return `<div class="p${ok?' ok':cu?' cur':' no'}"><span class="d">${ok?IC.check:i+1}</span><span class="tx"><b>${E(x.t)}</b><span>${E(ok&&x.at?hora(x.at):cu?x.d:'')}</span></span></div>`}).join('')}</div></div>`;
     const sub2=Number(o.subtotal),del=Number(o.delivery_cost??o.costo_delivery);
-    h+=`<div class="cd"><div class="lbl">Detalle</div>${(o.items||[]).map(x=>`<div class="ln"><span style="color:#1F1A17">${Number(x.cantidad||1)} × ${E(x.nombre)}</span><b>${M(Number(x.precio||0)*Number(x.cantidad||1))}</b></div>`).join('')}${sub2>0?`<div class="ln"><span>Subtotal</span><b>${M(sub2)}</b></div>`:''}${Number.isFinite(del)?`<div class="ln"><span>Delivery</span><b>${M(del)}</b></div>`:''}${o.metodo_pago?`<div class="ln"><span>Pago</span><b>${E(String(o.metodo_pago).replace(/^./,m=>m.toUpperCase()))}${o.pago_confirmado?' · confirmado':''}</b></div>`:''}<div class="ln t"><span>Total</span><b>${M(o.total)}</b></div></div>`;
+    h+=`<div class="cd"><div class="lbl">Detalle</div>${(o.items||[]).map(x=>`<div class="ln"><span style="color:#1F1A17">${Number(x.cantidad||1)} × ${E(x.nombre)}</span><b>${M(Number(x.precio||0)*Number(x.cantidad||1))}</b></div>`).join('')}${sub2>0?`<div class="ln"><span>Subtotal</span><b>${M(sub2)}</b></div>`:''}${Number.isFinite(del)?`<div class="ln"><span>Delivery</span><b>${M(del)}</b></div>`:''}${o.metodo_pago?`<div class="ln"><span>Pago</span><b class="pgm ${/yape/i.test(o.metodo_pago)?'y':'e'}">${E(String(o.metodo_pago).replace(/^./,m=>m.toUpperCase()))}${o.pago_confirmado?' · confirmado':''}</b></div>`:''}<div class="ln t"><span>Total</span><b>${M(o.total)}</b></div></div>`;
     if(act.length>1)h+=`<div class="lbl2">Otros pedidos en curso</div>`+act.filter(x=>x!==o).map(x=>`<button type="button" class="ng" data-seg="${E(x.id)}"><span class="tx"><b>${E(negPorId(x.negocio_id)?nomN(negPorId(x.negocio_id)):'Pedido')}</b><span>${E(codP(x))} · ${E(etiqueta(x))}</span></span>${IC.chev}</button>`).join('');
     return {head,body:h};
   }
@@ -9716,7 +9728,7 @@ html.pdtRes #ppSlots{display:none!important}
     return tab==='pedidos'?pedidos():tab==='perfil'?perfil():inicio();
   }
   const cls=(el,c,on)=>{if(el&&el.classList.contains(c)!==!!on)el.classList.toggle(c,!!on)};
-  let alCat=false,favPop=null;
+  let alCat=false,favPop=null,ubicT=0,ubicPrev=false;
   function pintar(){
     const H=document.documentElement;
     if(sub!=='carrito'&&H.classList.contains('pdtCk'))cerrarCk();
@@ -9783,7 +9795,7 @@ html.pdtRes #ppSlots{display:none!important}
   function atras(){if(sub==='producto'){sub='negocio'}else sub=null;key='';pintar()}
 
   function entrada(e){const el=e.target,k=el.dataset&&el.dataset.in;
-    if(el.dataset&&el.dataset.ck){setVal(el.dataset.ck,el.dataset.ck==='cDiscountCode'?el.value.toUpperCase():el.value);clearTimeout(entrada.t);entrada.t=setTimeout(()=>{const f=root.querySelector('.foot');const v=vista();if(f&&v.foot!=null&&f.innerHTML!==v.foot)f.innerHTML=v.foot},400);return}
+    if(el.dataset&&el.dataset.ck){setVal(el.dataset.ck,el.dataset.ck==='cDiscountCode'?el.value.toUpperCase():el.value);if(el.dataset.ck==='cMontoPago'){const vb=root.getElementById('tVto');if(vb)vb.innerHTML=vueltoH()}clearTimeout(entrada.t);entrada.t=setTimeout(()=>{const f=root.querySelector('.foot');const v=vista();if(f&&v.foot!=null&&f.innerHTML!==v.foot)f.innerHTML=v.foot},400);return}
     if(k==='q'){F.q=el.value;const b=root.getElementById('tL');if(b)b.innerHTML=filas();return}
     if(k==='nq'){F.nq=el.value;const r=negPorId(F.neg);const b=root.getElementById('tCarta');if(b&&r)b.innerHTML=cartaLista(r);return}
   }
@@ -9821,7 +9833,7 @@ html.pdtRes #ppSlots{display:none!important}
       case 'seguirult':F.seg=null;if(C.seg)C.seg.t=0;sub='seguir';key='';pintar();break;
       case 'hact':historial(true);key='';pintar();break;
       case 'hmas':F.lim+=40;key='';pintar();break;
-      case 'ubic':{const b=document.querySelector('#modal .ckLocBtn')||document.querySelector('#modal .locationBtn');if(b)b.click();else try{useCurrentLocation('cart')}catch(_){}[400,1500,3500,6000].forEach(ms=>setTimeout(()=>{key='';pintar()},ms));break}
+      case 'ubic':{ubicPrev=!!(val('cLat')&&val('cLng'));ubicT=Date.now();key='';pintar();const b=document.querySelector('#modal .ckLocBtn')||document.querySelector('#modal .locationBtn');if(b)b.click();else try{useCurrentLocation('cart')}catch(_){}[400,1500,2600,3500,6000,9000,12200].forEach(ms=>setTimeout(()=>{key='';pintar()},ms));break}
       case 'mapa':{const b=document.querySelector('#modal .ckMapa');if(b)b.click();[600,2000].forEach(ms=>setTimeout(()=>{key='';pintar()},ms));break}
       case 'cubiertos':{const b=document.querySelector('#modal .pdDescSw');if(b)b.click();setTimeout(()=>{key='';pintar()},80);break}
       case 'cupon':{try{applyDeliveryDiscount()}catch(_){}[300,1200,2500].forEach(ms=>setTimeout(()=>{key='';pintar()},ms));break}
