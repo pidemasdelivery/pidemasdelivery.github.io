@@ -91,7 +91,7 @@ body>.toast button{background:#FFF4EC!important;color:#C4410C!important;border:1
 
 
 <meta name="pd-instalacion" content="1">
-<meta name="pd-version" content="202611191130"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
+<meta name="pd-version" content="202611191250"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
 /* ===== pd-sistema-diseno (tokens únicos) ===== */
 :root{
 /* ── Tipografía ── */
@@ -9478,7 +9478,7 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
     h+=`<div class="cd"><div class="lbl">Entrega</div>
       <div class="fld"><label for="tDir">Dirección de entrega</label><input id="tDir" value="${E(val('cDireccion'))}" data-ck="cDireccion" placeholder="Ej. Urb. Miraflores Mz B Lt 7" autocomplete="street-address"></div>
       <div class="fld"><label for="tRef">Referencia</label><input id="tRef" value="${E(val('cReferencia'))}" data-ck="cReferencia" placeholder="Ej. Casa de dos pisos, reja negra"></div>
-      <div class="loc${on?' on':''}${busc?' busc':''}"><span class="i">${on?IC.check:IC.pin}</span><span class="tx"><b>${busc?'Buscando tu ubicación…':on?'Ubicación lista':'Falta tu ubicación'}</b><span>${busc?'Acepta el permiso de ubicación si tu celular lo pide.':on?'El delivery se calcula con este punto.':/Obteniendo|Buscando/i.test(stx)?E(stx):'Necesaria para calcular el delivery.'}</span></span></div>
+      <div class="loc${on?' on':''}${busc?' busc':''}"><span class="i">${busc?'<span class="spin"></span>':on?IC.check:IC.pin}</span><span class="tx"><b>${busc?'Buscando tu ubicación…':on?'Ubicación lista':'Falta tu ubicación'}</b><span>${busc?'Acepta el permiso de ubicación si tu celular lo pide.':on?'El delivery se calcula con este punto.':/Obteniendo|Buscando/i.test(stx)?E(stx):'Necesaria para calcular el delivery.'}</span></span></div>
       <div class="btns b2"><button type="button" class="b${on?'':' o'}${busc?' cargando':''}" data-a="ubic"${busc?' disabled':''}>${busc?'<span class="spin"></span>Buscando…':IC.gps+'Mi ubicación'}</button><button type="button" class="b" data-a="mapa">${IC.map}${on?'Cambiar en mapa':'Marcar en mapa'}</button></div></div>`;
     h+=`<div class="cd"><div class="lbl">Tus datos</div><div class="fld"><label for="tNom">Nombre</label><input id="tNom" value="${E(val('cNombre'))}" data-ck="cNombre" autocomplete="name"></div><div class="fld"><label for="tTel">Celular</label><input id="tTel" inputmode="tel" value="${E(val('cTelefono'))}" data-ck="cTelefono" autocomplete="tel" placeholder="9 dígitos"></div>
       ${$('cObs')?`<div class="fld"><label for="tObs">Nota para el pedido (opcional)</label><input id="tObs" value="${E(val('cObs'))}" data-ck="cObs" maxlength="300" placeholder="Ej. Tocar el timbre"></div>`:''}</div>`;
@@ -9647,7 +9647,7 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
 .fh input:focus,.fh textarea:focus{border-color:#C4410C}
 .lc{display:flex;gap:10px;align-items:center;padding:12px;border-radius:14px;background:#FFF4EC}
 .lc.on{background:#E9F6EE}
-.lc .i{color:#C4410C;flex:0 0 auto;display:flex}.lc.on .i{color:#15803D}
+.lc .i{width:40px;height:40px;border-radius:12px;background:#FFFFFF;color:#C4410C;display:flex;align-items:center;justify-content:center;flex:0 0 auto}.lc.on .i{color:#15803D}
 .lc .tx{display:flex;flex-direction:column;flex:1 1 0%;min-width:0}.lc .tx b{font-size:15px}.lc .tx span{font-size:13px;color:#6B5E55}
 .two2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 .ms{font-size:14px;font-weight:700;color:#B42318}.ms.ok{color:#15803D}
@@ -9834,7 +9834,7 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
           body:(u?`<div class="cdh" style="flex-direction:row;align-items:center;gap:12px"><span class="ava2"${av?` style="background-image:url('${E(av)}')"`:''}>${av?'':ini(f.nombre||m.full_name||'Cliente')}</span><span style="display:flex;flex-direction:column;min-width:0"><b style="font-size:16px">${E(m.full_name||m.name||f.nombre||'Cliente')}</b><span style="font-size:14px;color:#6B5E55;overflow:hidden;text-overflow:ellipsis">${E(u.email||'')}</span></span></div>`:'')+
             `<div class="cdh"><div class="lbh">Datos para tus pedidos</div><div class="nt">Así te contactarán el negocio y el motorizado.</div><div class="fh"><label for="hNo">Nombre</label><input id="hNo" value="${E(f.nombre)}" data-hin="nombre" autocomplete="name"></div><div class="fh"><label for="hTe">Celular</label><input id="hTe" inputmode="tel" value="${E(f.telefono)}" data-hin="telefono" autocomplete="tel" placeholder="9 dígitos"></div></div>
             <div class="cdh"><div class="lbh">Dirección de entrega</div><div class="fh"><label for="hDi">Dirección</label><input id="hDi" value="${E(f.direccion)}" data-hin="direccion" placeholder="Ej. Av. Grau 1234, Piura" autocomplete="street-address"></div><div class="fh"><label for="hRe">Referencia</label><input id="hRe" value="${E(f.referencia)}" data-hin="referencia" placeholder="Ej. Frente al parque, portón negro"></div>
-            <div class="lc${on?' on':''}${this.busc?' busc':''}${this.okFx?' fx':''}"><span class="i">${this.busc?'<span class="spin"></span>':on?IC.check:IC.pin}</span><span class="tx"><b>${on?'Ubicación guardada':'Sin ubicación guardada'}</b><span>${E(this.locMsg||(on?'Se usará para calcular el delivery.':'Márcala para que el delivery se calcule solo.'))}</span></span></div>
+            <div class="lc${on?' on':''}${this.busc?' busc':''}${this.okFx?' fx':''}"><span class="i">${this.busc?'<span class="spin"></span>':on?IC.check:IC.pin}</span><span class="tx"><b>${this.busc?'Buscando tu ubicación…':on?'Ubicación guardada':'Sin ubicación guardada'}</b><span>${this.busc?'Acepta el permiso de ubicación si tu celular lo pide.':E(this.locMsg||(on?'El delivery se calcula con este punto.':'Márcala para que el delivery se calcule solo.'))}</span></span></div>
             <div class="two2"><button type="button" class="bs${this.busc?' cargando':''}" data-h="gps"${this.busc?' disabled':''}>${this.busc?'<span class="spin"></span>Buscando…':IC.gps+'Mi ubicación'}</button><button type="button" class="bs" data-h="mapa">${IC.map}${on?'Cambiar':'Marcar'} en mapa</button></div></div>`+(this.msg?`<div class="ms${this.ok?' ok':''}">${E(this.msg)}</div>`:''),
           foot:`<button type="button" class="bp" data-h="guardar"${this.busy?' disabled':''}>${this.busy?'Guardando…':'Guardar mis datos'}</button>${u?`<button type="button" class="bt r" data-h="salir">Cerrar sesión</button>`:''}`}},
       async guardarUb(lat,lng){this.lat=lat;this.lng=lng;LSC.set({lat,lng});const u=SES();if(u){const {data:r,error}=await SB().auth.updateUser({data:{delivery_lat:lat,delivery_lng:lng}});if(error)throw error;try{pdClienteSesion=r.user||u}catch(_){}}},
