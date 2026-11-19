@@ -91,7 +91,7 @@ body>.toast button{background:#FFF4EC!important;color:#C4410C!important;border:1
 
 
 <meta name="pd-instalacion" content="1">
-<meta name="pd-version" content="202611190010"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
+<meta name="pd-version" content="202611190015"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
 /* ===== pd-sistema-diseno (tokens únicos) ===== */
 :root{
 /* ── Tipografía ── */
@@ -9194,6 +9194,46 @@ button{font-family:inherit;-webkit-tap-highlight-color:transparent}
 
 /* --- Botón atrás (modelo del detalle de pedido del motorizado) en negocio, detalle y tu pedido --- */
 .top .row>.ib.bk.bkv:first-child,.bk.bkv{display:flex!important;width:44px!important;height:44px!important;flex:0 0 44px!important;border-radius:14px!important;border:1px solid #F1E4DA!important;background:#FFFFFF!important;color:#1F1A17!important;box-shadow:none!important}
+
+/* ===== Diseño del detalle de pedido del MOTORIZADO (tipografía, colores y tamaños) ===== */
+*{font-family:PdInter,Inter,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif!important}
+.app{font-size:14px;line-height:1.45;color:#1F1A17}
+.top .kick,.qs .hh .k,.lbl,.lbl2,.dir .tx small{font-size:12px!important;font-weight:800!important;letter-spacing:.06em!important;text-transform:uppercase;color:#6B5E55!important}
+.top .h1,.qs .hh h2{font-size:20px!important;font-weight:800!important;letter-spacing:0!important;color:#1F1A17}
+.dir .tx b{font-size:17px;font-weight:800}
+.cd,.ng,.pc,.hero,.curso,.hero.neg{border-radius:16px!important;box-shadow:none!important}
+.cd{padding:14px;border:1px solid #F1E4DA;background:#FFFFFF}
+.cd.dash{border:1.5px dashed #EADFD6!important;background:#FFFFFF}
+.ng,.pc{border:1px solid #F1E4DA;padding:12px}
+.ng .tx b,.pc .tx b,.it .tx b{font-size:16px!important;font-weight:800!important;color:#1F1A17}
+.ng .tx span,.pc .tx .ds{font-size:14px!important;font-weight:500!important;color:#6B5E55}
+.lg{width:56px;height:56px;border-radius:12px}.lg.big{width:60px;height:60px;border-radius:14px}
+.pc .ph,.pc .ph i{width:92px!important;height:92px!important;border-radius:12px!important}
+.pc .ad{width:36px!important;height:36px!important;border-radius:12px!important;box-shadow:none!important}
+/* montos en negro y gruesos, como «Qué pidió» del motorizado; el total en naranja */
+.pc .tx .pr,.it>b,.it .tx>span,.ln b,.pt2,.sug button span{color:#1F1A17!important;font-weight:800}
+.pc .tx .pr{font-size:16px!important}.it>b{font-size:15px!important}.it .tx>span{font-size:13px!important;font-weight:600!important;color:#6B5E55!important}
+.ln{font-size:14px!important}.ln span{font-weight:500;color:#6B5E55}.ln b{font-size:14px}
+.ln.t span{font-size:15px;font-weight:800;color:#1F1A17}.ln.t b{font-size:20px!important;color:#C4410C!important}
+/* títulos */
+.sec h2{font-size:20px!important;font-weight:800;color:#1F1A17!important}.catN{font-size:17px!important;font-weight:800;color:#1F1A17!important}
+.catC{font-size:12px!important;background:#FDEBDF;color:#9A330A}
+/* tarjetas naranja claro como los avisos del motorizado */
+.curso,.hero.neg{background:#FFF4EC!important;border:1px solid #F6C7AE!important}
+/* chips, buscador, campos y botones */
+.chs button{height:38px!important;font-size:14px!important;font-weight:700!important;border-radius:999px}
+.chs button.on{box-shadow:none!important}
+.srch,.srch.w,.srch.inicio{height:48px!important;border-radius:12px!important;box-shadow:none!important}
+.srch input{font-size:15px!important;font-weight:500!important}
+.fld label{font-size:14px!important;font-weight:700!important}
+.fld input,.fld select{height:48px!important;border-radius:12px!important;font-size:15px!important;font-weight:500!important;border:1px solid #F1E4DA!important}
+.cbar,.bp{height:52px!important;border-radius:12px!important;font-size:16px!important;font-weight:800!important;box-shadow:none!important}
+.b{border-radius:12px}
+.st{font-size:12px!important;height:24px!important}
+.vto{border-radius:12px}.vto b{font-size:17px!important}
+.ib{border-radius:12px!important}
+.bk.bkv,.top .row>.ib.bk.bkv:first-child{border-radius:12px!important}
+.ng .tx span.st{font-size:12px!important;font-weight:800!important;height:24px}.ng .tx{gap:3px!important}
 `;
   /* Lo de la tienda vieja que queda debajo se esconde mientras se ve la app nueva */
   const ESTILO_DOC=`html.pdtApp body{overflow:hidden!important}
