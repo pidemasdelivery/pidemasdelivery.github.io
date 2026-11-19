@@ -91,7 +91,7 @@ body>.toast button{background:#FFF4EC!important;color:#C4410C!important;border:1
 
 
 <meta name="pd-instalacion" content="1">
-<meta name="pd-version" content="202611182310"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
+<meta name="pd-version" content="202611182320"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
 /* ===== pd-sistema-diseno (tokens únicos) ===== */
 :root{
 /* ── Tipografía ── */
@@ -9080,6 +9080,8 @@ button{font-family:inherit;-webkit-tap-highlight-color:transparent}
 .lnks button span{flex:1 1 0%}
 .lnks button>svg:last-child{color:#A8988C}
 
+/* Pidemás · TIENDA · diseño propio (boceto). Este archivo es SOLO de la tienda: no lo usan motorizado, negocio ni admin.
+   Se agrega al final de los estilos, así que manda sobre los estilos compartidos. */
 .list button,.list a,.ib,.cbar,.dir,.fav,.chs button,.seg button{transition:transform .14s ease,box-shadow .2s ease,background-color .2s ease,border-color .2s ease,color .2s ease;-webkit-tap-highlight-color:transparent}
 .ng:active,.pc:active,.curso:active,.ib:active,.cbar:active,.dir:active,.chs button:active,.seg button:active,.lnk:active{transform:scale(.97)}
 .fav:active,.pc .ad:active{transform:scale(.86)}
@@ -9108,7 +9110,7 @@ button{font-family:inherit;-webkit-tap-highlight-color:transparent}
 .pc .ad{box-shadow:0 4px 10px rgba(196,65,12,.3)}.pc .ad.off{box-shadow:none}
 .cbar{box-shadow:0 8px 20px rgba(196,65,12,.28)}.cbar:disabled{box-shadow:none}
 .ng,.pc,.hero{box-shadow:0 1px 3px rgba(31,26,23,.05)}
-*{font-family:PdInter,Inter,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif!important}
+*{font-family:'Plus Jakarta Sans',PdInter,Inter,system-ui,sans-serif!important}
 .srch,.srch.w{background:#F7EFE9;border:0;border-radius:16px}
 .hero{padding:14px;border-radius:22px;box-shadow:0 4px 14px rgba(31,26,23,.05)}
 .lg.big{width:70px;height:70px;border-radius:20px}
@@ -9140,24 +9142,24 @@ button{font-family:inherit;-webkit-tap-highlight-color:transparent}
 @keyframes pdSpin{to{transform:rotate(360deg)}}
 .spin{width:18px;height:18px;border:2.5px solid currentColor;border-right-color:transparent;border-radius:50%;animation:pdSpin .8s linear infinite;box-sizing:border-box;flex:0 0 auto}
 .b.cargando{opacity:1;background:#FFF4EC;color:#C4410C;border-color:#F6CDB3}
-.app{font-size:14px;line-height:1.45}
-.top .h1{font-size:20px!important;font-weight:800;letter-spacing:-.01em}.top .kick,.qs .hh .k,.lbl,.lbl2{font-size:12px;font-weight:800;letter-spacing:.06em}
-.qs .hh h2{font-size:20px}
-.cd{border-radius:16px;padding:14px}
-.cd.dash{border:1.5px dashed #EADFD6;background:#FFFFFF}
-.ng,.pc{border-radius:16px}
-.ng .tx b,.pc .tx b{font-size:16px;font-weight:800;letter-spacing:-.005em}
-.ng .tx span,.pc .tx .ds{font-size:14px;font-weight:500;color:#6B5E55}
-.pc .tx .pr{font-size:16px;font-weight:800}
-.ln{font-size:15px}.ln span{font-weight:500}.ln b{font-weight:800}
-.it .tx b{font-size:15px;font-weight:700}
-.sec h2{font-size:20px;letter-spacing:-.01em}.catN{font-size:17px;font-weight:800}
-.chs button{height:40px;font-size:14px;font-weight:700}
-.srch{height:48px;border-radius:14px}.srch input{font-size:15px;font-weight:500}
-.fld label{font-size:14px;font-weight:700}.fld input,.fld select{font-size:15px;font-weight:500;border-radius:12px;height:52px}
-.st{font-size:12.5px}
-.cbar{height:56px;border-radius:16px;font-size:16px}
-.curso{border-radius:16px}
+
+/* --- Boceto: tarjetas y tipografía --- */
+.app{font-size:15px}
+.top .h1{font-size:19px!important;font-weight:800;letter-spacing:-.01em}
+.cd{border-radius:20px;padding:16px;box-shadow:0 1px 3px rgba(31,26,23,.05)}
+.cd.dash{border:1px solid #F1E4DA;background:#FFFFFF}
+.ng,.pc{border-radius:20px}
+.ng .tx b{font-size:16px;font-weight:800}.ng .tx span{font-size:13px;font-weight:600}
+.pc .tx b{font-size:15.5px;font-weight:800}.pc .tx .ds{font-size:13px;font-weight:500}
+.sec h2{font-size:21px;font-weight:800;letter-spacing:-.01em}.catN{font-size:18px;font-weight:800}
+.chs button{height:40px;font-size:14px;font-weight:800}
+.srch{height:50px;border-radius:16px}.srch input{font-size:15px;font-weight:600}
+.fld label{font-size:14px;font-weight:800}.fld input,.fld select{font-size:15px;font-weight:600;border-radius:14px;height:52px;border:1px solid #EADBD0}
+.ln{font-size:15px}.ln span{font-weight:600}
+.it .tx b{font-size:15px;font-weight:800}
+.cbar{height:58px;border-radius:18px;font-size:16px;font-weight:800}
+.curso{border-radius:20px}
+.st{font-size:12px}
 `;
   /* Lo de la tienda vieja que queda debajo se esconde mientras se ve la app nueva */
   const ESTILO_DOC=`html.pdtApp body{overflow:hidden!important}
@@ -9753,7 +9755,7 @@ html.pdtRes #ppSlots{display:none!important}
     if(sub==='carrito'&&ck())cls(H,'pdtCk',1);
     const tp=tapada();if(eraTapada&&!tp)tapT=Date.now();eraTapada=tp;
     if(tp){if(host&&host.style.display!=='none'){host.style.display='none'}cls(H,'pdtApp',0);return}
-    if(!$('pd-app-tienda-css')){const st=document.createElement('style');st.id='pd-app-tienda-css';st.textContent=ESTILO_DOC;document.head.appendChild(st)}
+    if(!$('pd-font-jakarta')){const l=document.createElement('link');l.id='pd-font-jakarta';l.rel='stylesheet';l.href='https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap';document.head.appendChild(l)}if(!$('pd-app-tienda-css')){const st=document.createElement('style');st.id='pd-app-tienda-css';st.textContent=ESTILO_DOC;document.head.appendChild(st)}
     if(!host){
       host=document.createElement('pd-app-tienda');
       const wrap=document.createElement('header');wrap.id='pdAppShell';wrap.style.cssText='display:contents';wrap.appendChild(host);document.body.appendChild(wrap);
