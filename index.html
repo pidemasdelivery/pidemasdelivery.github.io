@@ -91,7 +91,7 @@ body>.toast button{background:#FFF4EC!important;color:#C4410C!important;border:1
 
 
 <meta name="pd-instalacion" content="1">
-<meta name="pd-version" content="202611191250"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
+<meta name="pd-version" content="202611191340"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
 /* ===== pd-sistema-diseno (tokens únicos) ===== */
 :root{
 /* ── Tipografía ── */
@@ -7620,7 +7620,7 @@ if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostnam
 html body #modal .pdOkSheet > .ppOk{margin:66px 16px 0 !important;border-radius:var(--r-lg) !important}
 
 /* Instalar la app */
-#pdInstalar{position:fixed;left:12px;right:12px;top:calc(76px + env(safe-area-inset-top,0px));z-index:60;max-width:456px;margin:0 auto;display:flex;align-items:center;gap:12px;padding:12px;background:#fff;border:1px solid var(--fr-line);border-radius:var(--r-lg);box-shadow:var(--sh-lg);font-family:var(--font);color:var(--fr-ink);animation:pdNtCae .32s cubic-bezier(.2,.8,.2,1)}
+#pdInstalar{position:fixed;left:12px;right:12px;top:calc(76px + env(safe-area-inset-top,0px));z-index:2147483100!important;max-width:456px;margin:0 auto;display:flex;align-items:center;gap:12px;padding:12px;background:#fff;border:1px solid var(--fr-line);border-radius:var(--r-lg);box-shadow:var(--sh-lg);font-family:var(--font);color:var(--fr-ink);animation:pdNtCae .32s cubic-bezier(.2,.8,.2,1)}
 #pdInstalar[hidden]{display:none}
 #pdInstalar .ico{flex:0 0 48px;width:48px;height:48px;border-radius:var(--r-md);background:var(--fr-orange) center/cover no-repeat;display:flex;align-items:center;justify-content:center;color:#fff;font:800 var(--fs-xl) var(--font)}
 #pdInstalar .tx{flex:1 1 auto;min-width:0}
@@ -7786,15 +7786,16 @@ html body #modal .pdOkSheet > .ppOk{margin:66px 16px 0 !important;border-radius:
   const iOS=/iphone|ipad|ipod/i.test(ua)||(/macintosh/i.test(ua)&&navigator.maxTouchPoints>1);
   const iOSSafari=iOS&&/safari/i.test(ua)&&!/crios|fxios|edgios|opios|gsa\//i.test(ua);
   const android=/android/i.test(ua)&&!/wv\)|; wv/i.test(ua);
-  const NO='pdInstalarNo',DIAS=14;
+  const NO='pdInstalarNo',DIAS=1;let forzar=false;
+  window.pdOfrecerInstalar=function(){if(instalada())return;forzar=true;intentos=0;if(card)card.hidden=true;clearTimeout(programar.t);programar.t=setTimeout(intentar,1200)};
   const descartado=()=>{const t=Number(ls.get(NO)||0);return t&&Date.now()-t<DIAS*864e5};
   let aviso=null,card=null,intentos=0;
   addEventListener('beforeinstallprompt',e=>{e.preventDefault();aviso=e;programar(400)});
   setTimeout(function(){if(!aviso&&android&&!instalada())programar(0)},3000);
   addEventListener('appinstalled',()=>{ls.set(NO,String(Date.now()+3650*864e5));if(card)card.hidden=true});
-  function programar(ms){if(instalada()||descartado()||card&&!card.hidden)return;clearTimeout(programar.t);programar.t=setTimeout(intentar,ms)}
+  function programar(ms){if(instalada()||(!forzar&&descartado())||card&&!card.hidden)return;clearTimeout(programar.t);programar.t=setTimeout(intentar,ms)}
   function intentar(){
-    if(instalada()||descartado())return;
+    if(instalada()||(!forzar&&descartado()))return;
     if(!aviso&&!iOSSafari&&!android)return;
     if(hayVentana()||document.activeElement&&/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)){if(++intentos<40)programar(1500);return}
     mostrarCard();
@@ -7803,17 +7804,18 @@ html body #modal .pdOkSheet > .ppOk{margin:66px 16px 0 !important;border-radius:
     if(!card){card=document.createElement('div');card.id='pdInstalar';card.setAttribute('role','dialog');card.setAttribute('aria-label','Instalar Pidemás');document.body.appendChild(card)}
     const icono=(document.querySelector('link[rel="apple-touch-icon"]')||{}).href;
     const ico='<span class="ico"'+(icono?' style="background-image:url(\''+icono.replace(/'/g,'%27')+'\')"':'')+'>'+(icono?'':'P')+'</span>';
+    const T1=forzar?'¿Instalas Pidemás para seguir tu pedido?':'Instala Pidemás';
     if(aviso){
-      card.innerHTML=ico+'<span class="tx"><b>Instala Pidemás</b><small>Ábrela desde tu inicio, más rápida y a pantalla completa.</small></span><span class="bt"><button type="button" class="si">Instalar</button><button type="button" class="no">Ahora no</button></span>';
+      card.innerHTML=ico+'<span class="tx"><b>'+T1+'</b><small>'+(forzar?'Mira tu pedido en vivo y vuelve a pedir con un toque desde tu inicio.':'Ábrela desde tu inicio, más rápida y a pantalla completa.')+'</small></span><span class="bt"><button type="button" class="si">Instalar</button><button type="button" class="no">Ahora no</button></span>';
     }else if(android){
-      card.innerHTML=ico+'<span class="tx"><b>Instala Pidemás</b><small>Toca ⋮ (arriba a la derecha) y luego «Instalar app» o «Agregar a pantalla principal». Si ya la tienes, ábrela desde tu inicio.</small></span><span class="bt"><button type="button" class="no">Entendido</button></span>';
+      card.innerHTML=ico+'<span class="tx"><b>'+T1+'</b><small>Toca ⋮ (arriba a la derecha) y luego «Instalar app» o «Agregar a pantalla principal». Si ya la tienes, ábrela desde tu inicio.</small></span><span class="bt"><button type="button" class="no">Entendido</button></span>';
     }else{
-      card.innerHTML=ico+'<span class="tx"><b>Instala Pidemás</b><small>Toca <svg class="shr" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="m7 8 5-5 5 5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg> Compartir y luego «Agregar a inicio».</small></span><span class="bt"><button type="button" class="no">Entendido</button></span>';
+      card.innerHTML=ico+'<span class="tx"><b>'+T1+'</b><small>Toca <svg class="shr" viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="m7 8 5-5 5 5"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg> Compartir y luego «Agregar a inicio».</small></span><span class="bt"><button type="button" class="no">Entendido</button></span>';
     }
     card.hidden=false;
     const hd=document.querySelector('.app>header,header');const r=hd&&hd.getBoundingClientRect();
     if(r&&r.height&&r.bottom>0)card.style.top=(r.bottom+8)+'px';
-    card.querySelector('.no').onclick=()=>{ls.set(NO,String(Date.now()));card.hidden=true};
+    card.querySelector('.no').onclick=()=>{ls.set(NO,String(Date.now()));card.hidden=true;forzar=false};
     const si=card.querySelector('.si');
     if(si)si.onclick=async()=>{const ev=aviso;aviso=null;card.hidden=true;if(!ev)return;try{ev.prompt();const r=await ev.userChoice;if(r&&r.outcome!=='accepted')ls.set(NO,String(Date.now()))}catch(e){}};
   }
@@ -9571,6 +9573,7 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
     const foot=SES()?`<button type="button" class="cbar c" data-a="seguirult">Ver seguimiento</button><button type="button" class="b" data-a="inicio">Volver al inicio</button>`:`<button type="button" class="cbar c" data-a="google">Iniciar sesión para seguirlo</button><button type="button" class="b" data-a="inicio">Volver al inicio</button>`;
     return {head:top('Tu pedido','Listo'),body:h,foot}}
   function listoHoja(){const o=F.ok||{tit:'¡Pedido enviado!',txt:'',cod:''};
+    if(F.ok&&!F.ok.__inst){F.ok.__inst=1;try{window.pdOfrecerInstalar&&window.pdOfrecerInstalar()}catch(_){}}
     hojaAbrir({t:'listo',view(){return {dlg:true,title:o.tit,
       body:`<span class="ic g">${S('<path d="m5 12 5 5 9-10"/>')}</span><h2>${E(o.tit)}</h2>${o.txt?`<p>${E(o.txt)}</p>`:''}${o.cod?`<div class="okcod"><span>N.º de pedido</span><b>${E(o.cod)}</b></div>`:''}${SES()?'':`<p style="font-size:13px">Inicia sesión con Google para seguir tu pedido paso a paso.</p>`}`,
       btns:'<div class="bb u">'+(SES()?`<button type="button" class="bp" data-h="seg">Ver seguimiento</button>`:`<button type="button" class="bp" data-h="g">Iniciar sesión para seguirlo</button>`)+`<button type="button" class="bs" data-h="x" style="height:50px;border-radius:14px;font-size:15px">Seguir comprando</button></div>`}},
