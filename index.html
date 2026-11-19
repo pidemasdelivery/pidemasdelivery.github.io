@@ -91,7 +91,7 @@ body>.toast button{background:#FFF4EC!important;color:#C4410C!important;border:1
 
 
 <meta name="pd-instalacion" content="1">
-<meta name="pd-version" content="202611182355"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
+<meta name="pd-version" content="202611190000"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
 /* ===== pd-sistema-diseno (tokens únicos) ===== */
 :root{
 /* ── Tipografía ── */
@@ -9182,6 +9182,12 @@ button{font-family:inherit;-webkit-tap-highlight-color:transparent}
 /* --- Avisos arriba, para no tapar los botones de abajo --- */
 .tst{top:calc(env(safe-area-inset-top,0px) + 86px)!important;bottom:auto!important}
 .tst{animation:pdDown .3s cubic-bezier(.2,.9,.3,1.2) both!important}@keyframes pdDown{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:none}}
+
+/* --- Tarjeta del negocio (debajo del buscador), mismo color que «Pedido en curso» --- */
+.hero.neg{background:#FFF1E8;border:1.5px solid #F6CDB3;border-radius:20px;box-shadow:none;padding:14px;margin-top:12px}
+.hero.neg .lg.big{background-color:#FFFFFF}
+.hero.neg .tx .st.on{background:#FFFFFF;color:#15803D}.hero.neg .tx .st.warn{background:#FFFFFF;color:#9A330A}.hero.neg .tx .st.off{background:#FFFFFF;color:#6B5E55}
+.hero.neg .lnk{color:#C4410C;font-weight:800}
 `;
   /* Lo de la tienda vieja que queda debajo se esconde mientras se ve la app nueva */
   const ESTILO_DOC=`html.pdtApp body{overflow:hidden!important}
@@ -9298,6 +9304,7 @@ html.pdtRes #ppSlots{display:none!important}
     if(!prods.length)return {head,body:h+'<div class="vac">Este negocio todavía no tiene productos en su carta.</div>'};
     const phC=/belleza|cuidado|farmac|botica|ropa|moda|tecnolog|celular|ferreter|librer|mascota|veterin|regalo|perfum|cosm|hogar|bazar|juguet|calzad|zapat|accesori|joyer|óptic|optic/i.test(catN(r)||'')?'Buscar un producto':'Buscar en la carta';
     h+=`<label class="srch">${IC.search}<span style="position:absolute;width:1px;height:1px;overflow:hidden">${E(phC)}</span><input id="tNq" type="search" placeholder="${E(phC)}" value="${E(F.nq)}" data-in="nq" autocomplete="off"></label>`;
+    {const fv2=favs().includes(String(r.id));h+=`<div class="hero neg">${logoHtml(r,true)}<div class="tx"><span class="st ${E(s.tipo)}">${E(s.pill)}</span>${s.txt?`<span class="m" style="color:#1F1A17;font-weight:700">${E(s.txt)}</span>`:''}<span class="m">${E([tiempo(r),r.direccion].filter(Boolean).join(' · '))}</span><button type="button" class="lnk" data-a="horario">Ver horario de la semana</button></div><button type="button" class="fav${fv2?' on':''}" data-fav="${E(r.id)}" aria-label="${fv2?'Quitar de favoritos':'Guardar en favoritos'}" aria-pressed="${fv2}">${IC.heart}</button></div>`}
     const grupos=gruposCarta(cats,prods);
     if(grupos.length>1)h+=`<div class="chsBar"><div class="chs" role="tablist" aria-label="Categorías de la carta">${grupos.map((g,i)=>`<button type="button" role="tab" aria-selected="false" data-ncat="${E(g.id)}">${E(g.n)}</button>`).join('')}</div></div>`;
     h+=`<div id="tCarta" style="display:flex;flex-direction:column;gap:10px">${cartaLista(r)}</div>`;
