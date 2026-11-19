@@ -91,7 +91,7 @@ body>.toast button{background:#FFF4EC!important;color:#C4410C!important;border:1
 
 
 <meta name="pd-instalacion" content="1">
-<meta name="pd-version" content="202611182250"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
+<meta name="pd-version" content="202611182255"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
 /* ===== pd-sistema-diseno (tokens únicos) ===== */
 :root{
 /* ── Tipografía ── */
@@ -9521,8 +9521,8 @@ html.pdtRes #ppSlots{display:none!important}
     if(!vis){if(hRoot.innerHTML)hRoot.innerHTML='';hKey='';hRoot.__qt=null;return}
     const act=hRoot.activeElement;if(HO&&act&&(act.tagName==='INPUT'||act.tagName==='TEXTAREA')&&hKey)return;
     const v=HO?HO.view():null;
-    const pag=HO&&HO.t!=='listo';/* solo la confirmación del pedido es ventana; todo lo demás es una página */
-    const sh=!v?'':(v.dlg&&!pag)?`<div class="hbg"></div><section class="dlg" role="alertdialog" aria-modal="true" aria-label="${E(v.title)}">${v.body}${v.btns||''}</section>`:
+    const pag=HO&&HO.t!=='listo'&&!(v&&v.dlg);/* solo la confirmación del pedido es ventana; todo lo demás es una página */
+    const sh=!v?'':(v.dlg&&!pag)?`<div class="hbg"></div><section class="dlg" role="alertdialog" aria-modal="true" aria-label="${E(v.title)}">${v.body}${v.btns?(/class="bb/.test(v.btns)?v.btns:'<div class="bb u">'+v.btns+'</div>'):''}</section>`:
       `${pag?'':'<div class="hbg" data-h="x"></div>'}<section class="qs${pag?' full pg':''}" role="${pag?'region':'dialog'}"${pag?'':' aria-modal="true"'} aria-label="${E(v.title)}">${pag?'':'<div class="grab" aria-hidden="true"></div>'}<div class="hh">${pag?`<button type="button" class="qx" data-h="${v.dlg?'no':'x'}" aria-label="Volver">${IC.back}</button>`:''}<div class="tt">${v.kick?`<div class="k">${E(v.kick)}</div>`:''}<h2>${E(v.dlg?(v.kick2||'Confirmar'):v.title)}</h2></div>${pag?(v.dlg||HO.t==='carrito'?'':cartBtn().replace('data-a="carrito"','data-h="carrito"')):`<button type="button" class="qx" data-h="x" aria-label="Cerrar">${XI}</button>`}</div>${v.raw||`<div class="hb">${v.dlg?`<div class="dlgp">${v.body}</div>`:v.body}</div>`}${v.dlg?`<div class="hf">${v.btns||''}</div>`:v.foot?`<div class="hf">${v.foot}</div>`:''}</section>`;
     const tst=TS?`<div class="tst ${TS.k}" role="status"><span class="ti">${TS.k==='e'?S('<path d="M12 7v6"/><path d="M12 17h.01"/>'):TS.k==='n'?S('<path d="M12 8h.01"/><path d="M12 11v6"/>'):IC.check}</span><span>${E(TS.t)}</span></div>`:'';
     const k=(HO?HO.t+(HO.n||0):'')+'|'+sh+tst;if(k===hKey)return;
@@ -9601,8 +9601,8 @@ html.pdtRes #ppSlots{display:none!important}
 
   /* ---------- pedido de otro negocio ---------- */
   window.showRestaurantConflict=function(cur,nuevo){const a=negPorId(cur),b=negPorId(nuevo),na=a?nomN(a):'otro negocio',nb=b?nomN(b):'este negocio';
-    hojaAbrir({t:'conf',view(){return {kick:'Antes de agregar',title:'Tu pedido es de otro negocio',body:`<div class="qbox"><span class="i">${IC.cart}</span><span class="tx"><span class="lbh">Tu pedido actual</span><b>${E(na)}</b><span>${nCart()} producto${nCart()===1?'':'s'} · ${M(totCart())}</span></span></div><div class="qp">Cada pedido es de un solo negocio. Termina tu pedido de <b>${E(na)}</b> o vacíalo para pedir en <b>${E(nb)}</b>.</div>`,
-      foot:`<button type="button" class="bp" data-h="ver">Ver mi pedido</button><button type="button" class="bs r" data-h="vaciar">Vaciar y pedir en ${E(nb)}</button>`}},
+    hojaAbrir({t:'conf',view(){return {dlg:true,title:'Tu pedido es de otro negocio',body:`<span class="ic">${IC.cart}</span><h2>Tu pedido es de otro negocio</h2><p>Ya tienes ${nCart()} producto${nCart()===1?'':'s'} de ${E(na)} (${M(totCart())}). Cada pedido es de un solo negocio: termínalo o vacíalo para pedir en ${E(nb)}.</p>`,
+      btns:`<div class="bb u"><button type="button" class="bp" data-h="ver">Ver mi pedido</button><button type="button" class="bs" data-h="vaciar" style="height:50px;border-radius:14px;font-size:15px;color:#B42318">Vaciar y pedir en ${E(nb)}</button></div>`}},
       on(x){if(x==='ver'){hojaCerrar();abrir('carrito')}if(x==='vaciar'){try{cart.splice(0,cart.length)}catch(_){}guardarCart();hojaCerrar();aviso('Listo, ya puedes pedir en '+nb+'.');key='';pintar()}}})};
 
   /* ---------- calificar ---------- */
