@@ -91,7 +91,7 @@ body>.toast button{background:#FFF4EC!important;color:#C4410C!important;border:1
 
 
 <meta name="pd-instalacion" content="1">
-<meta name="pd-version" content="202611182225"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
+<meta name="pd-version" content="202611182235"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
 /* ===== pd-sistema-diseno (tokens únicos) ===== */
 :root{
 /* ── Tipografía ── */
@@ -8944,7 +8944,7 @@ button{font-family:inherit;-webkit-tap-highlight-color:transparent}
 .dir .tx b{font-size:17px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .ib{position:relative;width:48px;height:48px;flex:0 0 48px;border-radius:14px;border:1px solid #F1E4DA;background:#FFFFFF;display:flex;align-items:center;justify-content:center;color:#1F1A17;padding:0;cursor:pointer;text-decoration:none}
 .ib.on{color:#C4410C;background:#FFF4EC;border-color:#F6D9C4}
-.top .row>.ib[data-a]:first-child{width:44px;height:44px;flex:0 0 44px;border:0;background:#FDEBDF;color:#C4410C}
+.top .row>.ib[data-a]:first-child{width:44px;height:44px;flex:0 0 44px;border:0;background:#C4410C;color:#FFFFFF;box-shadow:0 4px 12px rgba(196,65,12,.28)}
 .top .kick{color:#6B5E55;font-weight:800}
 .top .h1{font-size:18px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hero{position:relative}.hero>.fav{position:absolute;top:10px;right:10px}.hero .tx{padding-right:30px}
@@ -9188,7 +9188,7 @@ html.pdtRes #ppSlots{display:none!important}
   const ICFOTO=S('<rect x="3" y="5" width="18" height="14" rx="3"/><circle cx="9" cy="11" r="2"/><path d="m21 16-5-5-8 8"/>');
 
   /* ---------- páginas ---------- */
-  const top=(k,t,izq,der)=>`<div class="top"><div class="row">${izq||''}<div class="ttl" style="flex:1 1 0%;min-width:0"><div class="kick">${E(k)}</div><div class="h1" style="font-size:22px">${E(t)}</div></div>${der||''}</div></div>`;
+  const top=(k,t,izq,der)=>`<div class="top"><div class="row">${izq||''}<div class="ttl" style="flex:1 1 0%;min-width:0"><div class="kick">${E(k)}</div><div class="h1" style="font-size:22px">${E(t)}</div></div>${der||''}${sub!=='carrito'?cartBtn():''}</div></div>`;
   const back=(a,lab)=>`<button type="button" class="ib" data-a="${a||'volver'}" aria-label="${E(lab||'Volver')}">${IC.back}</button>`;
   const cartBtn=()=>{const n=nCart();return `<button type="button" class="ib" data-a="carrito" aria-label="Ver tu pedido${n?', '+n+' producto'+(n===1?'':'s'):''}">${IC.cart}${n?`<span class="bd">${n}</span>`:''}</button>`};
   function dirTxt(){try{const d=window.pdDatosClienteGuardados&&window.pdDatosClienteGuardados();if(d&&d.direccion)return d.direccion}catch(e){}return ''}
@@ -9236,7 +9236,7 @@ html.pdtRes #ppSlots{display:none!important}
     const r=negPorId(F.neg);
     if(!r)return {head:top('Negocio','Cargando…',back('inicio')),body:'<div class="load">Cargando…</div>'};
     const fv=favs().includes(String(r.id));
-    const head=top(catN(r)||'Negocio',nomN(r),back('inicio','Volver al inicio'),cartBtn());
+    const head=top(catN(r)||'Negocio',nomN(r),back('inicio','Volver al inicio'));
     const s=estado(r),c=carta(r.id);
     let h=`<div class="hero">${logoHtml(r,true)}<div class="tx"><span class="st ${E(s.tipo)}">${E(s.pill)}</span>${s.txt?`<span class="m" style="color:#1F1A17">${E(s.txt)}</span>`:''}<span class="m">${E([tiempo(r),r.direccion].filter(Boolean).join(' · '))}</span><button type="button" class="lnk" data-a="horario">Ver horario de la semana</button></div><button type="button" class="fav${fv?' on':''}" data-fav="${E(r.id)}" aria-label="${fv?'Quitar de favoritos':'Guardar en favoritos'}" aria-pressed="${fv}">${IC.heart}</button></div>`;
     if(!c.data)return {head,body:h+(c.err?`<div class="err">No se pudo cargar la carta: ${E(c.err)}</div>`:'<div class="load">Cargando la carta…</div>')};
@@ -9405,7 +9405,7 @@ html.pdtRes #ppSlots{display:none!important}
 .qs .hh .tt{flex:1 1 0%;min-width:0}
 .qs .hh .k{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#6B5E55;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .qs .hh h2{margin:0;font-size:18px;font-weight:800;line-height:1.2}
-.qx{width:44px;height:44px;border-radius:14px;border:0;background:#FDEBDF;color:#C4410C;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;flex:0 0 auto}
+.qx{width:44px;height:44px;border-radius:14px;border:0;background:#C4410C;color:#FFFFFF;box-shadow:0 4px 12px rgba(196,65,12,.28);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;flex:0 0 auto}
 .hb{flex:1 1 auto;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:4px 16px 16px;display:flex;flex-direction:column;gap:12px;scrollbar-width:none}
 .hb::-webkit-scrollbar{display:none}
 .hf{flex:0 0 auto;padding:12px 16px calc(env(safe-area-inset-bottom,0px) + 14px);background:#FFFFFF;border-top:1px solid #F1E4DA;display:flex;flex-direction:column;gap:8px}
@@ -9515,20 +9515,21 @@ html.pdtRes #ppSlots{display:none!important}
     if(!$('pdAppShell')&&!hHost){const wrap=document.createElement('header');wrap.id='pdAppShell';wrap.style.cssText='display:contents';document.body.appendChild(wrap)}
     asegurarHoja();
     const vis=!!HO||!!TS;hHost.style.display=vis?'':'none';hHost.style.pointerEvents=HO?'auto':'none';
-    if(!vis){if(hRoot.innerHTML)hRoot.innerHTML='';hKey='';return}
+    if(!vis){if(hRoot.innerHTML)hRoot.innerHTML='';hKey='';hRoot.__qt=null;return}
     const act=hRoot.activeElement;if(HO&&act&&(act.tagName==='INPUT'||act.tagName==='TEXTAREA')&&hKey)return;
     const v=HO?HO.view():null;
     const pag=HO&&HO.t!=='listo';/* solo la confirmación del pedido es ventana; todo lo demás es una página */
     const sh=!v?'':(v.dlg&&!pag)?`<div class="hbg"></div><section class="dlg" role="alertdialog" aria-modal="true" aria-label="${E(v.title)}">${v.body}${v.btns||''}</section>`:
-      `${pag?'':'<div class="hbg" data-h="x"></div>'}<section class="qs${pag?' full pg':''}" role="${pag?'region':'dialog'}"${pag?'':' aria-modal="true"'} aria-label="${E(v.title)}">${pag?'':'<div class="grab" aria-hidden="true"></div>'}<div class="hh">${pag?`<button type="button" class="qx" data-h="${v.dlg?'no':'x'}" aria-label="Volver">${IC.back}</button>`:''}<div class="tt">${v.kick?`<div class="k">${E(v.kick)}</div>`:''}<h2>${E(v.dlg?(v.kick2||'Confirmar'):v.title)}</h2></div>${pag?'':`<button type="button" class="qx" data-h="x" aria-label="Cerrar">${XI}</button>`}</div>${v.raw||`<div class="hb">${v.dlg?`<div class="dlgp">${v.body}</div>`:v.body}</div>`}${v.dlg?`<div class="hf">${v.btns||''}</div>`:v.foot?`<div class="hf">${v.foot}</div>`:''}</section>`;
+      `${pag?'':'<div class="hbg" data-h="x"></div>'}<section class="qs${pag?' full pg':''}" role="${pag?'region':'dialog'}"${pag?'':' aria-modal="true"'} aria-label="${E(v.title)}">${pag?'':'<div class="grab" aria-hidden="true"></div>'}<div class="hh">${pag?`<button type="button" class="qx" data-h="${v.dlg?'no':'x'}" aria-label="Volver">${IC.back}</button>`:''}<div class="tt">${v.kick?`<div class="k">${E(v.kick)}</div>`:''}<h2>${E(v.dlg?(v.kick2||'Confirmar'):v.title)}</h2></div>${pag?(v.dlg||HO.t==='carrito'?'':cartBtn().replace('data-a="carrito"','data-h="carrito"')):`<button type="button" class="qx" data-h="x" aria-label="Cerrar">${XI}</button>`}</div>${v.raw||`<div class="hb">${v.dlg?`<div class="dlgp">${v.body}</div>`:v.body}</div>`}${v.dlg?`<div class="hf">${v.btns||''}</div>`:v.foot?`<div class="hf">${v.foot}</div>`:''}</section>`;
     const tst=TS?`<div class="tst ${TS.k}" role="status"><span class="ti">${TS.k==='e'?S('<path d="M12 7v6"/><path d="M12 17h.01"/>'):TS.k==='n'?S('<path d="M12 8h.01"/><path d="M12 11v6"/>'):IC.check}</span><span>${E(TS.t)}</span></div>`:'';
     const k=(HO?HO.t+(HO.n||0):'')+'|'+sh+tst;if(k===hKey)return;
     const st=hRoot.querySelector('.hb'),y=st?st.scrollTop:0,mismo=hKey&&HO&&hKey.startsWith(HO.t+(HO.n||0)+'|');hKey=k;
     hRoot.innerHTML=`<style>${ESTILO}${HOJA_CSS}</style>${v&&v.css?v.css:''}${sh}${tst}`;
+    {const t=HO?HO.t:null;if(mismo||(t&&hRoot.__qt===t&&Date.now()-(hRoot.__qtT||0)<600000)){hRoot.querySelectorAll('.qs,.hbg').forEach(x=>{x.style.animation='none'})}hRoot.__qt=t;hRoot.__qtT=Date.now()}
     const nb=hRoot.querySelector('.hb');if(nb&&mismo)nb.scrollTop=y;
     if(HO&&HO.despues)try{HO.despues(hRoot)}catch(e){console.warn(e)}
   }
-  function hClic(e){const b=e.target.closest('[data-h]');if(!b||!HO)return;const a=b.dataset.h;if(!a)return;if(a==='x'){hojaCerrar(undefined);return}const i=a.indexOf(':');try{HO.on&&HO.on(i<0?a:a.slice(0,i),i<0?'':a.slice(i+1),b,e)}catch(err){console.warn(err)}}
+  function hClic(e){const b=e.target.closest('[data-h]');if(!b||!HO)return;const a=b.dataset.h;if(!a)return;if(a==='x'){hojaCerrar(undefined);return}if(a==='carrito'){hojaCerrar(undefined);if(!CART().length){aviso('Tu pedido está vacío. Elige un negocio y agrega productos.');return}setTimeout(()=>abrir('carrito'),0);return}const i=a.indexOf(':');try{HO.on&&HO.on(i<0?a:a.slice(0,i),i<0?'':a.slice(i+1),b,e)}catch(err){console.warn(err)}}
   function hEntrada(e){const el=e.target,k=el.dataset&&el.dataset.hin;if(!k||!HO)return;HO.f=HO.f||{};HO.f[k]=el.value;if(HO.input)try{HO.input(k,el)}catch(_){}}
   const repintarHoja=()=>{hKey='';pintarHoja()};
 
