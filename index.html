@@ -91,7 +91,7 @@ body>.toast button{background:#FFF4EC!important;color:#C4410C!important;border:1
 
 
 <meta name="pd-instalacion" content="1">
-<meta name="pd-version" content="202611190000"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
+<meta name="pd-version" content="202611190005"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
 /* ===== pd-sistema-diseno (tokens únicos) ===== */
 :root{
 /* ── Tipografía ── */
@@ -9184,10 +9184,13 @@ button{font-family:inherit;-webkit-tap-highlight-color:transparent}
 .tst{animation:pdDown .3s cubic-bezier(.2,.9,.3,1.2) both!important}@keyframes pdDown{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:none}}
 
 /* --- Tarjeta del negocio (debajo del buscador), mismo color que «Pedido en curso» --- */
-.hero.neg{background:#FFF1E8;border:1.5px solid #F6CDB3;border-radius:20px;box-shadow:none;padding:14px;margin-top:12px}
+.hero.neg{background:#FFF1E8;border:1.5px solid #F6CDB3;border-radius:20px;box-shadow:none;padding:14px;margin-top:0}
 .hero.neg .lg.big{background-color:#FFFFFF}
 .hero.neg .tx .st.on{background:#FFFFFF;color:#15803D}.hero.neg .tx .st.warn{background:#FFFFFF;color:#9A330A}.hero.neg .tx .st.off{background:#FFFFFF;color:#6B5E55}
 .hero.neg .lnk{color:#C4410C;font-weight:800}
+
+/* --- Misma distancia entre bloques que en Inicio --- */
+.chsBar{padding-top:4px!important}
 `;
   /* Lo de la tienda vieja que queda debajo se esconde mientras se ve la app nueva */
   const ESTILO_DOC=`html.pdtApp body{overflow:hidden!important}
