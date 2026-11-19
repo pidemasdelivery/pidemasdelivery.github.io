@@ -91,7 +91,7 @@ body>.toast button{background:#FFF4EC!important;color:#C4410C!important;border:1
 
 
 <meta name="pd-instalacion" content="1">
-<meta name="pd-version" content="202611182320"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
+<meta name="pd-version" content="202611182330"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
 /* ===== pd-sistema-diseno (tokens únicos) ===== */
 :root{
 /* ── Tipografía ── */
@@ -9160,6 +9160,12 @@ button{font-family:inherit;-webkit-tap-highlight-color:transparent}
 .cbar{height:58px;border-radius:18px;font-size:16px;font-weight:800}
 .curso{border-radius:20px}
 .st{font-size:12px}
+
+/* --- Botón volver: igual en todas las páginas --- */
+.bk,.top .row>.ib.bk:first-child,.qx.bk{width:46px!important;height:46px!important;flex:0 0 46px!important;border-radius:14px!important;border:0!important;background:#C4410C!important;color:#FFFFFF!important;box-shadow:0 4px 12px rgba(196,65,12,.28)!important;display:flex;align-items:center;justify-content:center;padding:0}
+.bk svg{width:22px!important;height:22px!important;stroke-width:2.6!important}
+/* --- Buscador de inicio: fuera de la cabecera, debajo de ella --- */
+.srch.inicio{background:#FFFFFF;border:1px solid #F1E4DA;box-shadow:0 1px 3px rgba(31,26,23,.05)}
 `;
   /* Lo de la tienda vieja que queda debajo se esconde mientras se ve la app nueva */
   const ESTILO_DOC=`html.pdtApp body{overflow:hidden!important}
@@ -9220,7 +9226,7 @@ html.pdtRes #ppSlots{display:none!important}
 
   /* ---------- páginas ---------- */
   const top=(k,t,izq,der)=>`<div class="top"><div class="row">${izq||''}<div class="ttl" style="flex:1 1 0%;min-width:0"><div class="kick">${E(k)}</div><div class="h1" style="font-size:22px">${E(t)}</div></div>${der||''}${sub!=='carrito'?cartBtn():''}</div></div>`;
-  const back=(a,lab)=>`<button type="button" class="ib" data-a="${a||'volver'}" aria-label="${E(lab||'Volver')}">${IC.back}</button>`;
+  const back=(a,lab)=>`<button type="button" class="ib bk" data-a="${a||'volver'}" aria-label="${E(lab||'Volver')}">${IC.back}</button>`;
   const cartBtn=()=>{const n=nCart();return `<button type="button" class="ib" data-a="carrito" aria-label="Ver tu pedido${n?', '+n+' producto'+(n===1?'':'s'):''}">${IC.cart}${n?`<span class="bd">${n}</span>`:''}</button>`};
   function dirTxt(){try{const d=window.pdDatosClienteGuardados&&window.pdDatosClienteGuardados();if(d&&d.direccion)return d.direccion}catch(e){}return ''}
 
@@ -9228,10 +9234,11 @@ html.pdtRes #ppSlots{display:none!important}
   function inicio(){
     const dir=dirTxt();
     const head=`<div class="hd"><div class="hrow"><button type="button" class="dir" data-a="cuenta"><span class="pi">${IC.pin}</span><span class="tx"><small>Entregar en</small><b>${E(dir||'Agrega tu dirección')}</b></span></button>${cartBtn()}</div>
-      <label class="srch">${IC.search}<span style="position:absolute;width:1px;height:1px;overflow:hidden">Buscar</span><input id="tQ" type="search" placeholder="Busca un negocio o un producto" value="${E(F.q)}" data-in="q" autocomplete="off"></label></div>`;
+      </div>`;
+    const buscador=`<label class="srch inicio">${IC.search}<span style="position:absolute;width:1px;height:1px;overflow:hidden">Buscar</span><input id="tQ" type="search" placeholder="Busca un negocio o un producto" value="${E(F.q)}" data-in="q" autocomplete="off"></label>`;
     const L=negs();
-    if(!L.length)return {head,body:'<div class="load">Cargando los negocios…</div>'};
-    let h='';
+    if(!L.length)return {head,body:buscador+'<div class="load">Cargando los negocios…</div>'};
+    let h=buscador;
     const o=ultimoPedido();
     if(o){const n=negPorId(o.negocio_id);h+=`<button type="button" class="curso" data-seg="${E(o.id)}"><span class="ci">${S('<path d="M6 8h12l-1 12H7z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>')}</span><span class="ct"><span class="vivo"><i></i>Pedido en curso · ${E(etiqueta(o))}</span><b style="font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${E(n?nomN(n):'Tu pedido')}${o.total!=null?' · '+M(o.total):''}</b><span style="font-size:14px;font-weight:800;color:#C4410C">Ver seguimiento</span></span>${S('<path d="m9 6 6 6-6 6"/>')}</button>`}
     const cats=[...new Set(L.map(catN).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'es'));
@@ -9555,7 +9562,7 @@ html.pdtRes #ppSlots{display:none!important}
     const v=HO?HO.view():null;
     const pag=HO&&HO.t!=='listo'&&!(v&&v.dlg);/* solo la confirmación del pedido es ventana; todo lo demás es una página */
     const sh=!v?'':(v.dlg&&!pag)?`<div class="hbg"></div><section class="dlg" role="alertdialog" aria-modal="true" aria-label="${E(v.title)}">${v.body}${v.btns?(/class="bb/.test(v.btns)?v.btns:'<div class="bb u">'+v.btns+'</div>'):''}</section>`:
-      `${pag?'':'<div class="hbg" data-h="x"></div>'}<section class="qs${pag?' full pg':''}" role="${pag?'region':'dialog'}"${pag?'':' aria-modal="true"'} aria-label="${E(v.title)}">${pag?'':'<div class="grab" aria-hidden="true"></div>'}<div class="hh">${pag?`<button type="button" class="qx" data-h="${v.dlg?'no':'x'}" aria-label="Volver">${IC.back}</button>`:''}<div class="tt">${v.kick?`<div class="k">${E(v.kick)}</div>`:''}<h2>${E(v.dlg?(v.kick2||'Confirmar'):v.title)}</h2></div>${pag?(v.dlg||HO.t==='carrito'?'':cartBtn().replace('data-a="carrito"','data-h="carrito"')):`<button type="button" class="qx" data-h="x" aria-label="Cerrar">${XI}</button>`}</div>${v.raw||`<div class="hb">${v.dlg?`<div class="dlgp">${v.body}</div>`:v.body}</div>`}${v.dlg?`<div class="hf">${v.btns||''}</div>`:v.foot?`<div class="hf">${v.foot}</div>`:''}</section>`;
+      `${pag?'':'<div class="hbg" data-h="x"></div>'}<section class="qs${pag?' full pg':''}" role="${pag?'region':'dialog'}"${pag?'':' aria-modal="true"'} aria-label="${E(v.title)}">${pag?'':'<div class="grab" aria-hidden="true"></div>'}<div class="hh">${pag?`<button type="button" class="qx bk" data-h="${v.dlg?'no':'x'}" aria-label="Volver">${IC.back}</button>`:''}<div class="tt">${v.kick?`<div class="k">${E(v.kick)}</div>`:''}<h2>${E(v.dlg?(v.kick2||'Confirmar'):v.title)}</h2></div>${pag?(v.dlg||HO.t==='carrito'?'':cartBtn().replace('data-a="carrito"','data-h="carrito"')):`<button type="button" class="qx" data-h="x" aria-label="Cerrar">${XI}</button>`}</div>${v.raw||`<div class="hb">${v.dlg?`<div class="dlgp">${v.body}</div>`:v.body}</div>`}${v.dlg?`<div class="hf">${v.btns||''}</div>`:v.foot?`<div class="hf">${v.foot}</div>`:''}</section>`;
     const tst=TS?`<div class="tst ${TS.k}" role="status"><span class="ti">${TS.k==='e'?S('<path d="M12 7v6"/><path d="M12 17h.01"/>'):TS.k==='n'?S('<path d="M12 8h.01"/><path d="M12 11v6"/>'):IC.check}</span><span>${E(TS.t)}</span></div>`:'';
     const k=(HO?HO.t+(HO.n||0):'')+'|'+sh+tst;if(k===hKey)return;
     const st=hRoot.querySelector('.hb'),y=st?st.scrollTop:0,mismo=hKey&&HO&&hKey.startsWith(HO.t+(HO.n||0)+'|');hKey=k;
