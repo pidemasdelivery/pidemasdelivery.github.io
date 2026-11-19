@@ -91,7 +91,7 @@ body>.toast button{background:#FFF4EC!important;color:#C4410C!important;border:1
 
 
 <meta name="pd-instalacion" content="1">
-<meta name="pd-version" content="202611182145"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
+<meta name="pd-version" content="202611182220"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
 /* ===== pd-sistema-diseno (tokens únicos) ===== */
 :root{
 /* ── Tipografía ── */
@@ -9079,6 +9079,35 @@ button{font-family:inherit;-webkit-tap-highlight-color:transparent}
 .lnks button svg{color:#C4410C}
 .lnks button span{flex:1 1 0%}
 .lnks button>svg:last-child{color:#A8988C}
+
+.list button,.list a,.ib,.cbar,.dir,.fav,.chs button,.seg button{transition:transform .14s ease,box-shadow .2s ease,background-color .2s ease,border-color .2s ease,color .2s ease;-webkit-tap-highlight-color:transparent}
+.ng:active,.pc:active,.curso:active,.ib:active,.cbar:active,.dir:active,.chs button:active,.seg button:active,.lnk:active{transform:scale(.97)}
+.fav:active,.pc .ad:active{transform:scale(.86)}
+@keyframes pdUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.entra .list>*,.entra #tL>*,.entra #tCarta>*{animation:pdUp .5s cubic-bezier(.2,.8,.2,1) both}
+.entra .list>*:nth-child(2),.entra #tL>*:nth-child(2),.entra #tCarta>*:nth-child(2){animation-delay:.05s}
+.entra .list>*:nth-child(3),.entra #tL>*:nth-child(3),.entra #tCarta>*:nth-child(3){animation-delay:.1s}
+.entra .list>*:nth-child(4),.entra #tL>*:nth-child(4),.entra #tCarta>*:nth-child(4){animation-delay:.15s}
+.entra .list>*:nth-child(5),.entra #tL>*:nth-child(5),.entra #tCarta>*:nth-child(5){animation-delay:.2s}
+.entra .list>*:nth-child(n+6),.entra #tL>*:nth-child(n+6),.entra #tCarta>*:nth-child(n+6){animation-delay:.25s}
+@keyframes pdPop{0%{transform:scale(1)}40%{transform:scale(1.32)}100%{transform:scale(1)}}
+.pop{animation:pdPop .42s cubic-bezier(.3,1.6,.5,1)}
+@keyframes pdPulse{0%{box-shadow:0 0 0 0 rgba(196,65,12,.45)}100%{box-shadow:0 0 0 12px rgba(196,65,12,0)}}
+@keyframes pdBlink{0%,100%{opacity:1}50%{opacity:.35}}
+.vivo i{animation:pdBlink 1.4s ease-in-out infinite}
+.st{gap:6px}.st::before{content:'';width:7px;height:7px;border-radius:50%;flex:0 0 auto}
+.st.on::before{background:#16A34A;animation:pdBlink 1.4s ease-in-out infinite}.st.warn::before{background:#E8590C}.st.off::before{background:#A8988C}
+.curso{flex-direction:row;align-items:center;gap:14px;background:#FFF1E8;border:1.5px solid #F6CDB3;border-radius:20px}
+.curso .ci{width:46px;height:46px;border-radius:14px;background:#C4410C;color:#FFFFFF;display:flex;align-items:center;justify-content:center;flex:0 0 auto;animation:pdPulse 1.8s ease-out infinite}
+.curso .ci svg{width:22px;height:22px}
+.curso .ct{flex:1 1 0%;min-width:0;display:flex;flex-direction:column;gap:3px}
+.curso>svg{color:#9A330A;flex:0 0 auto}
+.seg{position:relative}.seg .ind{position:absolute;top:4px;bottom:4px;left:4px;border-radius:10px;background:#FFFFFF;box-shadow:0 2px 6px rgba(31,26,23,.1);transition:transform .34s cubic-bezier(.3,1.3,.5,1);pointer-events:none}
+.seg button{position:relative;z-index:1}.seg.an button.on{background:transparent;box-shadow:none}
+.chs button.on{box-shadow:0 4px 12px rgba(196,65,12,.28)}
+.pc .ad{box-shadow:0 4px 10px rgba(196,65,12,.3)}.pc .ad.off{box-shadow:none}
+.cbar{box-shadow:0 8px 20px rgba(196,65,12,.28)}.cbar:disabled{box-shadow:none}
+.ng,.pc,.hero{box-shadow:0 1px 3px rgba(31,26,23,.05)}
 `;
   /* Lo de la tienda vieja que queda debajo se esconde mientras se ve la app nueva */
   const ESTILO_DOC=`html.pdtApp body{overflow:hidden!important}
@@ -9152,11 +9181,11 @@ html.pdtRes #ppSlots{display:none!important}
     if(!L.length)return {head,body:'<div class="load">Cargando los negocios…</div>'};
     let h='';
     const o=ultimoPedido();
-    if(o){const n=negPorId(o.negocio_id);h+=`<button type="button" class="curso" data-seg="${E(o.id)}"><span style="display:flex;justify-content:space-between;align-items:baseline;gap:10px"><b style="font-size:16px">${E(n?nomN(n):'Tu pedido')}</b>${o.total!=null?`<b style="font-size:16px">${M(o.total)}</b>`:''}</span><span class="vivo"><i></i>Pedido en curso · ${E(etiqueta(o))}</span><span style="font-size:14px;font-weight:800;color:#C4410C">Ver seguimiento →</span></button>`}
+    if(o){const n=negPorId(o.negocio_id);h+=`<button type="button" class="curso" data-seg="${E(o.id)}"><span class="ci">${S('<path d="M6 8h12l-1 12H7z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>')}</span><span class="ct"><span class="vivo"><i></i>Pedido en curso · ${E(etiqueta(o))}</span><b style="font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${E(n?nomN(n):'Tu pedido')}${o.total!=null?' · '+M(o.total):''}</b><span style="font-size:14px;font-weight:800;color:#C4410C">Ver seguimiento</span></span>${S('<path d="m9 6 6 6-6 6"/>')}</button>`}
     const cats=[...new Set(L.map(catN).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'es'));
     if(false)h+=`<div class="chsBar"><div class="chs chsHome" role="group" aria-label="Categorías"><button type="button" class="${!F.cat?'on':''}" data-cat="">Todos</button>${cats.map(c=>`<button type="button" class="${F.cat===c?'on':''}" data-cat="${E(c)}">${E(c)}</button>`).join('')}</div></div>`;
     h+=`<div class="sec"><h2>Negocios</h2><span>${L.length} en Piura</span></div>`;
-    h+=`<div class="seg" style="grid-template-columns:repeat(3,minmax(0,1fr))">${[['todos','Todos'],['abiertos','Abiertos'],['cerca','Más cerca']].map(x=>`<button type="button" class="${F.filtro===x[0]?'on':''}" data-fl="${x[0]}">${x[1]}</button>`).join('')}</div>`;
+    {const si=Math.max(0,['todos','abiertos','cerca'].indexOf(F.filtro));h+=`<div class="seg an" style="grid-template-columns:repeat(3,minmax(0,1fr))"><span class="ind" data-i="${si}" style="width:calc((100% - 16px) / 3)"></span>${[['todos','Todos'],['abiertos','Abiertos'],['cerca','Más cerca']].map(x=>`<button type="button" class="${F.filtro===x[0]?'on':''}" data-fl="${x[0]}">${x[1]}</button>`).join('')}</div>`;}
     h+=`<div id="tL" style="display:flex;flex-direction:column;gap:10px">${filas()}</div>`;
     return {head,body:h};
   }
@@ -9447,7 +9476,7 @@ html.pdtRes #ppSlots{display:none!important}
 .dlgp .fh{width:100%;text-align:left}
 .hf .bp.r{background:#B42318}
 @keyframes pin{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
-.tst{position:absolute;left:16px;right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 96px);background:#1F1A17;color:#FFFFFF;border-radius:14px;padding:14px 16px;font-size:15px;font-weight:600;display:flex;gap:10px;align-items:center;pointer-events:auto;animation:up .2s ease-out;box-shadow:0 8px 24px rgba(31,26,23,.25);max-width:520px;margin:0 auto}
+.tst{position:absolute;left:16px;right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 96px);background:#FFFFFF;color:#1F1A17;border:1px solid #F1E4DA;border-radius:14px;padding:14px 16px;font-size:15px;font-weight:600;display:flex;gap:10px;align-items:center;pointer-events:auto;animation:up .3s cubic-bezier(.2,.9,.3,1.2);box-shadow:0 12px 30px rgba(31,26,23,.16),0 8px 24px rgba(31,26,23,.25);max-width:520px;margin:0 auto}
 .tst .ti{width:22px;height:22px;border-radius:50%;background:#15803D;display:flex;align-items:center;justify-content:center;flex:0 0 auto}
 .tst.e .ti{background:#B42318}.tst.n .ti{background:#C4410C}
 .tst .ti svg{width:14px;height:14px;stroke-width:3}
@@ -9662,7 +9691,7 @@ html.pdtRes #ppSlots{display:none!important}
     return tab==='pedidos'?pedidos():tab==='perfil'?perfil():inicio();
   }
   const cls=(el,c,on)=>{if(el&&el.classList.contains(c)!==!!on)el.classList.toggle(c,!!on)};
-  let alCat=false;
+  let alCat=false,favPop=null;
   function pintar(){
     const H=document.documentElement;
     if(sub!=='carrito'&&H.classList.contains('pdtCk'))cerrarCk();
@@ -9697,7 +9726,11 @@ html.pdtRes #ppSlots{display:none!important}
     const lst=root.querySelector('.list');if(lst&&root.__pag)scrollMem[root.__pag]=lst.scrollTop;
     const cx=(root.querySelector('.chsHome')||{}).scrollLeft||0;
     root.innerHTML=`<style>${ESTILO}</style><div class="app">${v.head}<div class="list">${v.body}</div>${v.foot?`<div class="foot">${v.foot}</div>`:''}${nav()}</div>`;
-    const nl=root.querySelector('.list');if(nl)nl.scrollTop=root.__pag===pag?(scrollMem[pag]||0):(scrollMem[pag]=0,0);root.__pag=pag;
+    const nueva=root.__pag!==pag;const nl=root.querySelector('.list');if(nl)nl.scrollTop=root.__pag===pag?(scrollMem[pag]||0):(scrollMem[pag]=0,0);root.__pag=pag;
+    try{const ap=root.querySelector('.app');if(nueva&&ap){ap.classList.add('entra');clearTimeout(root.__entT);root.__entT=setTimeout(()=>{const a2=root.querySelector('.app');a2&&a2.classList.remove('entra')},1100)}
+      const ind=root.querySelector('.seg .ind');if(ind){const i=+ind.dataset.i||0,tx=k=>'translateX(calc('+k+' * (100% + 4px)))',pv=root.__segI;if(pv!=null&&pv!==i&&!nueva){ind.style.transition='none';ind.style.transform=tx(pv);void ind.offsetWidth;ind.style.transition=''}ind.style.transform=tx(i);root.__segI=i}
+      const nc=nCart();if(root.__nc!=null&&nc>root.__nc)root.querySelectorAll('.bd,.cbar .n').forEach(x=>x.classList.add('pop'));root.__nc=nc;
+      if(favPop){root.querySelectorAll('[data-fav="'+CSS.escape(favPop)+'"] svg').forEach(x=>x.classList.add('pop'));favPop=null}}catch(_){}
     {const c2=root.querySelector('.chsHome');if(c2){c2.scrollLeft=cx;if(alCat){alCat=false;const on=c2.querySelector('button.on');if(on)setTimeout(()=>alIzq(on),120)}}}
     {const cs=[...root.querySelectorAll('[data-ncat]')];if(cs.length){const act=cs.some(b=>b.dataset.ncat===F.ncat)?F.ncat:cs[0].dataset.ncat;cs.forEach(b=>{const on=b.dataset.ncat===act;b.classList.toggle('on',on);b.setAttribute('aria-selected',on)})}}
     if(pag==='buscar'||(tab==='buscar'&&!sub)){}
@@ -9732,7 +9765,7 @@ html.pdtRes #ppSlots{display:none!important}
   async function clic(e){
     tocando=false;
     const t=e.target.closest('[data-t]');if(t){ir(t.dataset.t);return}
-    const fv=e.target.closest('[data-fav]');if(fv){try{window.pdToggleFav(fv.dataset.fav)}catch(_){}key='';pintar();return}
+    const fv=e.target.closest('[data-fav]');if(fv){try{window.pdToggleFav(fv.dataset.fav)}catch(_){}favPop=fv.dataset.fav;key='';pintar();return}
     const ng=e.target.closest('[data-neg]');if(ng){abrirNeg(ng.dataset.neg);return}
     const ad=e.target.closest('[data-add]');if(ad){agregar(ad.dataset.add,1);return}
     const pr=e.target.closest('[data-prod]');if(pr){if(pr.dataset.pneg){const id=pr.dataset.prod;F.neg=pr.dataset.pneg;carta(F.neg);if(!sub)try{history.pushState({pdt:1},'')}catch(_){}sub='negocio';const w=setInterval(()=>{if(PR().some(x=>String(x.id)===String(id))){clearInterval(w);abrirProd(id)}},150);setTimeout(()=>clearInterval(w),8000);return}abrirProd(pr.dataset.prod);return}
