@@ -91,7 +91,7 @@ body>.toast button{background:#FFF4EC!important;color:#C4410C!important;border:1
 
 
 <meta name="pd-instalacion" content="1">
-<meta name="pd-version" content="202611182335"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
+<meta name="pd-version" content="202611182340"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
 /* ===== pd-sistema-diseno (tokens únicos) ===== */
 :root{
 /* ── Tipografía ── */
@@ -9166,6 +9166,11 @@ button{font-family:inherit;-webkit-tap-highlight-color:transparent}
 .bk svg{width:22px!important;height:22px!important;stroke-width:2.4!important}
 /* --- Buscador de inicio: fuera de la cabecera, debajo de ella --- */
 .srch,.srch.w,.srch.inicio{background:#FFFFFF!important;border:1px solid #F1E4DA!important;box-shadow:0 1px 3px rgba(31,26,23,.05)}
+
+/* --- Menú inferior visible también en las páginas que se abren encima --- */
+
+.qs.full{bottom:var(--nvh,0px)!important}
+.qs,.hbg,.dlg,.tst{pointer-events:auto}
 `;
   /* Lo de la tienda vieja que queda debajo se esconde mientras se ve la app nueva */
   const ESTILO_DOC=`html.pdtApp body{overflow:hidden!important}
@@ -9556,7 +9561,7 @@ html.pdtRes #ppSlots{display:none!important}
   function pintarHoja(){
     if(!$('pdAppShell')&&!hHost){const wrap=document.createElement('header');wrap.id='pdAppShell';wrap.style.cssText='display:contents';document.body.appendChild(wrap)}
     asegurarHoja();
-    const vis=!!HO||!!TS;hHost.style.display=vis?'':'none';hHost.style.pointerEvents=HO?'auto':'none';
+    const vis=!!HO||!!TS;hHost.style.display=vis?'':'none';hHost.style.pointerEvents='none';try{const nv=root&&root.querySelector('.nv');hHost.style.setProperty('--nvh',(nv?nv.offsetHeight:0)+'px')}catch(_){}
     if(!vis){if(hRoot.innerHTML)hRoot.innerHTML='';hKey='';hRoot.__qt=null;return}
     const act=hRoot.activeElement;if(HO&&act&&(act.tagName==='INPUT'||act.tagName==='TEXTAREA')&&hKey)return;
     const v=HO?HO.view():null;
@@ -9734,7 +9739,6 @@ html.pdtRes #ppSlots{display:none!important}
 
   /* ---------- menú y pintado ---------- */
   function nav(){
-    if(sub==='negocio'||sub==='producto'||sub==='carrito'||sub==='seguir'||sub==='listo')return '';
     const it=[['inicio','Inicio',IC.home],['buscar','Buscar',IC.search],['pedidos','Pedidos',IC.box],['perfil','Perfil',IC.user]];
     const curso=ultimoPedido();
     return `<nav class="nv" aria-label="Menú principal">${it.map(x=>`<button type="button" data-t="${x[0]}" class="${tab===x[0]?'on':''}"${tab===x[0]?' aria-current="page"':''}><span class="i">${x[2]}</span>${x[1]}${x[0]==='pedidos'&&curso?'<span class="bd" style="top:2px;right:calc(50% - 26px)">1</span>':''}</button>`).join('')}</nav>`;
@@ -9828,7 +9832,7 @@ html.pdtRes #ppSlots{display:none!important}
   }
   async function clic(e){
     tocando=false;
-    const t=e.target.closest('[data-t]');if(t){ir(t.dataset.t);return}
+    const t=e.target.closest('[data-t]');if(t){if(HO&&HO.t!=='listo')try{hojaCerrar(undefined)}catch(_){}ir(t.dataset.t);return}
     const fv=e.target.closest('[data-fav]');if(fv){try{window.pdToggleFav(fv.dataset.fav)}catch(_){}favPop=fv.dataset.fav;key='';pintar();return}
     const ng=e.target.closest('[data-neg]');if(ng){abrirNeg(ng.dataset.neg);return}
     const ad=e.target.closest('[data-add]');if(ad){agregar(ad.dataset.add,1);return}
