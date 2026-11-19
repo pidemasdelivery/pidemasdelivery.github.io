@@ -91,7 +91,7 @@ body>.toast button{background:#FFF4EC!important;color:#C4410C!important;border:1
 
 
 <meta name="pd-instalacion" content="1">
-<meta name="pd-version" content="202611190015"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
+<meta name="pd-version" content="202611190020"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
 /* ===== pd-sistema-diseno (tokens únicos) ===== */
 :root{
 /* ── Tipografía ── */
@@ -9234,6 +9234,8 @@ button{font-family:inherit;-webkit-tap-highlight-color:transparent}
 .ib{border-radius:12px!important}
 .bk.bkv,.top .row>.ib.bk.bkv:first-child{border-radius:12px!important}
 .ng .tx span.st{font-size:12px!important;font-weight:800!important;height:24px}.ng .tx{gap:3px!important}
+
+.dlg .hora-al{width:100%;text-align:left;display:flex;flex-direction:column;gap:10px;max-height:52vh;overflow:auto}.dlg .hora-al .sem{border:1px solid #F1E4DA;border-radius:14px;padding:6px 4px}.dlg .hora-al .sem .d{padding:7px 10px;font-size:14px}.dlg .hora-al .nt{font-size:12.5px;color:#6B5E55}.dlg .hora-al .est{padding:10px 12px;border-radius:12px}
 `;
   /* Lo de la tienda vieja que queda debajo se esconde mientras se ve la app nueva */
   const ESTILO_DOC=`html.pdtApp body{overflow:hidden!important}
@@ -9677,8 +9679,8 @@ html.pdtRes #ppSlots{display:none!important}
           filas+=`<div class="d${hoy?' hoy':''}"><span>${DSEM[f.getDay()]}${hoy?'<i>Hoy</i>':''}</span><b class="${rg?'':'off'}">${rg?E(h12(rg.open)+' – '+h12(rg.close)):'Cerrado'}</b></div>`}
         let nota='Estos horarios ya incluyen el horario de atención de Pidemás.';try{const sem=window.pdHorarioSemana&&pdHorarioSemana();const no=(sem||[]).filter(x=>!x.activo).map(x=>x.dia.toLowerCase());if(no.length)nota+=' Pidemás no atiende '+(no.length===1?'los '+no[0]+'s':'los días '+no.join(', '))+'.'}catch(e){}
         const on=s.tipo==='on',enCarta=sub==='negocio'&&String(F.neg)===String(r.id);
-        return {kick:nomN(r),title:'Horario de atención',body:`<div class="est${on?' on':''}"><span class="i">${on?IC.clock:S('<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>')}</span><span class="tx"><b>${E(s.tit||(on?'Abierto ahora':s.tipo==='warn'?s.pill:'Cerrado ahora'))}</b><span>${E(s.txt||'')}</span></span></div><div class="sem"><div class="lb">Esta semana</div>${filas}</div><div class="nt">${E(nota)}</div>`,
-          foot:(on?'':`<button type="button" class="bp" data-h="reservar">Reservar para cuando atienda</button>`)+`<button type="button" class="${on?'bp':'bs'}" data-h="carta">${enCarta?'Volver a la carta':'Ver la carta'}</button>`}},
+        return {dlg:true,title:'Horario de atención',body:`<span class="ic">${IC.clock}</span><h2>Horario de atención</h2><p style="margin-top:-6px">${E(nomN(r))}</p><div class="hora-al"><div class="est${on?' on':''}"><span class="i">${on?IC.clock:S('<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>')}</span><span class="tx"><b>${E(s.tit||(on?'Abierto ahora':s.tipo==='warn'?s.pill:'Cerrado ahora'))}</b><span>${E(s.txt||'')}</span></span></div><div class="sem"><div class="lb">Esta semana</div>${filas}</div><div class="nt">${E(nota)}</div></div>`,
+          btns:'<div class="bb u">'+(on?'':`<button type="button" class="bp" data-h="reservar">Reservar para cuando atienda</button>`)+`<button type="button" class="${on?'bp':'bs'}" data-h="carta">${enCarta?'Cerrar':'Ver la carta'}</button>`+'</div>'}},
       on(a){if(a==='carta'){hojaCerrar();if(!(sub==='negocio'&&String(F.neg)===String(r.id)))abrirNeg(r.id)}if(a==='reservar'){hojaCerrar();setTimeout(()=>reservar(r.id),80)}}});
   }
   window.showRestaurantSchedule=verHorario;
