@@ -91,7 +91,7 @@ body>.toast button{background:#FFF4EC!important;color:#C4410C!important;border:1
 
 
 <meta name="pd-instalacion" content="1">
-<meta name="pd-version" content="202611182350"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
+<meta name="pd-version" content="202611182355"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
 /* ===== pd-sistema-diseno (tokens únicos) ===== */
 :root{
 /* ── Tipografía ── */
@@ -9176,6 +9176,12 @@ button{font-family:inherit;-webkit-tap-highlight-color:transparent}
 .bk,.qx.bk,.top .row>.ib.bk:first-child{display:none!important}
 /* --- Botones al final de la página, no fijos --- */
 .hf.in{position:static;border-top:0;background:transparent;padding:8px 0 24px;box-shadow:none}
+
+/* --- Foto del producto abre el detalle --- */
+.pc .ph i{cursor:pointer}
+/* --- Avisos arriba, para no tapar los botones de abajo --- */
+.tst{top:calc(env(safe-area-inset-top,0px) + 86px)!important;bottom:auto!important}
+.tst{animation:pdDown .3s cubic-bezier(.2,.9,.3,1.2) both!important}@keyframes pdDown{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:none}}
 `;
   /* Lo de la tienda vieja que queda debajo se esconde mientras se ve la app nueva */
   const ESTILO_DOC=`html.pdtApp body{overflow:hidden!important}
@@ -9235,7 +9241,7 @@ html.pdtRes #ppSlots{display:none!important}
   const ICFOTO=S('<rect x="3" y="5" width="18" height="14" rx="3"/><circle cx="9" cy="11" r="2"/><path d="m21 16-5-5-8 8"/>');
 
   /* ---------- páginas ---------- */
-  const top=(k,t,izq,der)=>`<div class="top"><div class="row">${izq||''}<div class="ttl" style="flex:1 1 0%;min-width:0"><div class="kick">${E(k)}</div><div class="h1" style="font-size:22px">${E(t)}</div></div>${der||''}${sub!=='carrito'?cartBtn():''}</div></div>`;
+  const top=(k,t,izq,der)=>`<div class="top"><div class="row">${izq||''}<div class="ttl" style="flex:1 1 0%;min-width:0"><div class="kick">${E(k)}</div><div class="h1" style="font-size:22px">${E(t)}</div></div>${der||''}${cartBtn()}</div></div>`;
   const back=(a,lab)=>`<button type="button" class="ib bk" data-a="${a||'volver'}" aria-label="${E(lab||'Volver')}">${IC.back}</button>`;
   const cartBtn=()=>{const n=nCart();return `<button type="button" class="ib" data-a="carrito" aria-label="Ver tu pedido${n?', '+n+' producto'+(n===1?'':'s'):''}">${IC.cart}${n?`<span class="bd">${n}</span>`:''}</button>`};
   function dirTxt(){try{const d=window.pdDatosClienteGuardados&&window.pdDatosClienteGuardados();if(d&&d.direccion)return d.direccion}catch(e){}return ''}
@@ -9310,7 +9316,7 @@ html.pdtRes #ppSlots{display:none!important}
     if(!grupos.length)return `<div class="vac">No encontramos «${E(F.nq.trim())}» en esta carta.</div>`;
     return grupos.map((g,gi)=>`<div class="catH" id="g-${E(g.id)}"${gi?'':' style="margin-top:2px"'}><span class="catN">${E(g.n)}</span><span class="catC">${g.L.length} producto${g.L.length===1?'':'s'}</span></div>`+g.L.map(p=>{
       const n=enCarrito(p.id),st=stockP(p),ago=st!==null&&st<=0,ft=fotoP(p),d=descP(p).description,an=antesP(p);
-      return `<div class="pc${n?' en':''}" role="group" aria-label="${E(p.nombre)}"><button type="button" data-prod="${E(p.id)}" style="all:unset;flex:1 1 0%;min-width:0;cursor:pointer;display:flex"><span class="tx"><b>${E(p.nombre||p.nombre_producto||'Producto')}</b>${n?`<span class="enc">${n} en tu pedido</span>`:d?`<span class="ds">${E(d)}</span>`:''}${ago?'<span class="agot">Agotado</span>':''}<span class="pr">${M(precioP(p))}${an?`<s>${M(an)}</s>`:''}</span></span></button><span class="ph"><i${ft?` style="background-image:url('${E(ft)}')"`:' class="no"'}>${ft?'':ICFOTO}</i>${ago?'':`<button type="button" class="ad${ab?'':' off'}" data-add="${E(p.id)}" aria-label="Agregar ${E(p.nombre)}">${IC.plus}</button>`}</span></div>`}).join('')).join('');
+      return `<div class="pc${n?' en':''}" role="group" aria-label="${E(p.nombre)}"><button type="button" data-prod="${E(p.id)}" style="all:unset;flex:1 1 0%;min-width:0;cursor:pointer;display:flex"><span class="tx"><b>${E(p.nombre||p.nombre_producto||'Producto')}</b>${n?`<span class="enc">${n} en tu pedido</span>`:d?`<span class="ds">${E(d)}</span>`:''}${ago?'<span class="agot">Agotado</span>':''}<span class="pr">${M(precioP(p))}${an?`<s>${M(an)}</s>`:''}</span></span></button><span class="ph"><i data-prod="${E(p.id)}" role="button" aria-label="Ver ${E(p.nombre)}"${ft?` style="background-image:url('${E(ft)}')"`:' class="no"'}>${ft?'':ICFOTO}</i>${ago?'':`<button type="button" class="ad${ab?'':' off'}" data-add="${E(p.id)}" aria-label="Agregar ${E(p.nombre)}">${IC.plus}</button>`}</span></div>`}).join('')).join('');
   }
 
   function producto(){
@@ -9746,7 +9752,7 @@ html.pdtRes #ppSlots{display:none!important}
   function nav(){
     const it=[['inicio','Inicio',IC.home],['buscar','Buscar',IC.search],['pedidos','Pedidos',IC.box],['perfil','Perfil',IC.user]];
     const curso=ultimoPedido();
-    return `<nav class="nv" aria-label="Menú principal">${it.map(x=>`<button type="button" data-t="${x[0]}" class="${tab===x[0]?'on':''}"${tab===x[0]?' aria-current="page"':''}><span class="i">${x[2]}</span>${x[1]}${x[0]==='pedidos'&&curso?'<span class="bd" style="top:2px;right:calc(50% - 26px)">1</span>':''}</button>`).join('')}</nav>`;
+    return `<nav class="nv" aria-label="Menú principal">${it.map(x=>`<button type="button" data-t="${x[0]}" class="${!sub&&tab===x[0]?'on':''}"${!sub&&tab===x[0]?' aria-current="page"':''}><span class="i">${x[2]}</span>${x[1]}${x[0]==='pedidos'&&curso?'<span class="bd" style="top:2px;right:calc(50% - 26px)">1</span>':''}</button>`).join('')}</nav>`;
   }
   const IGN=new Set(['pdAppShell','cartaModalNegocio','pdCartaCartBar','toast']);
   function tapada(){
