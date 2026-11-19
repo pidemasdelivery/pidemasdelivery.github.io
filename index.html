@@ -91,7 +91,7 @@ body>.toast button{background:#FFF4EC!important;color:#C4410C!important;border:1
 
 
 <meta name="pd-instalacion" content="1">
-<meta name="pd-version" content="202611190035"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
+<meta name="pd-version" content="202611190040"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
 /* ===== pd-sistema-diseno (tokens únicos) ===== */
 :root{
 /* ── Tipografía ── */
@@ -9312,7 +9312,7 @@ html.pdtRes #ppSlots{display:none!important}
 
   /* ---------- páginas ---------- */
   const top=(k,t,izq,der)=>`<div class="top"><div class="row">${izq||''}<div class="ttl" style="flex:1 1 0%;min-width:0"><div class="kick">${E(k)}</div><div class="h1" style="font-size:22px">${E(t)}</div></div>${der||''}${cartBtn()}</div></div>`;
-  const back=(a,lab)=>`<button type="button" class="ib bk${['negocio','producto','carrito'].includes(sub)?' bkv':''}" data-a="${a||'volver'}" aria-label="${E(lab||'Volver')}">${IC.back}</button>`;
+  const back=(a,lab)=>`<button type="button" class="ib bk${['negocio','producto','carrito','seguir'].includes(sub)?' bkv':''}" data-a="${a||'volver'}" aria-label="${E(lab||'Volver')}">${IC.back}</button>`;
   const cartBtn=()=>{const n=nCart();return `<button type="button" class="ib" data-a="carrito" aria-label="Ver tu pedido${n?', '+n+' producto'+(n===1?'':'s'):''}">${IC.cart}${n?`<span class="bd">${n}</span>`:''}</button>`};
   function dirTxt(){try{const d=window.pdDatosClienteGuardados&&window.pdDatosClienteGuardados();if(d&&d.direccion)return d.direccion}catch(e){}return ''}
 
@@ -9837,7 +9837,7 @@ html.pdtRes #ppSlots{display:none!important}
 
   /* ---------- menú y pintado ---------- */
   function nav(){
-    if(sub==='negocio'||sub==='producto'||sub==='carrito')return '';
+    if(sub==='negocio'||sub==='producto'||sub==='carrito'||sub==='seguir')return '';
     const it=[['inicio','Inicio',IC.home],['buscar','Buscar',IC.search],['pedidos','Pedidos',IC.box],['perfil','Perfil',IC.user]];
     const curso=ultimoPedido();
     return `<nav class="nv" aria-label="Menú principal">${it.map(x=>`<button type="button" data-t="${x[0]}" class="${!sub&&tab===x[0]?'on':''}"${!sub&&tab===x[0]?' aria-current="page"':''}><span class="i">${x[2]}</span>${x[1]}${x[0]==='pedidos'&&curso?'<span class="bd" style="top:2px;right:calc(50% - 26px)">1</span>':''}</button>`).join('')}</nav>`;
