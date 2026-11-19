@@ -91,7 +91,7 @@ body>.toast button{background:#FFF4EC!important;color:#C4410C!important;border:1
 
 
 <meta name="pd-instalacion" content="1">
-<meta name="pd-version" content="202611182010"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
+<meta name="pd-version" content="202611182030"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
 /* ===== pd-sistema-diseno (tokens únicos) ===== */
 :root{
 /* ── Tipografía ── */
@@ -9181,7 +9181,7 @@ html.pdtRes #ppSlots{display:none!important}
     if(!prods.length)return {head,body:h+'<div class="vac">Este negocio todavía no tiene productos en su carta.</div>'};
     h+=`<label class="srch w">${IC.search}<span style="position:absolute;width:1px;height:1px;overflow:hidden">Buscar en la carta</span><input id="tNq" type="search" placeholder="Buscar en la carta" value="${E(F.nq)}" data-in="nq" autocomplete="off"></label>`;
     const grupos=gruposCarta(cats,prods);
-    if(grupos.length>1)h+=`<div class="chsBar"><div class="chs" role="tablist" aria-label="Categorías de la carta">${grupos.map((g,i)=>`<button type="button" role="tab" aria-selected="${(F.ncat||grupos[0].id)===g.id}" class="${(F.ncat||grupos[0].id)===g.id?'on':''}" data-ncat="${E(g.id)}">${E(g.n)}</button>`).join('')}</div></div>`;
+    if(grupos.length>1)h+=`<div class="chsBar"><div class="chs" role="tablist" aria-label="Categorías de la carta">${grupos.map((g,i)=>`<button type="button" role="tab" aria-selected="false" data-ncat="${E(g.id)}">${E(g.n)}</button>`).join('')}</div></div>`;
     h+=`<div id="tCarta" style="display:flex;flex-direction:column;gap:10px">${cartaLista(r)}</div>`;
     const n=CART().filter(x=>String(x.negocio_id)===String(r.id)).reduce((a,x)=>a+Number(x.cantidad||0),0);
     const foot=n?`<button type="button" class="cbar" data-a="carrito"><span class="n">${n}</span><span class="t">Ver tu pedido</span><span>${M(totCart())}</span></button>`:'';
@@ -9661,12 +9661,16 @@ html.pdtRes #ppSlots{display:none!important}
       const wrap=document.createElement('header');wrap.id='pdAppShell';wrap.style.cssText='display:contents';wrap.appendChild(host);document.body.appendChild(wrap);
       root=host.attachShadow({mode:'open'});try{PdPasos.flechas(root)}catch(_){}
       root.addEventListener('click',clic);root.addEventListener('input',entrada);
-      {let tsp=null,bloqueo=0;root.addEventListener('scroll',e=>{if(sub!=='negocio'||Date.now()<bloqueo)return;clearTimeout(tsp);tsp=setTimeout(()=>{
+      {let tsp=null,bloq=false,qt=null,toca=0;
+        const soltar=()=>{clearTimeout(qt);qt=setTimeout(()=>{bloq=false},200)};
+        root.addEventListener('pointerdown',e=>{if(e.target.closest&&e.target.closest('.chsBar'))toca=Date.now()+100000},true);
+        root.addEventListener('pointerup',()=>{if(toca)toca=Date.now()+700},true);root.addEventListener('pointercancel',()=>{if(toca)toca=Date.now()+700},true);
+        root.addEventListener('scroll',e=>{if(sub!=='negocio')return;if(e.target&&e.target.classList&&e.target.classList.contains('chs'))return;if(bloq){soltar();return}clearTimeout(tsp);tsp=setTimeout(()=>{
         const bar=root.querySelector('.chsBar');if(!bar)return;const lim=bar.getBoundingClientRect().bottom+12;let act=null;
         root.querySelectorAll('.catH').forEach(h=>{if(h.getBoundingClientRect().top<=lim)act=h.id.slice(2)});
         if(!act){const f=root.querySelector('.catH');act=f&&f.id.slice(2)}if(!act||act===F.ncat)return;F.ncat=act;
-        root.querySelectorAll('[data-ncat]').forEach(b=>{const on=b.dataset.ncat===act;b.classList.toggle('on',on);b.setAttribute('aria-selected',on);if(on){const sc=b.parentElement;const l=b.offsetLeft-sc.clientWidth/2+b.offsetWidth/2;sc.scrollTo({left:Math.max(0,l),behavior:'smooth'})}});
-      },60)},true);root.__pdBloqueoSpy=ms=>{bloqueo=Date.now()+ms}}
+        root.querySelectorAll('[data-ncat]').forEach(b=>{const on=b.dataset.ncat===act;b.classList.toggle('on',on);b.setAttribute('aria-selected',on);if(on&&Date.now()>toca){const sc=b.parentElement;const l=b.offsetLeft-sc.offsetLeft-sc.clientWidth/2+b.offsetWidth/2;sc.scrollTo({left:Math.max(0,l),behavior:'smooth'})}});
+      },80)},true);root.__pdBloqueoSpy=()=>{bloq=true;clearTimeout(qt);qt=setTimeout(()=>{bloq=false},1200)}}
       root.addEventListener('pointerdown',()=>{tocando=true});root.addEventListener('click',()=>setTimeout(()=>{tocando=false},60),true);root.addEventListener('pointercancel',()=>{tocando=false});
     }
     if(host.style.display==='none')host.style.display='';
@@ -9679,6 +9683,7 @@ html.pdtRes #ppSlots{display:none!important}
     const lst=root.querySelector('.list');if(lst&&root.__pag)scrollMem[root.__pag]=lst.scrollTop;
     root.innerHTML=`<style>${ESTILO}</style><div class="app">${v.head}<div class="list">${v.body}</div>${v.foot?`<div class="foot">${v.foot}</div>`:''}${nav()}</div>`;
     const nl=root.querySelector('.list');if(nl)nl.scrollTop=root.__pag===pag?(scrollMem[pag]||0):(scrollMem[pag]=0,0);root.__pag=pag;
+    {const cs=[...root.querySelectorAll('[data-ncat]')];if(cs.length){const act=cs.some(b=>b.dataset.ncat===F.ncat)?F.ncat:cs[0].dataset.ncat;cs.forEach(b=>{const on=b.dataset.ncat===act;b.classList.toggle('on',on);b.setAttribute('aria-selected',on)})}}
     if(pag==='buscar'||(tab==='buscar'&&!sub)){}
   }
   function ir(t){
@@ -9715,7 +9720,7 @@ html.pdtRes #ppSlots{display:none!important}
     const pr=e.target.closest('[data-prod]');if(pr){if(pr.dataset.pneg){const id=pr.dataset.prod;F.neg=pr.dataset.pneg;carta(F.neg);if(!sub)try{history.pushState({pdt:1},'')}catch(_){}sub='negocio';const w=setInterval(()=>{if(PR().some(x=>String(x.id)===String(id))){clearInterval(w);abrirProd(id)}},150);setTimeout(()=>clearInterval(w),8000);return}abrirProd(pr.dataset.prod);return}
     const ct=e.target.closest('[data-cat]');if(ct){F.cat=ct.dataset.cat;key='';pintar();return}
     const fl=e.target.closest('[data-fl]');if(fl){F.filtro=fl.dataset.fl;if(F.filtro==='cerca'){try{if(!customerNearbyCoords&&window.useCurrentLocation)window.useCurrentLocation('nearby')}catch(_){}}key='';pintar();return}
-    const nc=e.target.closest('[data-ncat]');if(nc){F.ncat=nc.dataset.ncat;root.querySelectorAll('[data-ncat]').forEach(b=>{const on=b===nc;b.classList.toggle('on',on);b.setAttribute('aria-selected',on)});const g=root.getElementById('g-'+nc.dataset.ncat);if(g){root.__pdBloqueoSpy&&root.__pdBloqueoSpy(900);g.scrollIntoView({behavior:'smooth',block:'start'})}const sc=nc.parentElement;sc.scrollTo({left:Math.max(0,nc.offsetLeft-sc.clientWidth/2+nc.offsetWidth/2),behavior:'smooth'});return}
+    const nc=e.target.closest('[data-ncat]');if(nc){F.ncat=nc.dataset.ncat;root.querySelectorAll('[data-ncat]').forEach(b=>{const on=b===nc;b.classList.toggle('on',on);b.setAttribute('aria-selected',on)});const g=root.getElementById('g-'+nc.dataset.ncat);if(g){root.__pdBloqueoSpy&&root.__pdBloqueoSpy();g.scrollIntoView({behavior:'smooth',block:'start'})}return}
     const q=e.target.closest('[data-q]');if(q){F.qty=Math.max(1,F.qty+Number(q.dataset.q));key='';pintar();return}
     const ci=e.target.closest('[data-ci]');if(ci){const [i,d]=ci.dataset.ci.split(':').map(Number);const L=CART(),x=L[i];if(!x)return;
       if(d>0){const p=PR().find(y=>String(y.id)===String(x.id)&&y.origen===x.origen),st=p?stockP(p):null;if(st!==null&&enCarrito(x.id)+1>st){try{toast('No hay más stock de este producto.')}catch(_){}return}}
