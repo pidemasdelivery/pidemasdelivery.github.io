@@ -91,7 +91,7 @@ body>.toast button{background:#FFF4EC!important;color:#C4410C!important;border:1
 
 
 <meta name="pd-instalacion" content="1">
-<meta name="pd-version" content="202611190020"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
+<meta name="pd-version" content="202611190025"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
 /* ===== pd-sistema-diseno (tokens únicos) ===== */
 :root{
 /* ── Tipografía ── */
@@ -9236,6 +9236,7 @@ button{font-family:inherit;-webkit-tap-highlight-color:transparent}
 .ng .tx span.st{font-size:12px!important;font-weight:800!important;height:24px}.ng .tx{gap:3px!important}
 
 .dlg .hora-al{width:100%;text-align:left;display:flex;flex-direction:column;gap:10px;max-height:52vh;overflow:auto}.dlg .hora-al .sem{border:1px solid #F1E4DA;border-radius:14px;padding:6px 4px}.dlg .hora-al .sem .d{padding:7px 10px;font-size:14px}.dlg .hora-al .nt{font-size:12.5px;color:#6B5E55}.dlg .hora-al .est{padding:10px 12px;border-radius:12px}
+.dlg .okcod{width:100%;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;gap:2px;padding:12px;border:1.5px dashed #EADFD6;border-radius:14px}.dlg .okcod span{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#6B5E55}.dlg .okcod b{font-size:24px;font-weight:800;letter-spacing:.08em;color:#1F1A17}
 `;
   /* Lo de la tienda vieja que queda debajo se esconde mientras se ve la app nueva */
   const ESTILO_DOC=`html.pdtApp body{overflow:hidden!important}
@@ -9491,9 +9492,9 @@ html.pdtRes #ppSlots{display:none!important}
     const foot=SES()?`<button type="button" class="cbar c" data-a="seguirult">Ver seguimiento</button><button type="button" class="b" data-a="inicio">Volver al inicio</button>`:`<button type="button" class="cbar c" data-a="google">Iniciar sesión para seguirlo</button><button type="button" class="b" data-a="inicio">Volver al inicio</button>`;
     return {head:top('Tu pedido','Listo'),body:h,foot}}
   function listoHoja(){const o=F.ok||{tit:'¡Pedido enviado!',txt:'',cod:''};
-    hojaAbrir({t:'listo',view(){return {kick:'Tu pedido',title:o.tit,
-      body:`<div style="display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;padding:4px 0 6px"><span style="width:64px;height:64px;border-radius:50%;background:#15803D;color:#FFFFFF;display:flex;align-items:center;justify-content:center">${S('<path d="m5 12 5 5 9-10"/>').replace('width="22" height="22"','width="34" height="34"')}</span><div style="font-size:15px;color:#6B5E55;line-height:1.5">${E(o.txt)}</div>${o.cod?`<div class="cdh" style="width:100%;box-sizing:border-box;align-items:center;gap:2px"><div class="lbh">N.º de pedido</div><div style="font-size:26px;font-weight:800;letter-spacing:.08em">${E(o.cod)}</div></div>`:''}${SES()?'':`<div class="nt">Inicia sesión con Google para seguir tu pedido paso a paso.</div>`}</div>`,
-      foot:SES()?`<button type="button" class="bp" data-h="seg">Ver seguimiento</button><button type="button" class="bt" data-h="x">Seguir comprando</button>`:`<button type="button" class="bp" data-h="g">Iniciar sesión para seguirlo</button><button type="button" class="bt" data-h="x">Seguir comprando</button>`}},
+    hojaAbrir({t:'listo',view(){return {dlg:true,title:o.tit,
+      body:`<span class="ic g">${S('<path d="m5 12 5 5 9-10"/>')}</span><h2>${E(o.tit)}</h2>${o.txt?`<p>${E(o.txt)}</p>`:''}${o.cod?`<div class="okcod"><span>N.º de pedido</span><b>${E(o.cod)}</b></div>`:''}${SES()?'':`<p style="font-size:13px">Inicia sesión con Google para seguir tu pedido paso a paso.</p>`}`,
+      btns:'<div class="bb u">'+(SES()?`<button type="button" class="bp" data-h="seg">Ver seguimiento</button>`:`<button type="button" class="bp" data-h="g">Iniciar sesión para seguirlo</button>`)+`<button type="button" class="bs" data-h="x" style="height:50px;border-radius:14px;font-size:15px">Seguir comprando</button></div>`}},
       on(a){if(a==='seg'){hojaCerrar();F.seg=null;if(C.seg)C.seg.t=0;abrir('seguir')}if(a==='g'){hojaCerrar();try{window.pdIngresarConGoogle()}catch(_){}}}})}
   function perfil(){
     const u=SES(),m=(u&&u.user_metadata)||{},nom=m.full_name||m.name||'';
