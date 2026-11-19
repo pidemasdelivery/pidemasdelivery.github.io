@@ -91,7 +91,7 @@ body>.toast button{background:#FFF4EC!important;color:#C4410C!important;border:1
 
 
 <meta name="pd-instalacion" content="1">
-<meta name="pd-version" content="202611182305"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
+<meta name="pd-version" content="202611182310"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
 /* ===== pd-sistema-diseno (tokens únicos) ===== */
 :root{
 /* ── Tipografía ── */
@@ -9108,7 +9108,7 @@ button{font-family:inherit;-webkit-tap-highlight-color:transparent}
 .pc .ad{box-shadow:0 4px 10px rgba(196,65,12,.3)}.pc .ad.off{box-shadow:none}
 .cbar{box-shadow:0 8px 20px rgba(196,65,12,.28)}.cbar:disabled{box-shadow:none}
 .ng,.pc,.hero{box-shadow:0 1px 3px rgba(31,26,23,.05)}
-*{font-family:'Plus Jakarta Sans',PdInter,Inter,system-ui,sans-serif!important}
+*{font-family:PdInter,Inter,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif!important}
 .srch,.srch.w{background:#F7EFE9;border:0;border-radius:16px}
 .hero{padding:14px;border-radius:22px;box-shadow:0 4px 14px rgba(31,26,23,.05)}
 .lg.big{width:70px;height:70px;border-radius:20px}
@@ -9140,6 +9140,24 @@ button{font-family:inherit;-webkit-tap-highlight-color:transparent}
 @keyframes pdSpin{to{transform:rotate(360deg)}}
 .spin{width:18px;height:18px;border:2.5px solid currentColor;border-right-color:transparent;border-radius:50%;animation:pdSpin .8s linear infinite;box-sizing:border-box;flex:0 0 auto}
 .b.cargando{opacity:1;background:#FFF4EC;color:#C4410C;border-color:#F6CDB3}
+.app{font-size:14px;line-height:1.45}
+.top .h1{font-size:20px!important;font-weight:800;letter-spacing:-.01em}.top .kick,.qs .hh .k,.lbl,.lbl2{font-size:12px;font-weight:800;letter-spacing:.06em}
+.qs .hh h2{font-size:20px}
+.cd{border-radius:16px;padding:14px}
+.cd.dash{border:1.5px dashed #EADFD6;background:#FFFFFF}
+.ng,.pc{border-radius:16px}
+.ng .tx b,.pc .tx b{font-size:16px;font-weight:800;letter-spacing:-.005em}
+.ng .tx span,.pc .tx .ds{font-size:14px;font-weight:500;color:#6B5E55}
+.pc .tx .pr{font-size:16px;font-weight:800}
+.ln{font-size:15px}.ln span{font-weight:500}.ln b{font-weight:800}
+.it .tx b{font-size:15px;font-weight:700}
+.sec h2{font-size:20px;letter-spacing:-.01em}.catN{font-size:17px;font-weight:800}
+.chs button{height:40px;font-size:14px;font-weight:700}
+.srch{height:48px;border-radius:14px}.srch input{font-size:15px;font-weight:500}
+.fld label{font-size:14px;font-weight:700}.fld input,.fld select{font-size:15px;font-weight:500;border-radius:12px;height:52px}
+.st{font-size:12.5px}
+.cbar{height:56px;border-radius:16px;font-size:16px}
+.curso{border-radius:16px}
 `;
   /* Lo de la tienda vieja que queda debajo se esconde mientras se ve la app nueva */
   const ESTILO_DOC=`html.pdtApp body{overflow:hidden!important}
@@ -9309,7 +9327,7 @@ html.pdtRes #ppSlots{display:none!important}
     const L=CART();
     if(!L.length){cerrarCk();return {head,body:'<div class="vac">Tu pedido está vacío. Elige un negocio y agrega productos.</div><button type="button" class="b o" data-a="inicio">Ver negocios</button>'}}
     abrirCk();
-    let h=`<div class="cd"><div class="lbl">Productos</div>${L.map((x,i)=>`<div class="it"><span class="tx"><b>${E(x.nombre)}</b><span>${M(x.precio)} c/u</span></span><span class="qty s"><button type="button" data-ci="${i}:-1" aria-label="${x.cantidad>1?'Quitar uno':'Quitar del pedido'}">${x.cantidad>1?IC.minus:IC.trash}</button><b>${x.cantidad}</b><button type="button" data-ci="${i}:1" aria-label="Agregar uno">${IC.plus}</button></span><b>${M(x.precio*x.cantidad)}</b></div>`).join('')}<button type="button" class="lnk" data-a="anegocio2" style="text-decoration:none">+ Agregar más productos</button></div>`;
+    let h=`<div class="cd dash"><div class="lbl">Productos</div>${L.map((x,i)=>`<div class="it"><span class="tx"><b>${E(x.nombre)}</b><span>${M(x.precio)} c/u</span></span><span class="qty s"><button type="button" data-ci="${i}:-1" aria-label="${x.cantidad>1?'Quitar uno':'Quitar del pedido'}">${x.cantidad>1?IC.minus:IC.trash}</button><b>${x.cantidad}</b><button type="button" data-ci="${i}:1" aria-label="Agregar uno">${IC.plus}</button></span><b>${M(x.precio*x.cantidad)}</b></div>`).join('')}<button type="button" class="lnk" data-a="anegocio2" style="text-decoration:none">+ Agregar más productos</button></div>`;
     if(!ck())return {head,body:h+'<div class="load">Preparando tu pedido…</div>'};
     const la=val('cLat'),ln=val('cLng'),on=!!(la&&ln),stx=String(($('cLocationStatus')||{}).textContent||'');
     const busc=ubicT&&Date.now()-ubicT<(ubicPrev?2500:12000)&&!(on&&!ubicPrev);if(on&&ubicT&&(!ubicPrev||Date.now()-ubicT>2500)){ubicT=0;setTimeout(()=>aviso('Listo, tomamos tu ubicación.'),50)}if(ubicT&&!busc)ubicT=0;
@@ -9383,7 +9401,7 @@ html.pdtRes #ppSlots{display:none!important}
     if(!canc&&!FIN.includes(s)&&o.negocio_id){const cc=cargar('cod:'+o.id,async()=>{const x=await SB().rpc('codigo_entrega',{p_pedido:o.id});return x&&!x.error&&x.data?String(x.data):''});if(cc.data)h+=`<div class="cdg"><div class="cdk">Tu código de entrega</div><div class="cdn">${E(cc.data)}</div><div class="cds">Dáselo al motorizado solo cuando tengas tu pedido en la mano.</div></div>`}
     if(!canc)h+=`<div class="cd"><div class="tln">${p.L.map((x,i)=>{const ok=i<p.cur||s==='entregado',cu=i===p.cur&&s!=='entregado';return `<div class="p${ok?' ok':cu?' cur':' no'}"><span class="d">${ok?IC.check:i+1}</span><span class="tx"><b>${E(x.t)}</b><span>${E(ok&&x.at?hora(x.at):cu?x.d:'')}</span></span></div>`}).join('')}</div></div>`;
     const sub2=Number(o.subtotal),del=Number(o.delivery_cost??o.costo_delivery);
-    h+=`<div class="cd"><div class="lbl">Detalle</div>${(o.items||[]).map(x=>`<div class="ln"><span style="color:#1F1A17">${Number(x.cantidad||1)} × ${E(x.nombre)}</span><b>${M(Number(x.precio||0)*Number(x.cantidad||1))}</b></div>`).join('')}${sub2>0?`<div class="ln"><span>Subtotal</span><b>${M(sub2)}</b></div>`:''}${Number.isFinite(del)?`<div class="ln"><span>Delivery</span><b>${M(del)}</b></div>`:''}${o.metodo_pago?`<div class="ln"><span>Pago</span><b class="pgm ${/yape/i.test(o.metodo_pago)?'y':'e'}">${E(String(o.metodo_pago).replace(/^./,m=>m.toUpperCase()))}${o.pago_confirmado?' · confirmado':''}</b></div>`:''}<div class="ln t"><span>Total</span><b>${M(o.total)}</b></div></div>`;
+    h+=`<div class="cd dash"><div class="lbl">Detalle</div>${(o.items||[]).map(x=>`<div class="ln"><span style="color:#1F1A17">${Number(x.cantidad||1)} × ${E(x.nombre)}</span><b>${M(Number(x.precio||0)*Number(x.cantidad||1))}</b></div>`).join('')}${sub2>0?`<div class="ln"><span>Subtotal</span><b>${M(sub2)}</b></div>`:''}${Number.isFinite(del)?`<div class="ln"><span>Delivery</span><b>${M(del)}</b></div>`:''}${o.metodo_pago?`<div class="ln"><span>Pago</span><b class="pgm ${/yape/i.test(o.metodo_pago)?'y':'e'}">${E(String(o.metodo_pago).replace(/^./,m=>m.toUpperCase()))}${o.pago_confirmado?' · confirmado':''}</b></div>`:''}<div class="ln t"><span>Total</span><b>${M(o.total)}</b></div></div>`;
     if(act.length>1)h+=`<div class="lbl2">Otros pedidos en curso</div>`+act.filter(x=>x!==o).map(x=>`<button type="button" class="ng" data-seg="${E(x.id)}"><span class="tx"><b>${E(negPorId(x.negocio_id)?nomN(negPorId(x.negocio_id)):'Pedido')}</b><span>${E(codP(x))} · ${E(etiqueta(x))}</span></span>${IC.chev}</button>`).join('');
     return {head,body:h};
   }
@@ -9735,7 +9753,7 @@ html.pdtRes #ppSlots{display:none!important}
     if(sub==='carrito'&&ck())cls(H,'pdtCk',1);
     const tp=tapada();if(eraTapada&&!tp)tapT=Date.now();eraTapada=tp;
     if(tp){if(host&&host.style.display!=='none'){host.style.display='none'}cls(H,'pdtApp',0);return}
-    if(!$('pd-font-jakarta')){const l=document.createElement('link');l.id='pd-font-jakarta';l.rel='stylesheet';l.href='https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap';document.head.appendChild(l)}if(!$('pd-app-tienda-css')){const st=document.createElement('style');st.id='pd-app-tienda-css';st.textContent=ESTILO_DOC;document.head.appendChild(st)}
+    if(!$('pd-app-tienda-css')){const st=document.createElement('style');st.id='pd-app-tienda-css';st.textContent=ESTILO_DOC;document.head.appendChild(st)}
     if(!host){
       host=document.createElement('pd-app-tienda');
       const wrap=document.createElement('header');wrap.id='pdAppShell';wrap.style.cssText='display:contents';wrap.appendChild(host);document.body.appendChild(wrap);
