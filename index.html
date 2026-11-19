@@ -91,7 +91,7 @@ body>.toast button{background:#FFF4EC!important;color:#C4410C!important;border:1
 
 
 <meta name="pd-instalacion" content="1">
-<meta name="pd-version" content="202611182340"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
+<meta name="pd-version" content="202611182345"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><style id="pidemas-estilos">
 /* ===== pd-sistema-diseno (tokens únicos) ===== */
 :root{
 /* ── Tipografía ── */
@@ -9808,8 +9808,15 @@ html.pdtRes #ppSlots{display:none!important}
     if(sub&&history.state&&history.state.pdt){ignorarPop=true;history.back()}
     sub=null;
     if(t==='buscar'){tab='inicio';key='';pintar();setTimeout(()=>{const i=root&&root.getElementById('tQ');if(i)i.focus()},50);return}
-    tab=t;if(t==='pedidos')historial(true);key='';pintar();
+    if(t==='pedidos'){const c=historial(true);if(c&&!c.busy&&Array.isArray(c.data)&&!c.data.length){alertaSinPedidos();return}
+      const prev=tab==='pedidos'?'inicio':tab;tab='pedidos';key='';pintar();const t0=Date.now();
+      const iv=setInterval(()=>{const k=C.hist;if(!k||k.busy){if(Date.now()-t0>12000)clearInterval(iv);return}clearInterval(iv);if(Array.isArray(k.data)&&!k.data.length&&tab==='pedidos'&&!sub){tab=prev;key='';pintar();alertaSinPedidos()}},150);return}
+    tab=t;key='';pintar();
   }
+  function alertaSinPedidos(){hojaAbrir({t:'sinped',view(){return {dlg:true,title:'Aún no tienes pedidos',
+      body:`<span class="ic">${IC.box}</span><h2>Aún no tienes pedidos</h2><p>Explora los negocios de Piura y haz tu primer pedido.</p>`,
+      btns:`<div class="bb u"><button type="button" class="bp" data-h="ver">Ver negocios</button><button type="button" class="bs" data-h="x" style="height:50px;border-radius:14px;font-size:15px">Cerrar</button></div>`}},
+    on(x){if(x==='ver'){hojaCerrar();if(tab!=='inicio'||sub){sub=null;tab='inicio';key='';pintar()}}}})}
   function abrir(s){if(!sub)try{history.pushState({pdt:1},'')}catch(_){}sub=s;key='';pintar()}
   /* La categoría elegida pasa al primer lugar visible de la barra */
   function alIzq(b){try{const sc=b.parentElement;const pl=parseFloat(getComputedStyle(sc).paddingLeft)||0;const u=sc.querySelector('button:last-of-type');if(u)sc.style.setProperty('--fin',Math.max(0,sc.clientWidth-u.offsetWidth-pl-16)+'px');sc.scrollTo({left:Math.max(0,b.offsetLeft-sc.offsetLeft-pl),behavior:'smooth'})}catch(_){}}
