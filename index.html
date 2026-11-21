@@ -10016,13 +10016,13 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
         if(!act){const f=root.querySelector('.catH');act=f&&f.id.slice(2)}{const L=root.querySelector('.list');if(L&&L.scrollTop+L.clientHeight>=L.scrollHeight-6){const hs=[...root.querySelectorAll('.catH')];const vis=hs.filter(h=>h.getBoundingClientRect().top<L.getBoundingClientRect().bottom-40);if(vis.length)act=vis[vis.length-1].id.slice(2)}}if(!act||act===F.ncat)return;F.ncat=act;
         root.querySelectorAll('[data-ncat]').forEach(b=>{const on=b.dataset.ncat===act;b.classList.toggle('on',on);b.setAttribute('aria-selected',on);if(on&&Date.now()>toca)alIzq(b)});
       },80)},true);root.__pdBloqueoSpy=()=>{bloq=true;clearTimeout(qt);qt=setTimeout(()=>{bloq=false},1200)}}
-      root.addEventListener('pointerdown',()=>{tocando=true});root.addEventListener('click',()=>setTimeout(()=>{tocando=false},60),true);root.addEventListener('pointercancel',()=>{tocando=false});
+      root.addEventListener('pointerdown',()=>{tocando=Date.now()});root.addEventListener('pointerup',()=>setTimeout(()=>{tocando=false},150),true);root.addEventListener('click',()=>setTimeout(()=>{tocando=false},60),true);root.addEventListener('pointercancel',()=>{tocando=false});
     }
     if(host.style.display==='none')host.style.display='';
     cls(H,'pdtApp',1);
-    if(tocando)return;
-    const act=root.activeElement;if(act&&(act.tagName==='INPUT'||act.tagName==='TEXTAREA'))return;
+    if(tocando&&Date.now()-tocando<1500)return;tocando=false;/* un toque que no terminó no deja la pantalla congelada */
     const v=vista();const pag=sub?sub+':'+(F.neg||'')+(sub==='producto'?':'+F.pid:''):tab;
+    {const act=root.activeElement;if(act&&(act.tagName==='INPUT'||act.tagName==='TEXTAREA')){if(root.__pag===pag)return;try{act.blur()}catch(_){}}}/* escribiendo: no redibuja; si cambió de página, sí */
     const k=pag+'|'+v.head+v.body+(v.foot||'')+nav();
     if(k===key)return;key=k;
     const lst=root.querySelector('.list');if(lst&&root.__pag)scrollMem[root.__pag]=lst.scrollTop;
