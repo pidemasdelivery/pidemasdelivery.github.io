@@ -9666,7 +9666,6 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
     const d=(window.pdDatosClienteGuardados&&window.pdDatosClienteGuardados())||{};
     let h=`<div class="cd" style="flex-direction:row;align-items:center;gap:14px"><span class="lg" style="border-radius:50%${m.avatar_url||m.picture?`;background-image:url('${E(m.avatar_url||m.picture)}')`:''}">${m.avatar_url||m.picture?'':ini(nom||'Cliente')}</span><span style="display:flex;flex-direction:column;min-width:0"><b style="font-size:17px">${E(nom||'Cliente')}</b><span style="font-size:14px;color:#6B5E55;overflow:hidden;text-overflow:ellipsis">${E(u.email||'')}</span></span></div>`;
     h+=`<div class="cd"><div class="lbl">Datos de entrega</div><div class="li"><span>Celular</span><b>${E(d.telefono||'—')}</b></div><div class="li"><span>Dirección</span><b style="text-align:right">${E(d.direccion||'—')}</b></div></div>`;
-    h+=`<div class="cd"><div class="lnks"><button type="button" data-a="cuenta">${IC.user}<span>Editar mis datos y direcciones</span>${IC.chev}</button></div></div>`;
     h+=`<button type="button" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:54px;border-radius:14px;border:1px solid #F4C7C3;background:#FFFFFF;color:#B42318;font:800 16px PdInter,Inter,system-ui,sans-serif;cursor:pointer" data-a="salirCuenta"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h4v16h-4"/><path d="M10 8l-4 4 4 4M6 12h10"/></svg>Cerrar sesión</button>`;
     return {head,body:h};
   }
@@ -9912,9 +9911,9 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
         btns:`<div class="bb u"><button type="button" class="bs" style="height:52px;border-radius:14px;font-size:16px" data-h="g">${GOO}Continuar con Google</button><button type="button" class="bt" data-h="x">Ahora no</button></div>`}},
     on(a){if(a==='g'){hojaCerrar();try{window.pdIngresarConGoogle()}catch(e){aviso('No se pudo abrir Google. Inténtalo de nuevo.')}}}})}
   const LSC={get(){try{return JSON.parse(localStorage.getItem('pidemas_customer_info')||'null')||{}}catch(e){return {}}},set(o){try{localStorage.setItem('pidemas_customer_info',JSON.stringify({...LSC.get(),...o}))}catch(e){}}};
-  function misDatos(){
+  function misDatos(op){
     const d=(window.pdDatosClienteGuardados&&window.pdDatosClienteGuardados())||{};
-    hojaAbrir({t:'datos',n:0,f:{nombre:d.nombre||'',telefono:d.telefono||'',correo:d.correo||'',direccion:d.direccion||'',referencia:d.referencia||''},lat:d.lat,lng:d.lng,msg:'',ok:0,
+    hojaAbrir({...(op||{}),t:'datos',n:0,f:{nombre:d.nombre||'',telefono:d.telefono||'',correo:d.correo||'',direccion:d.direccion||'',referencia:d.referencia||''},lat:d.lat,lng:d.lng,msg:'',ok:0,
       view(){const u=SES(),m=(u&&u.user_metadata)||{},f=this.f,on=this.lat!=null&&this.lng!=null,av=m.avatar_url||m.picture||'';
         return {kick:'Mi cuenta',title:'Mis datos',footIn:true,
           body:(u?`<div class="cdh" style="flex-direction:row;align-items:center;gap:12px"><span class="ava2"${av?` style="background-image:url('${E(av)}')"`:''}>${av?'':ini(f.nombre||m.full_name||'Cliente')}</span><span style="display:flex;flex-direction:column;min-width:0"><b style="font-size:16px">${E(m.full_name||m.name||f.nombre||'Cliente')}</b><span style="font-size:14px;color:#6B5E55;overflow:hidden;text-overflow:ellipsis">${E(u.email||'')}</span></span></div>`:'')+
@@ -10040,6 +10039,9 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
   }
   function ir(t){
     if((t==='pedidos'||t==='perfil')&&!SES()){entrar();return}
+    /* Mi perfil se edita directo: al tocar Perfil se abren los datos listos para cambiar */
+    if(t==='perfil'){const prev=tab==='perfil'?'inicio':tab;if(sub&&history.state&&history.state.pdt){ignorarPop=true;history.back()}sub=null;tab='perfil';key='';pintar();
+      misDatos({alCerrar(){setTimeout(()=>{if(HO&&(HO.t==='mapa'||HO.t==='datos'))return;if(tab==='perfil'&&!sub){tab=prev;key='';pintar()}},0)}});return}
     if(sub&&history.state&&history.state.pdt){ignorarPop=true;history.back()}
     sub=null;
     if(t==='buscar'){tab='inicio';key='';pintar();setTimeout(()=>{const i=root&&root.getElementById('tQ');if(i)i.focus()},50);return}
