@@ -10043,7 +10043,7 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
     if(t==='perfil'){const prev=tab==='perfil'?'inicio':tab;if(sub&&history.state&&history.state.pdt){ignorarPop=true;history.back()}sub=null;tab='perfil';key='';pintar();
       misDatos({alCerrar(){setTimeout(()=>{if(HO&&(HO.t==='mapa'||HO.t==='datos'))return;if(tab==='perfil'&&!sub){tab=prev;key='';pintar()}},0)}});return}
     if(sub&&history.state&&history.state.pdt){ignorarPop=true;history.back()}
-    sub=null;
+    sub=null;pila=[];
     if(t==='buscar'){tab='inicio';key='';pintar();setTimeout(()=>{const i=root&&root.getElementById('tQ');if(i)i.focus()},50);return}
     if(t==='pedidos'){const c=historial(true);if(c&&!c.busy&&Array.isArray(c.data)&&!c.data.length){alertaSinPedidos();return}
       const prev=tab==='pedidos'?'inicio':tab;tab='pedidos';key='';pintar();const t0=Date.now();
@@ -10053,8 +10053,9 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
   function alertaSinPedidos(){hojaAbrir({t:'sinped',view(){return {dlg:true,title:'Aún no tienes pedidos',
       body:`<span class="ic">${IC.box}</span><h2>Aún no tienes pedidos</h2><p>Explora los negocios de Piura y haz tu primer pedido.</p>`,
       btns:`<div class="bb u"><button type="button" class="bp" data-h="ver">Ver negocios</button><button type="button" class="bs" data-h="x" style="height:50px;border-radius:14px;font-size:15px">Cerrar</button></div>`}},
-    on(x){if(x==='ver'){hojaCerrar();if(tab!=='inicio'||sub){sub=null;tab='inicio';key='';pintar()}}}})}
-  function abrir(s){if(!sub)try{history.pushState({pdt:1},'')}catch(_){}sub=s;key='';pintar()}
+    on(x){if(x==='ver'){hojaCerrar();if(tab!=='inicio'||sub){sub=null;pila=[];tab='inicio';key='';pintar()}}}})}
+  var pila=[];/* páginas abiertas una sobre otra: al volver se regresa a la anterior */
+  function abrir(s){if(!sub)try{history.pushState({pdt:1},'')}catch(_){}if(sub&&sub!==s)pila.push({sub,neg:F.neg});sub=s;key='';pintar()}
   /* La categoría elegida pasa al primer lugar visible de la barra */
   function alIzq(b){try{const sc=b.parentElement;const pl=parseFloat(getComputedStyle(sc).paddingLeft)||0;const u=sc.querySelector('button:last-of-type');if(u)sc.style.setProperty('--fin',Math.max(0,sc.clientWidth-u.offsetWidth-pl-16)+'px');sc.scrollTo({left:Math.max(0,b.offsetLeft-sc.offsetLeft-pl),behavior:'smooth'})}catch(_){}}
   function abrirNeg(id){F.neg=String(id);F.nq='';F.ncat='';carta(id);abrir('negocio')}
@@ -10066,8 +10067,8 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
     const r=negPorId(p.negocio_id);if(r&&!abierto(r)){try{window.showRestaurantSchedule(r.id)}catch(e){}return false}
     let ok=false;try{ok=window.addToCart(p.id,'negocio',q||1)}catch(e){console.warn(e)}
     key='';pintar();return ok}
-  function volver(){if(history.state&&history.state.pdt){history.back();return}atras()}
-  function atras(){if(sub==='producto'){sub='negocio'}else sub=null;key='';pintar()}
+  function volver(){if(pila.length){atras();return}if(history.state&&history.state.pdt){history.back();return}atras()}
+  function atras(){let d;do{d=pila.pop()}while(d&&d.sub===sub);if(d){sub=d.sub;if(d.neg)F.neg=d.neg}else if(sub==='producto'){sub='negocio'}else sub=null;if(!sub)pila=[];key='';pintar()}
 
   function entrada(e){const el=e.target,k=el.dataset&&el.dataset.in;
     if(el.dataset&&el.dataset.ck){setVal(el.dataset.ck,el.dataset.ck==='cDiscountCode'?el.value.toUpperCase():el.value);if(el.dataset.ck==='cMontoPago'){const vb=root.getElementById('tVto');if(vb)vb.innerHTML=vueltoH()}clearTimeout(entrada.t);entrada.t=setTimeout(()=>{const f=root.querySelector('.foot');const v=vista();if(f&&v.foot!=null&&f.innerHTML!==v.foot)f.innerHTML=v.foot},400);return}
@@ -10092,7 +10093,7 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
     const yp=e.target.closest('[data-yape]');if(yp){const r2=document.querySelector(`#modal input[name="pdYapeModo"][value="${CSS.escape(yp.dataset.yape)}"]`);if(r2){r2.checked=true;r2.dispatchEvent(new Event('change',{bubbles:true}));r2.click()}setTimeout(()=>{key='';pintar()},60);return}
     const cp=e.target.closest('[data-comp]');if(cp){const cur=val('cCompTipo');try{if(cur===cp.dataset.comp){setVal('cCompTipo','ninguno');window.pdCompSel&&window.pdCompSel('ninguno')}else window.pdCompSel(cp.dataset.comp)}catch(_){}setTimeout(()=>{key='';pintar()},60);return}
     const sg=e.target.closest('[data-seg]');if(sg){F.seg=sg.dataset.seg;if(C.seg)C.seg.t=0;if(sub==='seguir'){key='';pintar()}else seguirAlerta();return}
-    const rp=e.target.closest('[data-rep]');if(rp){try{await window.pdReorder(rp.dataset.rep)}catch(_){}setTimeout(()=>{const id=cartNeg();if(id&&!document.querySelector('#modal.overlay')){F.neg=id;carta(id);sub=null;abrir('carrito')}},700);return}
+    const rp=e.target.closest('[data-rep]');if(rp){try{await window.pdReorder(rp.dataset.rep)}catch(_){}setTimeout(()=>{const id=cartNeg();if(id&&!document.querySelector('#modal.overlay')){F.neg=id;carta(id);sub=null;pila=[];abrir('carrito')}},700);return}
     const cl=e.target.closest('[data-cal]');if(cl){try{window.pdOpenRating(cl.dataset.cal)}catch(_){}return}
     const a=e.target.closest('[data-a]');if(!a)return;
     switch(a.dataset.a){
@@ -10116,10 +10117,10 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
       case 'enviar':{if(window.__pidemasOrderSubmitting)break;const b=btnTxt(/^Confirmar|^Enviar|^Hacer pedido|^Reservar/i)||document.querySelector('#modal button.primary[onclick*="submitCartOrder"]');
         const t0=Date.now();if(b)b.click();else try{window.submitCartOrder()}catch(_){}
         key='';pintar();
-        const w=setInterval(()=>{if(window.__pidemasOrderSubmitting)return;if(ck()){clearInterval(w);key='';pintar();return}const m=$('modal'),tx=String(m&&m.textContent||'').replace(/\s+/g,' ');const okE=/Pedido enviado|Pedido registrado|Reserva|reservad/i.test(tx);if(!okE&&m&&m.classList.contains('overlay')&&Date.now()-t0<15000)return;clearInterval(w);document.documentElement.classList.remove('pdtCk');if(C.hist)C.hist.t=0;if(C.seg)C.seg.t=0;if(okE){const cd=(tx.match(/#[0-9A-F]{6,10}/i)||[''])[0];F.ok={tit:/Reserva|reservad/i.test(tx)&&!/Pedido enviado/i.test(tx)?'¡Reserva registrada!':'¡Pedido enviado!',cod:cd,txt:/registrado/i.test(tx)&&!/enviado/i.test(tx)?'Tu pedido quedó registrado. Te avisaremos cuando el negocio lo confirme.':'El negocio ya recibió tu pedido y lo confirmará en breve.'};cerrT=Date.now();try{closeModal()}catch(_){}if(history.state&&history.state.pdt){ignorarPop=true;history.back()}sub=null;tab='inicio';setTimeout(listoHoja,250)}else{if(history.state&&history.state.pdt){ignorarPop=true;history.back()}sub=null;tab='inicio'}key='';pintar()},500);setTimeout(()=>clearInterval(w),90000);break}
+        const w=setInterval(()=>{if(window.__pidemasOrderSubmitting)return;if(ck()){clearInterval(w);key='';pintar();return}const m=$('modal'),tx=String(m&&m.textContent||'').replace(/\s+/g,' ');const okE=/Pedido enviado|Pedido registrado|Reserva|reservad/i.test(tx);if(!okE&&m&&m.classList.contains('overlay')&&Date.now()-t0<15000)return;clearInterval(w);document.documentElement.classList.remove('pdtCk');if(C.hist)C.hist.t=0;if(C.seg)C.seg.t=0;if(okE){const cd=(tx.match(/#[0-9A-F]{6,10}/i)||[''])[0];F.ok={tit:/Reserva|reservad/i.test(tx)&&!/Pedido enviado/i.test(tx)?'¡Reserva registrada!':'¡Pedido enviado!',cod:cd,txt:/registrado/i.test(tx)&&!/enviado/i.test(tx)?'Tu pedido quedó registrado. Te avisaremos cuando el negocio lo confirme.':'El negocio ya recibió tu pedido y lo confirmará en breve.'};cerrT=Date.now();try{closeModal()}catch(_){}if(history.state&&history.state.pdt){ignorarPop=true;history.back()}sub=null;pila=[];tab='inicio';setTimeout(listoHoja,250)}else{if(history.state&&history.state.pdt){ignorarPop=true;history.back()}sub=null;pila=[];tab='inicio'}key='';pintar()},500);setTimeout(()=>clearInterval(w),90000);break}
     }
   }
-  addEventListener('popstate',()=>{if(ignorarPop){ignorarPop=false;return}if(Date.now()-cerrT<1200||Date.now()-tapT<1500||eraTapada)return;if(history.state&&history.state.pdt)return;/* volvió de una ventana vieja, no de esta app */if(sub){if(document.querySelector('#modal.overlay')&&!ck())return;atras()}});
+  addEventListener('popstate',()=>{if(ignorarPop){ignorarPop=false;return}if(Date.now()-cerrT<1200||Date.now()-tapT<1500||eraTapada)return;if(history.state&&history.state.pdt)return;/* volvió de una ventana vieja, no de esta app */if(sub){if(document.querySelector('#modal.overlay')&&!ck())return;atras();if(sub)try{history.pushState({pdt:1},'')}catch(_){}}});
   /* Enlace directo a la carta de un negocio: ?negocio=ID */
   (function(){const id=(new URLSearchParams(location.search).get('negocio')||'').trim();if(!id)return;const t=setInterval(()=>{const r=negPorId(id);if(!r)return;clearInterval(t);F.neg=String(r.id);carta(r.id);sub='negocio';try{const m=$('cartaModalNegocio');if(m&&window.volverMenuPrincipal)window.volverMenuPrincipal()}catch(_){}key='';pintar()},300);setTimeout(()=>clearInterval(t),20000)})();
   setInterval(pintar,700);
