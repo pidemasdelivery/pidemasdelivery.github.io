@@ -29,8 +29,8 @@ jobs:
         run: |
           OWNER=$(echo "$GITHUB_REPOSITORY_OWNER" | tr '[:upper:]' '[:lower:]')
           REPO="${GITHUB_REPOSITORY#*/}"
-          HOST="$OWNER.github.io"
-          if [ "$(echo "$REPO" | tr '[:upper:]' '[:lower:]')" = "$HOST" ]; then URL="https://$HOST/"; else URL="https://$HOST/$REPO/"; fi
+          HOST="pidemas.pe"
+          if [ "$(echo "$REPO" | tr '[:upper:]' '[:lower:]')" = "$OWNER.github.io" ]; then URL="https://$HOST/"; else URL="https://$HOST/$REPO/"; fi
           echo "HOST=$HOST" >> "$GITHUB_ENV"
           echo "URL=$URL" >> "$GITHUB_ENV"
           echo "VCODE=$GITHUB_RUN_NUMBER" >> "$GITHUB_ENV"
