@@ -1069,7 +1069,7 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
         if(a==='ok'){if(!mapa){aviso('Espera a que cargue el mapa.');return}const c=mapa.getCenter();hojaCerrar({lat:Number(c.lat.toFixed(6)),lng:Number(c.lng.toFixed(6)),linea:ult&&ult.linea||'',sub:ult&&ult.sub||''})}}});
   })};
   /* el botón atrás del teléfono cierra primero la ventana abierta */
-  addEventListener('popstate',e=>{if(ignorarPop)return;if(HO){e.stopImmediatePropagation();hojaCerrar(undefined,true)}},true);
+  addEventListener('popstate',e=>{if(window.__pdPopPropio)return;if(ignorarPop)return;if(HO){e.stopImmediatePropagation();hojaCerrar(undefined,true)}},true);
 
   /* ---------- menú y pintado ---------- */
   function nav(){
@@ -1229,7 +1229,7 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
         const w=setInterval(()=>{if(window.__pidemasOrderSubmitting)return;if(ck()){clearInterval(w);key='';pintar();return}const m=$('modal'),tx=String(m&&m.textContent||'').replace(/\s+/g,' ');const okE=/Pedido enviado|Pedido registrado|Reserva|reservad/i.test(tx);if(!okE&&m&&m.classList.contains('overlay')&&Date.now()-t0<15000)return;clearInterval(w);document.documentElement.classList.remove('pdtCk');if(C.hist)C.hist.t=0;if(C.seg)C.seg.t=0;if(okE){const cd=(tx.match(/#[0-9A-F]{6,10}/i)||[''])[0];F.ok={tit:/Reserva|reservad/i.test(tx)&&!/Pedido enviado/i.test(tx)?'¡Reserva registrada!':'¡Pedido enviado!',cod:cd,txt:/registrado/i.test(tx)&&!/enviado/i.test(tx)?'Tu pedido quedó registrado. Te avisaremos cuando el negocio lo confirme.':'El negocio ya recibió tu pedido y lo confirmará en breve.'};cerrT=Date.now();try{closeModal()}catch(_){}if(history.state&&history.state.pdt){ignorarPop=true;history.back()}sub=null;pila=[];tab='inicio';setTimeout(listoHoja,250)}else{if(history.state&&history.state.pdt){ignorarPop=true;history.back()}sub=null;pila=[];tab='inicio'}key='';pintar()},500);setTimeout(()=>clearInterval(w),90000);break}
     }
   }
-  addEventListener('popstate',()=>{if(ignorarPop){ignorarPop=false;return}if(Date.now()-cerrT<1200||Date.now()-tapT<1500||eraTapada)return;if(history.state&&history.state.pdt)return;/* volvió de una ventana vieja, no de esta app */if(sub){if(document.querySelector('#modal.overlay')&&!ck())return;atras();if(sub)try{history.pushState({pdt:1},'')}catch(_){}}});
+  addEventListener('popstate',()=>{if(window.__pdPopPropio)return;if(ignorarPop){ignorarPop=false;return}if(Date.now()-cerrT<1200||Date.now()-tapT<1500||eraTapada)return;if(history.state&&history.state.pdt)return;/* volvió de una ventana vieja, no de esta app */if(sub){if(document.querySelector('#modal.overlay')&&!ck())return;atras();if(sub)try{history.pushState({pdt:1},'')}catch(_){}}});
   /* Enlace directo a la carta de un negocio: ?negocio=ID */
   (function(){const id=(new URLSearchParams(location.search).get('negocio')||'').trim();if(!id)return;const t=setInterval(()=>{const r=negPorId(id);if(!r)return;clearInterval(t);F.neg=String(r.id);carta(r.id);sub='negocio';try{const m=$('cartaModalNegocio');if(m&&window.volverMenuPrincipal)window.volverMenuPrincipal()}catch(_){}key='';pintar()},300);setTimeout(()=>clearInterval(t),20000)})();
   setInterval(pintar,700);
