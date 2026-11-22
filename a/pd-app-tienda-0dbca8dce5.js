@@ -1120,13 +1120,22 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
     if(k===key)return;key=k;
     const lst=root.querySelector('.list');if(lst&&root.__pag)scrollMem[root.__pag]=lst.scrollTop;
     const cx=(root.querySelector('.chsHome')||{}).scrollLeft||0;
+    /* al elegir categoría: la fila de categorías se queda quieta en su sitio */
+    const anc=alCat&&root.__pag===pag&&root.querySelector('.chsHome')?root.querySelector('.chsHome').getBoundingClientRect().top:null;
     root.innerHTML=`<style>${ESTILO}</style><div class="app">${v.head}<div class="list">${v.body}</div>${v.foot?`<div class="foot">${v.foot}</div>`:''}${nav()}</div>`;
-    const nueva=root.__pag!==pag;const nl=root.querySelector('.list');if(nl)nl.scrollTop=root.__pag===pag?(scrollMem[pag]||0):(scrollMem[pag]=0,0);root.__pag=pag;
+    const nueva=root.__pag!==pag;const nl=root.querySelector('.list');{const c2=root.querySelector('.chsHome');/* con pocos resultados la página no se encoge de golpe: deja espacio abajo para que nada salte */
+      if(nl&&c2&&F.cat&&root.__pag===pag){const top=c2.offsetTop-nl.offsetTop,ul=nl.lastElementChild,alto=ul?ul.offsetTop-nl.offsetTop+ul.offsetHeight+(parseFloat(getComputedStyle(nl).paddingBottom)||0):0,falta=Math.ceil(top+nl.clientHeight-alto);if(falta>0){const sp=document.createElement('div');sp.style.cssText='height:'+falta+'px;flex:0 0 auto';sp.setAttribute('aria-hidden','true');nl.appendChild(sp)}}}if(nl)nl.scrollTop=root.__pag===pag?(scrollMem[pag]||0):(scrollMem[pag]=0,0);root.__pag=pag;
     try{const ap=root.querySelector('.app');if(nueva&&ap){ap.classList.add('entra');clearTimeout(root.__entT);root.__entT=setTimeout(()=>{const a2=root.querySelector('.app');a2&&a2.classList.remove('entra')},1100)}
       const ind=root.querySelector('.seg .ind');if(ind){const i=+ind.dataset.i||0,tx=k=>'translateX(calc('+k+' * (100% + 4px)))',pv=root.__segI;if(pv!=null&&pv!==i&&!nueva){ind.style.transition='none';ind.style.transform=tx(pv);void ind.offsetWidth;ind.style.transition=''}ind.style.transform=tx(i);root.__segI=i}
       const nc=nCart();if(root.__nc!=null&&nc>root.__nc)root.querySelectorAll('.bd,.cbar .n').forEach(x=>x.classList.add('pop'));root.__nc=nc;
       if(favPop){root.querySelectorAll('[data-fav="'+CSS.escape(favPop)+'"] svg').forEach(x=>x.classList.add('pop'));favPop=null}}catch(_){}
-    {const c2=root.querySelector('.chsHome');if(c2){c2.scrollLeft=cx;if(alCat){alCat=false;const on=c2.querySelector('button.on');if(on)setTimeout(()=>alIzq(on),120)}}}
+    {const c2=root.querySelector('.chsHome');if(c2){c2.scrollLeft=cx;
+      if(alCat){alCat=false;const on=c2.querySelector('button.on');
+        if(anc!=null&&nl){const d=c2.getBoundingClientRect().top-anc;if(Math.abs(d)>1)nl.scrollTop+=d}
+        /* la categoría elegida solo se acomoda si está cortada; no se corre toda la fila */
+        if(on){const r=on.getBoundingClientRect(),q=c2.getBoundingClientRect();if(r.left<q.left+4)c2.scrollBy({left:r.left-q.left-16,behavior:'smooth'});else if(r.right>q.right-4)c2.scrollBy({left:r.right-q.right+16,behavior:'smooth'})}
+        /* los resultados aparecen suaves */
+        try{if(!matchMedia('(prefers-reduced-motion: reduce)').matches){let el=c2.nextElementSibling;let n=0;while(el&&n<12){el.animate([{opacity:0,transform:'translateY(8px)'},{opacity:1,transform:'none'}],{duration:220,delay:Math.min(n,6)*25,easing:'cubic-bezier(.2,.8,.2,1)',fill:'backwards'});el=el.nextElementSibling;n++}}}catch(_){}}}}
     {const cs=[...root.querySelectorAll('[data-ncat]')];if(cs.length){const act=cs.some(b=>b.dataset.ncat===F.ncat)?F.ncat:cs[0].dataset.ncat;cs.forEach(b=>{const on=b.dataset.ncat===act;b.classList.toggle('on',on);b.setAttribute('aria-selected',on)})}}
     if(pag==='buscar'||(tab==='buscar'&&!sub)){}
   }
