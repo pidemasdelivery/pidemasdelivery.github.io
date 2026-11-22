@@ -359,9 +359,9 @@
 .tst{animation:pdUpT .3s cubic-bezier(.2,.9,.3,1.2) both!important}@keyframes pdUpT{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 
 /* --- Tarjeta del negocio (debajo del buscador), mismo color que «Pedido en curso» --- */
-.hero.neg{background:#FFF1E8;border:1.5px solid #F6CDB3;border-radius:20px;box-shadow:none;padding:14px;margin-top:0}
+.hero.neg{background:#FFFFFF;border:1px solid #F1E4DA;border-radius:20px;box-shadow:none;padding:14px;margin-top:0}
 .hero.neg .lg.big{background-color:#FFFFFF}
-.hero.neg .tx .st.on{background:#FFFFFF;color:#15803D}.hero.neg .tx .st.warn{background:#FFFFFF;color:#9A330A}.hero.neg .tx .st.off{background:#FFFFFF;color:#6B5E55}
+.hero.neg .tx .st.on{background:#E7F6EC;color:#0F6B33}.hero.neg .tx .st.warn{background:#FDEBDF;color:#9A330A}.hero.neg .tx .st.off{background:#F3EAE3;color:#6B5E55}
 .hero.neg .lnk{color:#C4410C;font-weight:800}
 
 /* --- Misma distancia entre bloques que en Inicio --- */
@@ -394,7 +394,7 @@
 .sec h2{font-size:20px!important;font-weight:800;color:#1F1A17!important}.catN{font-size:17px!important;font-weight:800;color:#1F1A17!important}
 .catC{font-size:12px!important;background:#FDEBDF;color:#9A330A}
 /* tarjetas naranja claro como los avisos del motorizado */
-.curso,.hero.neg{background:#FFF4EC!important;border:1px solid #F6C7AE!important}
+.curso,.hero.neg{background:#FFFFFF!important;border:1px solid #F1E4DA!important}
 /* chips, buscador, campos y botones */
 .chs button{height:38px!important;font-size:14px!important;font-weight:700!important;border-radius:999px}
 .chs button.on{box-shadow:none!important}
@@ -503,6 +503,14 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
   const abierto=r=>{try{return isRestaurantOpen(r)}catch(e){return estado(r).tipo!=='off'}};
   const tiempo=r=>{const t=String(r&&r.tiempo_estimado||'').trim();return t?(/min/i.test(t)?t:t.replace('-','–')+' min'):''};
   const favs=()=>{try{const f=JSON.parse(localStorage.getItem('pidemas_favoritos')||'[]');return Array.isArray(f)?f.map(String):[]}catch(e){return []}};
+  /* Más cerca: pide la ubicación del celular y ordena los negocios por distancia */
+  let cercaBusy=false;
+  function cercaUbic(){let c=null;try{c=customerNearbyCoords}catch(_){}if(c||cercaBusy)return;
+    if(!navigator.geolocation){aviso('Tu celular no permite usar la ubicación.');return}
+    cercaBusy=true;aviso('Buscando tu ubicación…');
+    navigator.geolocation.getCurrentPosition(pos=>{cercaBusy=false;try{customerNearbyCoords={latitude:pos.coords.latitude,longitude:pos.coords.longitude}}catch(_){}key='';pintar()},
+      err=>{cercaBusy=false;aviso(err&&err.code===1?'Para ver los negocios más cerca, permite usar tu ubicación.':'No se pudo obtener tu ubicación. Intenta de nuevo.')},
+      {enableHighAccuracy:false,timeout:15000,maximumAge:300000})}
   function dist(r){try{const c=customerNearbyCoords;if(!c||r.latitud==null||r.longitud==null)return null;return distanceKm(c,{latitude:Number(r.latitud),longitude:Number(r.longitud)})}catch(e){return null}}
   const logoHtml=(r,big)=>{const u=logoN(r);return `<span class="lg${big?' big':''}" aria-hidden="true"${u?` style="background-image:url('${E(u)}')"`:''}>${u?'':ini(nomN(r))}</span>`};
   const CATIC={pollerías:'<path d="M7 14c-2-1-3-3-2-5s4-3 6-2l5 3c2 1 3 3 2 5s-4 2-6 1z"/><path d="m15 17 3 4M18 15l3 1"/>',chifas:'<path d="M3 12h18a9 9 0 0 1-18 0z"/><path d="m14 3-3 9M19 4l-5 8"/>',cevicherías:'<path d="M3 12c3-5 9-6 14-3l4-3v12l-4-3c-5 3-11 2-14-3z"/><circle cx="8" cy="11" r="1"/>',pizzerías:'<path d="M12 3 3 20h18z"/><circle cx="11" cy="14" r="1"/><circle cx="14" cy="16" r="1"/>',hamburgueserías:'<path d="M4 11a8 8 0 0 1 16 0z"/><path d="M3 14h18M5 17h14a2 2 0 0 1-2 3H7a2 2 0 0 1-2-3z"/>',postres:'<path d="M6 11h12l-1.5 9h-9z"/><path d="M8 11a4 4 0 0 1 8 0"/>',dulcerías:'<path d="M6 11h12l-1.5 9h-9z"/><path d="M8 11a4 4 0 0 1 8 0"/>',cafeterías:'<path d="M4 8h13v5a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5z"/><path d="M17 10h2a2 2 0 0 1 0 4h-2"/>',bebidas:'<path d="M7 3h10l-1 18H8z"/><path d="M7 8h10"/>',paviferías:'<path d="M5 15c0-4 3-8 7-8s7 4 7 8z"/><path d="M3 15h18M12 7V4"/>'};
@@ -1185,7 +1193,7 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
     const ad=e.target.closest('[data-add]');if(ad){agregar(ad.dataset.add,1);return}
     const pr=e.target.closest('[data-prod]');if(pr){if(pr.dataset.pneg){const id=pr.dataset.prod;F.neg=pr.dataset.pneg;carta(F.neg);if(!sub)try{history.pushState({pdt:1},'')}catch(_){}sub='negocio';const w=setInterval(()=>{if(PR().some(x=>String(x.id)===String(id))){clearInterval(w);abrirProd(id)}},150);setTimeout(()=>clearInterval(w),8000);return}abrirProd(pr.dataset.prod);return}
     const ct=e.target.closest('[data-cat]');if(ct){F.cat=ct.dataset.cat;alCat=true;key='';pintar();return}
-    const fl=e.target.closest('[data-fl]');if(fl){F.filtro=fl.dataset.fl;if(F.filtro==='cerca'){try{if(!customerNearbyCoords&&window.useCurrentLocation)window.useCurrentLocation('nearby')}catch(_){}}key='';pintar();return}
+    const fl=e.target.closest('[data-fl]');if(fl){F.filtro=fl.dataset.fl;if(F.filtro==='cerca')cercaUbic();key='';pintar();return}
     const nc=e.target.closest('[data-ncat]');if(nc){F.ncat=nc.dataset.ncat;root.querySelectorAll('[data-ncat]').forEach(b=>{const on=b===nc;b.classList.toggle('on',on);b.setAttribute('aria-selected',on)});alIzq(nc);const g=root.getElementById('g-'+nc.dataset.ncat);if(g){root.__pdBloqueoSpy&&root.__pdBloqueoSpy();g.scrollIntoView({behavior:'smooth',block:'start'})}return}
     const q=e.target.closest('[data-q]');if(q){F.qty=Math.max(1,F.qty+Number(q.dataset.q));key='';pintar();return}
     const ci=e.target.closest('[data-ci]');if(ci){const [i,d]=ci.dataset.ci.split(':').map(Number);const L=CART(),x=L[i];if(!x)return;
