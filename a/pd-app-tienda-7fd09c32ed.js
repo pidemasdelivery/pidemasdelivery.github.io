@@ -703,7 +703,7 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
     const head=top('Tus compras','Mis pedidos','',SES()?`<button type="button" class="ib" data-a="hact" aria-label="Actualizar">${S('<path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/>')}</button>`:'');
     if(!SES())return {head,body:loginCard('Inicia sesión para ver tus pedidos','Tus pedidos quedan guardados en tu cuenta de Google.')};
     const c=historial();if(!c.data)return {head,body:c.err?`<div class="err">${E(c.err)}</div>`:'<div class="load">Cargando tus pedidos…</div>'};
-    const H=c.data;if(!H.length)return {head,body:'<div class="vac">Aún no tienes pedidos. Explora los negocios de Piura y haz tu primer pedido.</div><button type="button" class="b o" data-a="inicio">Ver negocios</button>'};
+    const H=c.data;if(!H.length)return {head,body:`<div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:48px 20px 8px"><span style="width:76px;height:76px;border-radius:50%;background:#FDEBDF;color:#C4410C;display:flex;align-items:center;justify-content:center">${String(IC.box).replace(/width="\d+" height="\d+"/,'width="34" height="34"')}</span><h2 style="margin:8px 0 0;font-size:22px;font-weight:800;color:#1F1A17">Aún no tienes pedidos</h2><p style="margin:0;font-size:15px;line-height:1.5;color:#6B5E55;max-width:300px">Explora los negocios de Piura y haz tu primer pedido.</p></div><button type="button" class="b o" style="height:54px;font-size:16px;margin-top:8px" data-a="inicio">Ver negocios</button>`};
     let cal={};try{cal=JSON.parse(localStorage.getItem('pidemas_calificados')||'{}')||{}}catch(e){}
     const curso=H.filter(o=>!FIN.includes(est(o))),antes=H.filter(o=>FIN.includes(est(o)));
     const card=o=>{const s=est(o),canc=['cancelado','anulado','rechazado'].includes(s),fin=s==='entregado',r=negPorId(o.negocio_id),items=(o.items||[]).map(x=>Number(x.cantidad||1)+'× '+x.nombre).join(' · '),p=!fin&&!canc?pasos(o):null,cl=cal[o.id];
@@ -1155,9 +1155,8 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
     if(sub&&history.state&&history.state.pdt){ignorarPop=true;history.back()}
     sub=null;pila=[];
     if(t==='buscar'){tab='inicio';key='';pintar();setTimeout(()=>{const i=root&&root.getElementById('tQ');if(i)i.focus()},50);return}
-    if(t==='pedidos'){const c=historial(true);if(c&&!c.busy&&Array.isArray(c.data)&&!c.data.length){alertaSinPedidos();return}
-      const prev=tab==='pedidos'?'inicio':tab;tab='pedidos';key='';pintar();const t0=Date.now();
-      const iv=setInterval(()=>{const k=C.hist;if(!k||k.busy){if(Date.now()-t0>12000)clearInterval(iv);return}clearInterval(iv);if(Array.isArray(k.data)&&!k.data.length&&tab==='pedidos'&&!sub){tab=prev;key='';pintar();alertaSinPedidos()}},150);return}
+    if(t==='pedidos'){historial(true);tab='pedidos';key='';pintar();/* sin pedidos: la misma página de Pedidos lo dice, sin ventana encima de otra página */
+      const t0=Date.now(),iv=setInterval(()=>{const k=C.hist;if(k&&!k.busy){clearInterval(iv);if(tab==='pedidos'){key='';pintar()}}else if(Date.now()-t0>12000)clearInterval(iv)},150);return}
     tab=t;key='';pintar();
   }
   function alertaSinPedidos(){hojaAbrir({t:'sinped',view(){return {dlg:true,title:'Aún no tienes pedidos',
