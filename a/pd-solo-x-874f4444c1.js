@@ -11,7 +11,7 @@
   ['gesturestart','gesturechange','gestureend'].forEach(function(ev){document.addEventListener(ev,function(e){e.preventDefault()},{passive:false})});
   document.addEventListener('touchmove',function(e){if(e.touches&&e.touches.length>1&&e.cancelable)e.preventDefault()},{passive:false,capture:true});
   var ult=0;
-  document.addEventListener('touchend',function(e){var n=Date.now();if(n-ult<350&&e.cancelable&&!(e.target.closest&&e.target.closest('input,textarea,select,a,button,label')))e.preventDefault();ult=n},{passive:false});
+  document.addEventListener('touchend',function(e){var n=Date.now();if(n-ult<350&&e.cancelable&&!(e.composedPath?e.composedPath():[e.target]).some(function(x){return x&&x.matches&&x.matches('input,textarea,select,a,button,label,[role=button],[data-a],[data-k]')}))e.preventDefault();ult=n},{passive:false});
   document.addEventListener('wheel',function(e){if(e.ctrlKey)e.preventDefault()},{passive:false});
   document.addEventListener('keydown',function(e){if((e.ctrlKey||e.metaKey)&&(e.key==='+'||e.key==='-'||e.key==='='||e.key==='0'))e.preventDefault()});
   /* Sin recargar al arrastrar hacia abajo (en la página y en las ventanas) */
