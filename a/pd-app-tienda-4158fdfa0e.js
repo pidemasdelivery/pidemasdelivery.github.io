@@ -512,6 +512,9 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
   /* ---------- negocios ---------- */
   const nomN=r=>String(r&&(r.nombre||r.nombre_negocio||r.razon_social)||'Negocio');
   const catN=r=>String(r&&r.categoria_negocio||'').trim();
+  /* Categoría en singular para la cabecera de un solo negocio (la lista sigue en plural) */
+  const CAT1={'restaurantes':'Restaurante','pizzerías':'Pizzería','pollerías':'Pollería','hamburgueserías':'Hamburguesería','sangucherías':'Sanguchería','paviferías':'Pavifería','cevicherías':'Cevichería','chifas':'Chifa','parrillas y anticuchos':'Parrilla y anticuchos','heladerías':'Heladería','cafeterías':'Cafetería','juguerías':'Juguería','dulcerías y pastelerías':'Dulcería y pastelería','panaderías':'Panadería','bodegas y minimarkets':'Bodega y minimarket','fruterías y verdulerías':'Frutería y verdulería','carnicerías':'Carnicería','licorerías':'Licorería','farmacias y boticas':'Farmacia y botica','ferreterías':'Ferretería','florerías y regalos':'Florería y regalos','mascotas':'Tienda de mascotas','librerías y útiles escolares':'Librería y útiles escolares','jugueterías':'Juguetería','lavanderías':'Lavandería'};
+  const catS=r=>{const c=catN(r);return CAT1[c.toLocaleLowerCase('es')]||c};
   const logoN=r=>r&&(r.logo_url||r.imagen_url)||'';
   const ini=n=>E(String(n||'N').trim().split(/\s+/).map(w=>w[0]||'').slice(0,2).join('').toUpperCase());
   const visibleN=r=>r&&r.activo!==false&&r.visible_admin!==false;
@@ -611,7 +614,7 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
     const r=negPorId(F.neg);
     if(!r)return {head:top('Negocio','Cargando…',back('inicio')),body:'<div class="load">Cargando…</div>'};
     const fv=favs().includes(String(r.id));
-    const head=top(catN(r)||'Negocio',nomN(r),back('inicio','Volver al inicio'));
+    const head=top(catS(r)||'Negocio',nomN(r),back('inicio','Volver al inicio'));
     const s=estado(r),c=carta(r.id);
     let h='';
     if(!c.data)return {head,body:h+(c.err?`<div class="err">No se pudo cargar la carta: ${E(c.err)}</div>`:'<div class="load">Cargando la carta…</div>')};
