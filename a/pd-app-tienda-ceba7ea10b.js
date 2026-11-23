@@ -494,9 +494,17 @@
 .segP .tln .p .d{width:24px;height:24px;font-size:11.5px}.segP .tln .p .d svg{width:13px;height:13px}
 .segP .tln .p .tx b{font-size:14px}.segP .tln .p .tx span{font-size:12px}
 .segP .cd .lbl{font-size:11px}.segP .cd .ln,.segP .cd .ln span,.segP .cd .ln b{font-size:14px}
-/* --- Pedido en curso: ícono que late, igual que en el inicio --- */
-.oc2 .r1{align-items:center}.oc2 .pdCi{width:40px;height:40px;border-radius:12px;background:#C4410C;color:#FFFFFF;display:flex;align-items:center;justify-content:center;flex:0 0 auto;animation:pdPulse 1.8s ease-out infinite}.oc2 .pdCi svg{width:20px;height:20px}
-@media (prefers-reduced-motion:reduce){.oc2 .pdCi{animation:none}}
+/* --- Tarjeta de pedido en curso (Mis pedidos) --- */
+.oA{all:unset;box-sizing:border-box;width:100%;display:flex;flex-direction:column;gap:12px;padding:16px;border-radius:22px;background:#FFFFFF;border:1px solid #F1E4DA;box-shadow:0 6px 20px rgba(31,26,23,.07);cursor:pointer;transition:transform .14s}
+.oA:active{transform:scale(.985)}
+.oAh{display:flex;align-items:center;gap:12px}.oAh .lg{width:48px;height:48px;flex:0 0 48px;border-radius:14px}
+.oAt{flex:1 1 0%;min-width:0;display:flex;flex-direction:column;gap:2px}.oAt b{font-size:16px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.oAt small{font-size:12.5px;color:#6B5E55;font-weight:600}
+.oAm{font-size:16px;font-weight:800;white-space:nowrap}
+.oAs{display:flex;flex-direction:column;gap:3px;padding:12px 14px;border-radius:16px;background:#FFF4EC}
+.oAs .vivo{font-size:12px}.oAs b{font-size:18px;font-weight:800;color:#1F1A17;line-height:1.25}.oAs small{font-size:13px;color:#6B5E55;font-weight:600}.oAs small:empty{display:none}
+.oAb{display:block;height:6px;border-radius:99px;background:#EFE4DB;overflow:hidden}.oAb i{display:block;height:100%;border-radius:99px;background:#C4410C;transition:width .6s cubic-bezier(.2,.8,.2,1)}
+.oAf{display:flex;align-items:center;justify-content:space-between;gap:10px}.oAf>span:first-child{font-size:12.5px;color:#6B5E55;font-weight:600;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.oAg{display:inline-flex;align-items:center;gap:2px;font-size:14px;font-weight:800;color:#C4410C;white-space:nowrap}.oAg svg{width:18px;height:18px}
 /* --- Categorías con íconos en la tienda principal («¿Qué se te antoja?») --- */
 .sec.antoja h2{font-size:17px!important}
 .chsHome.cti{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:2px 16px 4px;scroll-behavior:smooth}
@@ -767,7 +775,14 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
     let cal={};try{cal=JSON.parse(localStorage.getItem('pidemas_calificados')||'{}')||{}}catch(e){}
     const curso=H.filter(o=>!FIN.includes(est(o))),antes=H.filter(o=>FIN.includes(est(o)));
     const card=o=>{const s=est(o),canc=['cancelado','anulado','rechazado'].includes(s),fin=s==='entregado',r=negPorId(o.negocio_id),items=(o.items||[]).map(x=>Number(x.cantidad||1)+'× '+x.nombre).join(' · '),p=!fin&&!canc?pasos(o):null,cl=cal[o.id];
-      return `<div class="oc2${p?' a':''}"><div class="r1">${p?`<span class="pdCi" aria-hidden="true">${S('<path d="M6 8h12l-1 12H7z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>')}</span>`:''}<b style="flex:1 1 0%;min-width:0">${E(r?nomN(r):o.negocio_nombre||'Pedido')}</b><b>${M(o.total)}</b></div><div class="r2"><span class="st ${canc?'off':fin?'on':'warn'}">${canc?'Cancelado':fin?'Entregado':E(etiqueta(o))}</span><span>${E(codP(o))} · ${E(fechaC(o.creado_en))}</span>${cl?`<span style="color:#9A330A;font-weight:800">★ ${E(cl)}</span>`:''}</div>${items?`<div class="r3">${E(items)}</div>`:''}${p?`<div class="bar5" style="grid-template-columns:repeat(${p.L.length},minmax(0,1fr))" aria-hidden="true">${p.L.map((_,i)=>`<i class="${i<p.cur?'d':i===p.cur?'c':''}"></i>`).join('')}</div><button type="button" class="b" data-seg="${E(o.id)}">Ver seguimiento</button>`:`<div class="btns${fin&&!cl&&(o.items||[]).length?' b2':''}">${(o.items||[]).length?`<button type="button" class="b o" data-rep="${E(o.id)}">Pedir de nuevo</button>`:''}${fin&&!cl?`<button type="button" class="b" data-cal="${E(o.id)}">Calificar</button>`:''}</div>`}</div>`};
+      if(p){const n=p.L.length,k=Math.min(p.cur,n-1),pc=Math.round((k+1)/n*100),sig=p.L[k+1];
+        return `<button type="button" class="oA" data-seg="${E(o.id)}" aria-label="Ver seguimiento de tu pedido de ${E(r?nomN(r):'Pidemás')}">
+          <span class="oAh">${r?logoHtml(r):'<span class="lg"></span>'}<span class="oAt"><b>${E(r?nomN(r):o.negocio_nombre||'Pedido')}</b><small>${E(codP(o))} · ${E(fechaC(o.creado_en))}</small></span><b class="oAm">${M(o.total)}</b></span>
+          <span class="oAs"><span class="vivo"><i></i>En vivo</span><b>${E(etiqueta(o))}</b><small>${sig?'Sigue: '+E(sig.t):''}</small></span>
+          <span class="oAb" aria-hidden="true"><i style="width:${pc}%"></i></span>
+          <span class="oAf"><span>Paso ${k+1} de ${n}${items?' · '+E(items):''}</span><span class="oAg">Ver seguimiento ${S('<path d="m9 6 6 6-6 6"/>')}</span></span>
+        </button>`}
+      return `<div class="oc2${p?' a':''}"><div class="r1"><b>${E(r?nomN(r):o.negocio_nombre||'Pedido')}</b><b>${M(o.total)}</b></div><div class="r2"><span class="st ${canc?'off':fin?'on':'warn'}">${canc?'Cancelado':fin?'Entregado':E(etiqueta(o))}</span><span>${E(codP(o))} · ${E(fechaC(o.creado_en))}</span>${cl?`<span style="color:#9A330A;font-weight:800">★ ${E(cl)}</span>`:''}</div>${items?`<div class="r3">${E(items)}</div>`:''}${p?`<div class="bar5" style="grid-template-columns:repeat(${p.L.length},minmax(0,1fr))" aria-hidden="true">${p.L.map((_,i)=>`<i class="${i<p.cur?'d':i===p.cur?'c':''}"></i>`).join('')}</div><button type="button" class="b" data-seg="${E(o.id)}">Ver seguimiento</button>`:`<div class="btns${fin&&!cl&&(o.items||[]).length?' b2':''}">${(o.items||[]).length?`<button type="button" class="b o" data-rep="${E(o.id)}">Pedir de nuevo</button>`:''}${fin&&!cl?`<button type="button" class="b" data-cal="${E(o.id)}">Calificar</button>`:''}</div>`}</div>`};
     let h='';if(curso.length)h+=`<div class="lbl2">En curso</div>`+curso.map(card).join('');
     if(antes.length)h+=`<div class="lbl2" style="margin-top:6px">Anteriores</div>`+antes.slice(0,F.lim).map(card).join('')+(antes.length>F.lim?`<button type="button" class="b" data-a="hmas">Ver más pedidos</button>`:'');
     return {head,body:h};
