@@ -473,8 +473,6 @@
 .stp{position:absolute;right:4px;bottom:4px;display:flex;align-items:center;height:36px;border-radius:12px;background:#C4410C;color:#FFFFFF;box-shadow:0 4px 10px rgba(196,65,12,.3);animation:pdStp .28s cubic-bezier(.2,.8,.2,1);overflow:hidden}
 @keyframes pdStp{from{width:36px}to{width:94px}}.stp{width:94px}
 .stp button{flex:0 0 32px;height:36px;border:0;background:none;color:#FFFFFF;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0}.stp button svg{width:18px;height:18px}.stp b{flex:1;text-align:center;font-size:15px}
-.app .top .kick,.app .top .h1{transition:transform .22s cubic-bezier(.2,.8,.2,1),opacity .2s;transform-origin:left center}
-.app.pdEncoge .top .kick{opacity:0;transform:translateY(-6px)}.app.pdEncoge .top .h1{transform:translateY(-9px) scale(.9)}
 @keyframes pdTrz{to{stroke-dashoffset:0}}.okA svg path{stroke-dasharray:44;stroke-dashoffset:44;animation:pdTrz .45s .25s cubic-bezier(.4,0,.2,1) forwards}
 @keyframes pdOkIn{from{transform:scale(.4);opacity:0}60%{transform:scale(1.12)}to{transform:none;opacity:1}}.okA{animation:pdOkIn .45s cubic-bezier(.2,.8,.2,1)}
 @keyframes pdBarra{0%{background-position:100% 0}100%{background-position:-100% 0}}
@@ -1165,7 +1163,7 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
         const soltar=()=>{clearTimeout(qt);qt=setTimeout(()=>{bloq=false},200)};
         root.addEventListener('pointerdown',e=>{if(e.target.closest&&e.target.closest('.chsBar'))toca=Date.now()+100000},true);
         root.addEventListener('pointerup',()=>{if(toca)toca=Date.now()+700},true);root.addEventListener('pointercancel',()=>{if(toca)toca=Date.now()+700},true);
-        root.addEventListener('scroll',e=>{const L0=e.target;if(L0&&L0.classList&&L0.classList.contains('pdCarS')){const i=Math.round(L0.scrollLeft/Math.max(1,L0.clientWidth));L0.nextElementSibling&&[...L0.nextElementSibling.children].forEach((d,k)=>d.classList.toggle('on',k===i));return}if(L0&&L0.classList&&L0.classList.contains('list')){const ap=root.querySelector('.app');if(ap)ap.classList.toggle('pdEncoge',sub==='negocio'&&L0.scrollTop>70)}if(sub!=='negocio')return;if(e.target&&e.target.classList&&e.target.classList.contains('chs'))return;if(bloq){soltar();return}clearTimeout(tsp);tsp=setTimeout(()=>{
+        root.addEventListener('scroll',e=>{const L0=e.target;if(L0&&L0.classList&&L0.classList.contains('pdCarS')){const i=Math.round(L0.scrollLeft/Math.max(1,L0.clientWidth));L0.nextElementSibling&&[...L0.nextElementSibling.children].forEach((d,k)=>d.classList.toggle('on',k===i));return}if(sub!=='negocio')return;if(e.target&&e.target.classList&&e.target.classList.contains('chs'))return;if(bloq){soltar();return}clearTimeout(tsp);tsp=setTimeout(()=>{
         const bar=root.querySelector('.chsBar');if(!bar)return;const lim=bar.getBoundingClientRect().bottom+12;let act=null;
         root.querySelectorAll('.catH').forEach(h=>{if(h.getBoundingClientRect().top<=lim)act=h.id.slice(2)});
         if(!act){const f=root.querySelector('.catH');act=f&&f.id.slice(2)}{const L=root.querySelector('.list');if(L&&L.scrollTop+L.clientHeight>=L.scrollHeight-6){const hs=[...root.querySelectorAll('.catH')];const vis=hs.filter(h=>h.getBoundingClientRect().top<L.getBoundingClientRect().bottom-40);if(vis.length)act=vis[vis.length-1].id.slice(2)}}if(!act||act===F.ncat)return;F.ncat=act;
