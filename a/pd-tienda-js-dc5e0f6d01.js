@@ -1,3 +1,6 @@
+/* Clave secreta de cada pedido (solo en este teléfono): permite ver el código de entrega */
+window.pdGuardarTokenPedido=function(id,t){try{const k='pd_tokens_pedido',m=JSON.parse(localStorage.getItem(k)||'{}');m[String(id)]=t;const ks=Object.keys(m);if(ks.length>60)ks.slice(0,ks.length-60).forEach(x=>delete m[x]);localStorage.setItem(k,JSON.stringify(m))}catch(_){}};
+window.pdTokenPedido=function(id){try{return JSON.parse(localStorage.getItem('pd_tokens_pedido')||'{}')[String(id)]||null}catch(_){return null}};
 const SUPABASE_URL='https://escxesvzndmyfuteawey.supabase.co';
 const SUPABASE_KEY='sb_publishable_pCP210JJcN3NP3a6Y2c--w_c7C0PjaU';
 // Evita que una petición HTTP de Supabase quede pendiente indefinidamente.
@@ -1535,7 +1538,9 @@ async function submitCartOrder(){
   const descMarca=(descOn||descProd.length)?'__PIDEMAS_DESCARTABLES__'+JSON.stringify({items:descItems.map(x=>({n:x.n,p:x.p})).concat(descProd.map(n=>({n,p:0}))),cubiertos:cubOn,cubiertos_precio:descCub}):'';
   const orderObservaciones=[baseObs,paymentObs,compMarca,descMarca].filter(Boolean).join(' · ');
 
-  const order={id:orderId,cliente_auth_id:pdClienteSesion?.id||null,tipo_pedido:orderBusinessId?'negocio':'stock',negocio_id:orderBusinessId,estado:'pendiente',motorizado_id:null,pago_confirmado:false,nombre_cliente:name,telefono_cliente:tel,direccion_entrega:dir,referencia_entrega:document.getElementById('cReferencia').value,latitud_entrega:lat?Number(lat):null,longitud_entrega:lng?Number(lng):null,metodo_pago:pago,subtotal:subtotal,costo_delivery:finalDeliveryCost,total,observaciones:[orderObservaciones,(deliveryDistanceKm!==null||window.__pdProg)?`__PIDEMAS_DELIVERY__${JSON.stringify({aproximado:!!window.__pdDeliveryAprox,zona:(window.__pdTarifaUltima&&window.__pdTarifaUltima.zona)||null,detalle:(window.pdDetalleTxt?window.pdDetalleTxt():null),programado:(window.pdProgMarca&&window.pdProgMarca()?window.pdProgMarca().iso:null),programado_txt:(window.pdProgMarca&&window.pdProgMarca()?window.pdProgMarca().txt:null),km:deliveryDistanceKm,costo:finalDeliveryCost,delivery_original:deliveryCost,descuento_delivery:discountAmount,codigo_descuento:discountCode})}`:''].filter(Boolean).join(' · '),comprobante_pago_url:proofUrl};
+  const tokenCliente=(window.crypto&&crypto.randomUUID)?crypto.randomUUID()+crypto.randomUUID():Array.from({length:4},()=>Math.random().toString(36).slice(2)).join('');
+  try{window.pdGuardarTokenPedido&&window.pdGuardarTokenPedido(orderId,tokenCliente)}catch(_){}
+  const order={id:orderId,token_cliente:tokenCliente,cliente_auth_id:pdClienteSesion?.id||null,tipo_pedido:orderBusinessId?'negocio':'stock',negocio_id:orderBusinessId,estado:'pendiente',motorizado_id:null,pago_confirmado:false,nombre_cliente:name,telefono_cliente:tel,direccion_entrega:dir,referencia_entrega:document.getElementById('cReferencia').value,latitud_entrega:lat?Number(lat):null,longitud_entrega:lng?Number(lng):null,metodo_pago:pago,subtotal:subtotal,costo_delivery:finalDeliveryCost,total,observaciones:[orderObservaciones,(deliveryDistanceKm!==null||window.__pdProg)?`__PIDEMAS_DELIVERY__${JSON.stringify({aproximado:!!window.__pdDeliveryAprox,zona:(window.__pdTarifaUltima&&window.__pdTarifaUltima.zona)||null,detalle:(window.pdDetalleTxt?window.pdDetalleTxt():null),programado:(window.pdProgMarca&&window.pdProgMarca()?window.pdProgMarca().iso:null),programado_txt:(window.pdProgMarca&&window.pdProgMarca()?window.pdProgMarca().txt:null),km:deliveryDistanceKm,costo:finalDeliveryCost,delivery_original:deliveryCost,descuento_delivery:discountAmount,codigo_descuento:discountCode})}`:''].filter(Boolean).join(' · '),comprobante_pago_url:proofUrl};
 
   // Reservar/descontar stock de forma segura antes de crear el pedido.
   // Cada actualización exige que todavía exista suficiente stock; si una línea falla,
@@ -1570,41 +1575,16 @@ async function submitCartOrder(){
   // Reserva de stock mediante funciones RPC SECURITY DEFINER de Supabase.
   // Así no dependemos de que el navegador tenga permiso UPDATE por RLS.
   async function reserveProductStockDirect(table,id,qty,variante){
-    if(variante){
-      const {data,error}=await sb.rpc('decrement_product_variant_stock',{p_product_id:String(id),p_variante:String(variante),p_quantity:qty});
-      if(error) throw new Error(error.message||'Supabase no pudo reservar el stock de la variante.');
-      const row=Array.isArray(data)?data[0]:data;
-      return row||null;
-    }
-    const fn=table==='productos_negocio'
-      ? 'decrement_product_negocio_stock'
-      : 'decrement_product_stock';
-    const {data,error}=await sb.rpc(fn,{
-      p_product_id:id,
-      p_quantity:qty
-    });
+    const {data,error}=await sb.rpc('reservar_stock',{p_pedido:orderId,p_tabla:table,p_producto:String(id),p_variante:variante?String(variante):null,p_cantidad:qty});
     if(error) throw new Error(error.message||'Supabase no pudo reservar el stock.');
-    const row=Array.isArray(data)?data[0]:data;
-    if(!row) return null;
-    return row;
+    return data===true||(Array.isArray(data)&&data[0]===true)?{id,ok:true}:null;
   }
 
   // Compensa una reserva si falla la creación del pedido o alguna línea posterior.
   async function releaseProductStockDirect(table,id,qty,variante){
-    if(variante){
-      const {data,error}=await sb.rpc('increment_product_variant_stock',{p_product_id:String(id),p_variante:String(variante),p_quantity:qty});
-      if(error) throw new Error(error.message||'No se pudo devolver el stock de la variante.');
-      return !!(Array.isArray(data)?data.length:data);
-    }
-    const fn=table==='productos_negocio'
-      ? 'increment_product_negocio_stock'
-      : 'increment_product_stock';
-    const {data,error}=await sb.rpc(fn,{
-      p_product_id:id,
-      p_quantity:qty
-    });
+    const {data,error}=await sb.rpc('liberar_stock',{p_pedido:orderId,p_tabla:table,p_producto:String(id),p_variante:variante?String(variante):null,p_cantidad:qty});
     if(error) throw new Error(error.message||'No se pudo devolver el stock reservado.');
-    return !!(Array.isArray(data)?data.length:data);
+    return !!data;
   }
 
   const stockReservations=[];
@@ -1682,7 +1662,7 @@ async function submitCartOrder(){
     estado:'pendiente',
     pago_confirmado:false,
   });
-  if(discountCode&&appliedDeliveryDiscount?.id){try{const {error:rpcErr}=await sb.rpc('usar_codigo_delivery',{p_id:appliedDeliveryDiscount.id});if(rpcErr)throw rpcErr;}catch(e){console.warn('No se pudo actualizar uso del código:',e);}}
+  if(discountCode&&appliedDeliveryDiscount?.id){try{const {error:rpcErr}=await sb.rpc('usar_codigo_delivery',{p_id:appliedDeliveryDiscount.id,p_pedido:orderId});if(rpcErr)throw rpcErr;}catch(e){console.warn('No se pudo actualizar uso del código:',e);}}
   cart=[];saveCart();updateCart();try{window.pdDescReset&&window.pdDescReset()}catch(e){}
   // Reemplazar el modal de checkout directamente evita que el popstate de closeModal()
   // cierre también el mensaje de éxito en móviles.

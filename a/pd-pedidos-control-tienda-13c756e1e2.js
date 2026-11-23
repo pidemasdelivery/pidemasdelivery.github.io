@@ -6,7 +6,7 @@
   window.pdCodigoHtml=function(o){
     if(!o||!o.id||!o.negocio_id||['entregado','cancelado','anulado','rechazado'].includes(String(o.estado||'').toLowerCase()))return '';
     const id=String(o.id);
-    if(!C.has(id)&&!pend.has(id)){pend.add(id);Promise.resolve(sb.rpc('codigo_entrega',{p_pedido:id})).then(r=>{C.set(id,r&&!r.error&&r.data?String(r.data):'')}).catch(()=>C.set(id,'')).finally(()=>pend.delete(id))}
+    if(!C.has(id)&&!pend.has(id)){pend.add(id);Promise.resolve(sb.rpc('codigo_entrega',{p_pedido:id,p_token:(window.pdTokenPedido?window.pdTokenPedido(id):null)})).then(r=>{C.set(id,r&&!r.error&&r.data?String(r.data):'')}).catch(()=>C.set(id,'')).finally(()=>pend.delete(id))}
     const c=C.get(id);if(!c)return '';
     return '<div class="pdpCard pdCodEnt"><div><b>Tu código de entrega</b><small>Dáselo al motorizado solo cuando tengas tu pedido en la mano.</small></div><strong>'+E(c)+'</strong></div>';
   };
