@@ -443,6 +443,11 @@
 .dlg:has(.segal) .bb .bp,.dlg:has(.segal) .bb .bs{height:46px!important}
 /* --- Programar pedido: página completa, sin menú, con botón atrás --- */
 .qs.full.sinnav{bottom:0!important}
+/* --- Barra de pedido programado: se puede cambiar o volver a pedir ahora --- */
+.pdProgBar{display:flex;align-items:center;gap:10px;padding:10px 10px 10px 12px;margin:0 0 4px;border-radius:16px;background:#FFF4EC;border:1.5px solid #F6CDB3}
+.pdProgBar .pi{flex:0 0 36px;width:36px;height:36px;border-radius:12px;background:#C4410C;color:#fff;display:flex;align-items:center;justify-content:center}.pdProgBar .pi svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.pdProgBar .pt{flex:1 1 0%;min-width:0;display:flex;flex-direction:column}.pdProgBar .pt b{font-size:14px;white-space:nowrap}.pdProgBar .pt small{font-size:12.5px;line-height:1.3;color:#6B5E55}
+.pdProgBar button{flex:0 0 auto;height:36px;padding:0 10px;border-radius:11px;border:1.5px solid #EADFD6;background:#fff;color:#1F1A17;font:800 13px inherit;font-family:inherit;cursor:pointer}.pdProgBar button.q{background:#C4410C;border-color:#C4410C;color:#fff}
 /* --- Categorías con íconos en la tienda principal («¿Qué se te antoja?») --- */
 .sec.antoja h2{font-size:17px!important}
 .chsHome.cti{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:2px 16px 4px;scroll-behavior:smooth}
@@ -559,6 +564,7 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
     let h=buscador;
     const o=ultimoPedido();
     if(o){const n=negPorId(o.negocio_id);h+=`<button type="button" class="curso" data-seg="${E(o.id)}"><span class="ci">${S('<path d="M6 8h12l-1 12H7z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>')}</span><span class="ct"><span class="vivo"><i></i>Pedido en curso · ${E(etiqueta(o))}</span><b style="font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${E(n?nomN(n):'Tu pedido')}${o.total!=null?' · '+M(o.total):''}</b><span style="font-size:14px;font-weight:800;color:#C4410C">Ver seguimiento</span></span>${S('<path d="m9 6 6 6-6 6"/>')}</button>`}
+    {const pv=window.__pdProg;if(pv)h+=`<div class="pdProgBar" role="status"><span class="pi">${S('<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/>')}</span><span class="pt"><b>Pedido programado</b><small>${E(pv.txt||'')}</small></span><button type="button" data-prog="cambiar">Cambiar</button><button type="button" class="q" data-prog="quitar">Pedir ahora</button></div>`}
     const cats=[...new Set(L.map(catN).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'es'));
     if(cats.length>1)h+=`<div class="sec antoja"><h2>¿Qué se te antoja?</h2></div><div class="chsHome cti" role="group" aria-label="Categorías"><button type="button" class="${!F.cat?'on':''}" data-cat="" aria-pressed="${!F.cat}"><span class="ico">${S('<rect x="4" y="4" width="6.5" height="6.5" rx="2"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="2"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="2"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="2"/>')}</span><span class="lb">Todos</span></button>${cats.map(c=>`<button type="button" class="${F.cat===c?'on':''}" data-cat="${E(c)}" aria-pressed="${F.cat===c}"><span class="ico">${catIcon(c)}</span><span class="lb">${E(c)}</span></button>`).join('')}</div>`;
     {const nf=F.cat?L.filter(r=>catN(r)===F.cat).length:L.length;h+=`<div class="sec"><h2>${E(F.cat||'Negocios')}</h2><span>${nf} ${F.cat?(nf===1?'negocio':'negocios'):'en Piura'}</span></div>`}
@@ -1187,6 +1193,7 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
   async function clic(e){
     tocando=false;
     const t=e.target.closest('[data-t]');if(t){if(HO&&HO.t!=='listo')try{hojaCerrar(undefined)}catch(_){}ir(t.dataset.t);return}
+    const pgb=e.target.closest('[data-prog]');if(pgb){if(pgb.dataset.prog==='quitar'){try{window.pdCancelarProgramado&&window.pdCancelarProgramado()}catch(_){}try{window.pdAviso?window.pdAviso('Listo, ahora pides para entrega inmediata.'):0}catch(_){}}else{try{reservar(window.__pdProgNegId||'')}catch(_){}}key='';pintar();return}
     const fv=e.target.closest('[data-fav]');if(fv){try{window.pdToggleFav(fv.dataset.fav)}catch(_){}favPop=fv.dataset.fav;key='';pintar();return}
     const ng=e.target.closest('[data-neg]');if(ng){abrirNeg(ng.dataset.neg);return}
     const ad=e.target.closest('[data-add]');if(ad){agregar(ad.dataset.add,1);return}
