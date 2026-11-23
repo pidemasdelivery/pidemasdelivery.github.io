@@ -483,18 +483,6 @@
 .pdCarT{display:flex;flex-direction:column;gap:2px}.pdCarT b{font-size:19px;font-weight:800;text-shadow:0 1px 6px rgba(0,0,0,.35)}.pdCarT small{font-size:13px;font-weight:700;opacity:.95}
 .pdCarD{position:absolute;right:14px;bottom:14px;display:flex;gap:5px}.pdCarD i{width:6px;height:6px;border-radius:9px;background:rgba(255,255,255,.55);transition:width .25s}.pdCarD i.on{width:18px;background:#FFFFFF}
 @media (prefers-reduced-motion:reduce){.skb,.bar5 i.c,.tln .p.cur .d{animation:none!important}}
-/* --- Seguimiento compacto --- */
-.segP .top .h1{font-size:18px!important}.segP .top .kick{font-size:11px}
-.segP .bar5 i{height:5px}.segP .top span[style*="font-size:14px"]{font-size:12.5px!important}
-.segP .list{gap:10px}
-.segP .cdg{display:grid!important;grid-template-columns:1fr auto;align-items:center;gap:2px 12px;padding:12px 14px!important;border-radius:16px;text-align:left}
-.segP .cdg .cdk{font-size:11px}.segP .cdg .cdn{font-size:30px!important;letter-spacing:.14em;grid-row:1/3;grid-column:2;line-height:1}
-.segP .cdg .cds{font-size:12.5px;line-height:1.35;margin:0}
-.segP .cd{padding:10px 14px;border-radius:16px;gap:6px}
-.segP .tln .p{padding:5px 0;gap:10px;align-items:center}
-.segP .tln .p .d{width:24px;height:24px;font-size:11.5px}.segP .tln .p .d svg{width:13px;height:13px}
-.segP .tln .p .tx b{font-size:14px}.segP .tln .p .tx span{font-size:12px}
-.segP .cd .lbl{font-size:11px}.segP .cd .ln,.segP .cd .ln span,.segP .cd .ln b{font-size:14px}
 /* --- Categorías con íconos en la tienda principal («¿Qué se te antoja?») --- */
 .sec.antoja h2{font-size:17px!important}
 .chsHome.cti{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:2px 16px 4px;scroll-behavior:smooth}
@@ -1198,7 +1186,7 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
     const cx=(root.querySelector('.chsHome')||{}).scrollLeft||0,carX=(root.querySelector('.pdCarS')||{}).scrollLeft||0,carT=(root.querySelector('.pdCarS')||{}).__t||0;
     /* al elegir categoría: la fila de categorías se queda quieta en su sitio */
     const anc=alCat&&root.__pag===pag&&root.querySelector('.chsHome')?root.querySelector('.chsHome').getBoundingClientRect().top:null;
-    root.innerHTML=`<style>${ESTILO}</style><div class="app${sub==='seguir'?' segP':''}">${v.head}<div class="list">${v.body}</div>${v.foot?`<div class="foot">${v.foot}</div>`:''}${nav()}</div>`;
+    root.innerHTML=`<style>${ESTILO}</style><div class="app">${v.head}<div class="list">${v.body}</div>${v.foot?`<div class="foot">${v.foot}</div>`:''}${nav()}</div>`;
     const nueva=root.__pag!==pag;const nl=root.querySelector('.list');{const c2=root.querySelector('.chsHome');/* con pocos resultados la página no se encoge de golpe: deja espacio abajo para que nada salte */
       if(nl&&c2&&F.cat&&root.__pag===pag){const top=c2.offsetTop-nl.offsetTop,ul=nl.lastElementChild,alto=ul?ul.offsetTop-nl.offsetTop+ul.offsetHeight+(parseFloat(getComputedStyle(nl).paddingBottom)||0):0,falta=Math.ceil(top+nl.clientHeight-alto);if(falta>0){const sp=document.createElement('div');sp.style.cssText='height:'+falta+'px;flex:0 0 auto';sp.setAttribute('aria-hidden','true');nl.appendChild(sp)}}}if(nl)nl.scrollTop=root.__pag===pag?(scrollMem[pag]||0):(scrollMem[pag]=0,0);root.__pag=pag;
     try{const ap=root.querySelector('.app');if(nueva&&ap){ap.classList.add('entra');clearTimeout(root.__entT);root.__entT=setTimeout(()=>{const a2=root.querySelector('.app');a2&&a2.classList.remove('entra')},1100)}
