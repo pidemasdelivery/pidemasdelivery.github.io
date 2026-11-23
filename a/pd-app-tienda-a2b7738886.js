@@ -355,7 +355,7 @@
 .pc .ph i{cursor:pointer}
 /* --- Avisos arriba, para no tapar los botones de abajo --- */
 /* Avisos cortos abajo (encima del menú inferior), debajo de cualquier alerta, en toda la tienda */
-.tst{top:auto!important;bottom:calc(env(safe-area-inset-bottom,0px) + var(--nvh,72px) + 14px)!important;z-index:5}
+.tst{top:auto!important;bottom:calc(var(--pdTstB,72px) + 12px)!important;z-index:5}
 .tst{animation:pdUpT .3s cubic-bezier(.2,.9,.3,1.2) both!important}@keyframes pdUpT{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 
 /* --- Tarjeta del negocio (debajo del buscador), mismo color que «Pedido en curso» --- */
@@ -949,7 +949,7 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
   function pintarHoja(){
     if(!$('pdAppShell')&&!hHost){const wrap=document.createElement('header');wrap.id='pdAppShell';wrap.style.cssText='display:contents';document.body.appendChild(wrap)}
     asegurarHoja();
-    const vis=!!HO||!!TS;hHost.style.display=vis?'':'none';hHost.style.pointerEvents='none';try{const nv=root&&root.querySelector('.nv');hHost.style.setProperty('--nvh',(nv?nv.offsetHeight:0)+'px')}catch(_){}
+    const vis=!!HO||!!TS;hHost.style.display=vis?'':'none';hHost.style.pointerEvents='none';try{const nv=root&&root.querySelector('.nv');hHost.style.setProperty('--nvh',(nv?nv.offsetHeight:0)+'px');const ft=root&&root.querySelector('.foot');hHost.style.setProperty('--pdTstB',Math.max(nv?nv.offsetHeight:0,ft&&ft.offsetHeight?Math.round(innerHeight-ft.getBoundingClientRect().top):0)+'px')}catch(_){}
     if(!vis){if(hRoot.innerHTML)hRoot.innerHTML='';hKey='';hRoot.__qt=null;return}
     const act=hRoot.activeElement;if(HO&&act&&(act.tagName==='INPUT'||act.tagName==='TEXTAREA')&&hKey)return;
     const v=HO?HO.view():null;
@@ -1216,6 +1216,7 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
         try{if(!matchMedia('(prefers-reduced-motion: reduce)').matches){let el=c2.nextElementSibling;let n=0;while(el&&n<12){el.animate([{opacity:0,transform:'translateY(8px)'},{opacity:1,transform:'none'}],{duration:220,delay:Math.min(n,6)*25,easing:'cubic-bezier(.2,.8,.2,1)',fill:'backwards'});el=el.nextElementSibling;n++}}}catch(_){}}}}
     {const cs=[...root.querySelectorAll('[data-ncat]')];if(cs.length){const act=cs.some(b=>b.dataset.ncat===F.ncat)?F.ncat:cs[0].dataset.ncat;cs.forEach(b=>{const on=b.dataset.ncat===act;b.classList.toggle('on',on);b.setAttribute('aria-selected',on)})}}
     if(pag==='buscar'||(tab==='buscar'&&!sub)){}
+    try{if(typeof hHost!=='undefined'&&hHost){const nv=root.querySelector('.nv'),ft=root.querySelector('.foot');hHost.style.setProperty('--pdTstB',Math.max(nv?nv.offsetHeight:0,ft&&ft.offsetHeight?Math.round(innerHeight-ft.getBoundingClientRect().top):0)+'px')}}catch(_){}
   }
   function ir(t){
     if((t==='pedidos'||t==='perfil')&&!SES()){entrar();return}
