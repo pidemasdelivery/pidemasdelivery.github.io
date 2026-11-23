@@ -494,6 +494,10 @@
 .segP .tln .p .d{width:24px;height:24px;font-size:11.5px}.segP .tln .p .d svg{width:13px;height:13px}
 .segP .tln .p .tx b{font-size:14px}.segP .tln .p .tx span{font-size:12px}
 .segP .cd .lbl{font-size:11px}.segP .cd .ln,.segP .cd .ln span,.segP .cd .ln b{font-size:14px}
+/* --- Pedido en curso: borde que late, igual que los pedidos nuevos del admin --- */
+@keyframes pdLateC{0%{box-shadow:0 0 0 0 rgba(196,65,12,.45),0 8px 22px rgba(31,26,23,.06)}100%{box-shadow:0 0 0 12px rgba(196,65,12,0),0 8px 22px rgba(31,26,23,.06)}}
+.oc2.pdNw{border:2px solid #C4410C!important;animation:pdLateC 1.6s ease-out infinite}
+@media (prefers-reduced-motion:reduce){.oc2.pdNw{animation:none;box-shadow:0 0 0 4px rgba(196,65,12,.25)}}
 /* --- Categorías con íconos en la tienda principal («¿Qué se te antoja?») --- */
 .sec.antoja h2{font-size:17px!important}
 .chsHome.cti{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:2px 16px 4px;scroll-behavior:smooth}
@@ -764,7 +768,7 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
     let cal={};try{cal=JSON.parse(localStorage.getItem('pidemas_calificados')||'{}')||{}}catch(e){}
     const curso=H.filter(o=>!FIN.includes(est(o))),antes=H.filter(o=>FIN.includes(est(o)));
     const card=o=>{const s=est(o),canc=['cancelado','anulado','rechazado'].includes(s),fin=s==='entregado',r=negPorId(o.negocio_id),items=(o.items||[]).map(x=>Number(x.cantidad||1)+'× '+x.nombre).join(' · '),p=!fin&&!canc?pasos(o):null,cl=cal[o.id];
-      return `<div class="oc2${p?' a':''}"><div class="r1"><b>${E(r?nomN(r):o.negocio_nombre||'Pedido')}</b><b>${M(o.total)}</b></div><div class="r2"><span class="st ${canc?'off':fin?'on':'warn'}">${canc?'Cancelado':fin?'Entregado':E(etiqueta(o))}</span><span>${E(codP(o))} · ${E(fechaC(o.creado_en))}</span>${cl?`<span style="color:#9A330A;font-weight:800">★ ${E(cl)}</span>`:''}</div>${items?`<div class="r3">${E(items)}</div>`:''}${p?`<div class="bar5" style="grid-template-columns:repeat(${p.L.length},minmax(0,1fr))" aria-hidden="true">${p.L.map((_,i)=>`<i class="${i<p.cur?'d':i===p.cur?'c':''}"></i>`).join('')}</div><button type="button" class="b o" data-seg="${E(o.id)}">Ver seguimiento</button>`:`<div class="btns${fin&&!cl&&(o.items||[]).length?' b2':''}">${(o.items||[]).length?`<button type="button" class="b o" data-rep="${E(o.id)}">Pedir de nuevo</button>`:''}${fin&&!cl?`<button type="button" class="b" data-cal="${E(o.id)}">Calificar</button>`:''}</div>`}</div>`};
+      return `<div class="oc2${p?' a pdNw':''}"><div class="r1"><b>${E(r?nomN(r):o.negocio_nombre||'Pedido')}</b><b>${M(o.total)}</b></div><div class="r2"><span class="st ${canc?'off':fin?'on':'warn'}">${canc?'Cancelado':fin?'Entregado':E(etiqueta(o))}</span><span>${E(codP(o))} · ${E(fechaC(o.creado_en))}</span>${cl?`<span style="color:#9A330A;font-weight:800">★ ${E(cl)}</span>`:''}</div>${items?`<div class="r3">${E(items)}</div>`:''}${p?`<div class="bar5" style="grid-template-columns:repeat(${p.L.length},minmax(0,1fr))" aria-hidden="true">${p.L.map((_,i)=>`<i class="${i<p.cur?'d':i===p.cur?'c':''}"></i>`).join('')}</div><button type="button" class="b" data-seg="${E(o.id)}">Ver seguimiento</button>`:`<div class="btns${fin&&!cl&&(o.items||[]).length?' b2':''}">${(o.items||[]).length?`<button type="button" class="b o" data-rep="${E(o.id)}">Pedir de nuevo</button>`:''}${fin&&!cl?`<button type="button" class="b" data-cal="${E(o.id)}">Calificar</button>`:''}</div>`}</div>`};
     let h='';if(curso.length)h+=`<div class="lbl2">En curso</div>`+curso.map(card).join('');
     if(antes.length)h+=`<div class="lbl2" style="margin-top:6px">Anteriores</div>`+antes.slice(0,F.lim).map(card).join('')+(antes.length>F.lim?`<button type="button" class="b" data-a="hmas">Ver más pedidos</button>`:'');
     return {head,body:h};
