@@ -444,10 +444,11 @@
 /* --- Programar pedido: página completa, sin menú, con botón atrás --- */
 .qs.full.sinnav{bottom:0!important}
 /* --- Barra de pedido programado: se puede cambiar o volver a pedir ahora --- */
-.pdProgBar{display:flex;align-items:center;gap:10px;padding:10px 10px 10px 12px;margin:0 0 4px;border-radius:16px;background:#FFF4EC;border:1.5px solid #F6CDB3}
-.pdProgBar .pi{flex:0 0 36px;width:36px;height:36px;border-radius:12px;background:#C4410C;color:#fff;display:flex;align-items:center;justify-content:center}.pdProgBar .pi svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.pdProgBar .pt{flex:1 1 0%;min-width:0;display:flex;flex-direction:column}.pdProgBar .pt b{font-size:14px;white-space:nowrap}.pdProgBar .pt small{font-size:12.5px;line-height:1.3;color:#6B5E55}
-.pdProgBar button{flex:0 0 auto;height:36px;padding:0 10px;border-radius:11px;border:1.5px solid #EADFD6;background:#fff;color:#1F1A17;font:800 13px inherit;font-family:inherit;cursor:pointer}.pdProgBar button.q{background:#C4410C;border-color:#C4410C;color:#fff}
+.pdProgBar{display:grid;grid-template-columns:40px 1fr 1fr;gap:10px 10px;align-items:center;padding:12px;margin:0 0 4px;border-radius:18px;background:#FFF4EC;border:1.5px solid #F6CDB3}
+.pdProgBar .pi{grid-column:1;width:40px;height:40px;border-radius:12px;background:#C4410C;color:#fff;display:flex;align-items:center;justify-content:center}.pdProgBar .pi svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.pdProgBar .pt{grid-column:2/4;min-width:0;display:flex;flex-direction:column;gap:1px}.pdProgBar .pt b{font-size:15px;line-height:1.2}.pdProgBar .pt small{font-size:13px;line-height:1.3;color:#6B5E55;font-weight:600}
+.pdProgBar button{height:42px;padding:0 10px;border-radius:12px;border:1.5px solid #EADFD6;background:#fff;color:#1F1A17;font-family:inherit;font-size:14px;font-weight:800;cursor:pointer}
+.pdProgBar button[data-prog=cambiar]{grid-column:1/3}.pdProgBar button.q{grid-column:3;background:#C4410C;border-color:#C4410C;color:#fff}
 /* --- Categorías con íconos en la tienda principal («¿Qué se te antoja?») --- */
 .sec.antoja h2{font-size:17px!important}
 .chsHome.cti{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:2px 16px 4px;scroll-behavior:smooth}
