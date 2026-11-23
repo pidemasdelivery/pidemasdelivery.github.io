@@ -26,12 +26,14 @@
     let abierto=false;try{abierto=isRestaurantOpen(r)}catch(e){}
     if(!String(h).trim())return {tipo:'off',pill:'Sin horario',txt:'Este negocio todavía no registró su horario.'};
     if(abierto){
-      const hoy=dia(h,n);let falta=hoy?hoy.close-cur:null;if(hoy&&hoy.open>hoy.close&&cur>=hoy.open)falta=1440-cur+hoy.close;
+      let hoy=dia(h,n);if(hoy&&hoy.tramos){const t=hoy.tramos.find(t=>cur>=t.open&&cur<t.close);if(t)hoy=t}
+      let falta=hoy?hoy.close-cur:null;if(hoy&&hoy.open>hoy.close&&cur>=hoy.open)falta=1440-cur+hoy.close;
       if(falta!=null&&falta<=30)return {tipo:'warn',pill:'Cierra pronto',txt:'Recibe pedidos hasta las '+hora(hoy.close)+' (en '+enMin(falta)+').'};
       return {tipo:'on',pill:'Abierto',txt:hoy?'Recibe pedidos hasta las '+hora(hoy.close)+'.':'Recibe pedidos ahora.'};
     }
     for(let d=0;d<=7;d++){
-      const f=new Date(n);f.setDate(f.getDate()+d);const r2=dia(h,f);if(!r2)continue;
+      const f=new Date(n);f.setDate(f.getDate()+d);let r2=dia(h,f);if(!r2)continue;
+      if(d===0&&r2.tramos){const t=r2.tramos.find(t=>t.open>cur);if(!t)continue;r2=t}
       if(d===0&&r2.open<=cur)continue;
       const falta=d===0?r2.open-cur:null;
       const cuando=d===0?'hoy':d===1?'mañana':'el '+DIAS[f.getDay()];
@@ -51,7 +53,7 @@
     let filas='';
     for(let i=0;i<7;i++){
       const f=new Date(lunes);f.setDate(lunes.getDate()+i);const rg=dia(h,f);const esHoy=f.getDay()===n.getDay();
-      filas+='<div class="phDia'+(esHoy?' hoy':'')+(rg?'':' cerr')+'"><span>'+cap(DIAS[f.getDay()])+(esHoy?'<i class="tag">Hoy</i>':'')+'</span><em>'+(rg?rango(rg):'Cerrado')+'</em></div>';
+      filas+='<div class="phDia'+(esHoy?' hoy':'')+(rg?'':' cerr')+'"><span>'+cap(DIAS[f.getDay()])+(esHoy?'<i class="tag">Hoy</i>':'')+'</span><em>'+(rg?(window.pdTramosTxt?pdTramosTxt(rg,hora):rango(rg)):'Cerrado')+'</em></div>';
     }
     let corte='Estos horarios ya incluyen el horario de atención de Pidemás.';try{const sem=window.pdHorarioSemana&&pdHorarioSemana();if(sem){const no=sem.filter(x=>!x.activo).map(x=>x.dia.toLowerCase());if(no.length)corte='Estos horarios ya incluyen el horario de atención de Pidemás. Pidemás no atiende '+(no.length===1?'los '+no[0]+'s':'los días: '+no.join(', '))+'.'}}catch(e){}
     const enCarta=(()=>{try{return document.getElementById('products')?.classList.contains('menu-completo')&&String(currentNegocioId||'')===String(r.id)}catch(e){return false}})()||!!document.querySelector('#cartaModalNegocio:not(.hidden) .carta-modal-body');

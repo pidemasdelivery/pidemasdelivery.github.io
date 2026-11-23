@@ -11,7 +11,7 @@
   function cuando(v){const f=v.fecha,n=lima();const a=new Date(n);a.setHours(0,0,0,0);const b=new Date(f);b.setHours(0,0,0,0);const dd=Math.round((b-a)/864e5);
     const dia=dd===0?'Hoy':dd===1?'Mañana':DSEM[f.getDay()];return dia+' '+f.getDate()+' '+MESES[f.getMonth()]+' · '+hora(f.getHours()*60+f.getMinutes())}
   const fin=t=>/\.$/.test(t)?t:t+'.';
-  function rangoCorto(r,f){try{const g=window.pdRangoNeg&&window.pdRangoNeg(r,f);return g?'Ese día atiende de '+hora(g.open)+' a '+hora(g.close):'Ese día no atiende'}catch(e){return ''}}
+  function rangoCorto(r,f){try{const g=window.pdRangoNeg&&window.pdRangoNeg(r,f);return g?'Ese día atiende '+(g.tramos?'de '+g.tramos.map(t=>hora(t.open)+' a '+hora(t.close)).join(' y de '):'de '+hora(g.open)+' a '+hora(g.close)):'Ese día no atiende'}catch(e){return ''}}
   /* ¿El negocio atiende a la hora reservada? */
   function atiende(r,f){try{return typeof window.pdAtiendeEn==='function'?window.pdAtiendeEn(r,f):true}catch(e){return true}}
   /* ¿Tiene algún horario libre para reservar en los próximos días? (abierto ahora no cuenta) */

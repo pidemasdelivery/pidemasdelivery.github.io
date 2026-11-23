@@ -52,6 +52,7 @@
   function dentroUno(r,f,m){
     const g=rangoNeg(r,f);if(g===undefined)return true;if(g===null)return false;
     const x=((m%1440)+1440)%1440;
+    if(g.tramos)return g.tramos.some(t=>x>=t.open&&x<t.close);
     if(g.open<g.close)return x>=g.open&&x<g.close;
     if(g.open>g.close)return x>=g.open||x<g.close;
     return true;
@@ -102,7 +103,7 @@
     /* se recuerda el desplazamiento para que al elegir un cajón la pantalla no salte */
     const _bd=m.querySelector('.bd'),_di=m.querySelector('.dias'),_ho=m.querySelector('.horas'),_st=_bd?_bd.scrollTop:0,_sl=_di?_di.scrollLeft:0,_re=!!_bd;
     const RELOJ='<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
-    const _nh=negociosReserva().map(r=>{const g=rangoNeg(r,d.f);return g?'<div class="nhi">'+RELOJ+'<span><b>'+E(nomNeg(r))+'</b><small>Atiende de '+hora(g.open)+' a '+hora(g.close)+'</small></span></div>':''}).join('');
+    const _nh=negociosReserva().map(r=>{const g=rangoNeg(r,d.f);return g?'<div class="nhi">'+RELOJ+'<span><b>'+E(nomNeg(r))+'</b><small>Atiende '+(g.tramos?'de '+g.tramos.map(t=>hora(t.open)+' a '+hora(t.close)).join(' y de '):'de '+hora(g.open)+' a '+hora(g.close))+'</small></span></div>':''}).join('');
     const _hrs='<div class="hg"><div class="hgr">'+d.slots.map(s=>'<button type="button" data-a="hora" data-m="'+s+'" class="'+(s===selH?'on':'')+'">'+hora(s)+'</button>').join('')+'</div></div>';
     const _dias=lista.map((x,i)=>{const lab=(x.et==='Hoy'||x.et==='Mañana')?x.et:x.et.slice(0,3);return '<button type="button" data-a="dia" data-i="'+i+'" class="'+(i===selD?'on':'')+'"><i>'+E(lab)+'</i><b>'+x.f.getDate()+'</b><small>'+E(String(x.sub).split(' ')[1]||'')+'</small></button>'}).join('');
     m.innerHTML='<div class="bg" data-a="x"></div><div class="s"><div class="hd"><span class="ico">'+CAL+'</span><span class="tt"><b>Programar pedido</b><small>Elige cuándo quieres recibirlo</small></span><button type="button" class="x" data-a="x" aria-label="Cerrar">×</button></div><div class="bd">'+(_nh?'<div class="nh">'+_nh+'</div>':'')+

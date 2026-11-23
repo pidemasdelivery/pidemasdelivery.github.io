@@ -457,7 +457,7 @@
 .hc1 .hcT{flex:1 1 0%;min-width:0;display:flex;flex-direction:column;gap:5px}.hc1 .hcT>b{font-size:17px;line-height:1.2}
 .hc1 .hcT .st{max-width:100%}
 .hc1 .sm{border:1px solid #F1E4DA;border-radius:14px;padding:6px 14px}
-.hc1 .r{display:flex;justify-content:space-between;gap:10px;font-size:14px;padding:6px 0}.hc1 .r>b{white-space:nowrap}.hc1 .r b.off{color:#8A7B70}
+.hc1 .r{display:flex;justify-content:space-between;gap:10px;font-size:14px;padding:6px 0}.hc1 .r>b{text-align:right;white-space:pre-line;line-height:1.45}.hc1 .r b.off{color:#8A7B70}
 .hc1 .r.hoy{background:#FDEBDF;border-radius:10px;margin:2px -8px;padding:6px 8px}
 .hc1 .nt{font-size:12.5px;color:#6B5E55;margin:0 2px}
 .bb.hc1b{display:flex!important;flex-direction:row!important;gap:10px}.bb.hc1b>button{flex:1 1 0%;height:48px!important;margin:0!important}.bb.hc1b>.bp{flex:1.5 1 0%}
@@ -959,7 +959,7 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
     hojaAbrir({t:'horario',id:String(id),
       view(){const s=estado(r),hor=r.horario||r.horarios||r.horario_atencion||'',n=(()=>{try{return getLimaNow()}catch(e){return new Date()}})();
         const lun=new Date(n);lun.setDate(n.getDate()-((n.getDay()+6)%7));const AB=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];const dias=[];
-        for(let i=0;i<7;i++){const f=new Date(lun);f.setDate(lun.getDate()+i);let rg=null;try{rg=window.getDailySchedule(hor,f)}catch(e){}dias.push({d:f.getDay(),hoy:f.getDay()===n.getDay(),v:rg?h12(rg.open)+' – '+h12(rg.close):'Cerrado'})}
+        for(let i=0;i<7;i++){const f=new Date(lun);f.setDate(lun.getDate()+i);let rg=null;try{rg=window.getDailySchedule(hor,f)}catch(e){}dias.push({d:f.getDay(),hoy:f.getDay()===n.getDay(),v:rg?(rg.tramos?rg.tramos.map(t=>h12(t.open)+' – '+h12(t.close)).join('\n'):h12(rg.open)+' – '+h12(rg.close)):'Cerrado'})}
         /* días con el mismo horario en una sola fila; hoy va aparte y resaltado */
         const gr=[];dias.filter(x=>!x.hoy).forEach(x=>{const g=gr.find(y=>y.v===x.v);if(g)g.d.push(x.d);else gr.push({v:x.v,d:[x.d]})});
         const hoyD=dias.find(x=>x.hoy);
