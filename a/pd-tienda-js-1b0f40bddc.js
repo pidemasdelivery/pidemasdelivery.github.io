@@ -1451,6 +1451,9 @@ async function submitCartOrder(){
   const cubOn=descOn&&window.pdDescCubOn();
   const descCub=cubOn?window.pdDescCubPrecio():0;
   const descMonto=descItems.reduce((a,x)=>a+x.p,0)+descCub;
+  /* Si un precio cambió mientras el producto estaba en el carrito, se actualiza y se avisa antes de enviar */
+  {const cambiados=[];cart.forEach(x=>{const p=(typeof products!=='undefined'?products:[]).find(y=>String(y.id)===String(x.id)&&y.origen===x.origen);if(!p)return;const real=Number(pick(p,['precio','precio_unitario'],x.precio));if(Number.isFinite(real)&&Math.abs(real-Number(x.precio||0))>0.009){cambiados.push(x.nombre);x.precio=real}});
+    if(cambiados.length){saveCart();updateCart();try{updatePaymentAmounts()}catch(_){}toast('Cambió el precio de '+cambiados.join(', ')+'. Revisa el total y vuelve a enviar tu pedido.');return}}
   const subtotal=cart.reduce((a,x)=>a+x.precio*x.cantidad,0)+descMonto;
   let deliveryCost=0, deliveryDistanceKm=null;
   try{
@@ -1624,13 +1627,16 @@ async function submitCartOrder(){
   const detalles=cart.map(x=>({
     pedido_id:orderId,
     producto_id:null,
+    producto_ref:String(x.id),
+    origen:x.origen||null,
+    variante:x.variante||null,
     nombre_producto:(window.pdNombreConCategoria?pdNombreConCategoria(x):x.nombre),
     precio_unitario:x.precio,
     cantidad:x.cantidad,
     subtotal:x.precio*x.cantidad
   }));
-  descItems.filter(x=>x.p>0).forEach(x=>detalles.push({pedido_id:orderId,producto_id:null,nombre_producto:x.n,precio_unitario:x.p,cantidad:1,subtotal:x.p}));
-  if(descCub>0)detalles.push({pedido_id:orderId,producto_id:null,nombre_producto:'Cubiertos',precio_unitario:descCub,cantidad:1,subtotal:descCub});
+  descItems.filter(x=>x.p>0).forEach(x=>detalles.push({pedido_id:orderId,producto_id:null,producto_ref:null,origen:null,variante:null,nombre_producto:x.n,precio_unitario:x.p,cantidad:1,subtotal:x.p}));
+  if(descCub>0)detalles.push({pedido_id:orderId,producto_id:null,producto_ref:null,origen:null,variante:null,nombre_producto:'Cubiertos',precio_unitario:descCub,cantidad:1,subtotal:descCub});
   console.info('[Pidemás] Registrando productos del pedido…', orderId);
   const d=await sb.from('detalle_pedidos').insert(detalles);
   // No borrar el pedido principal si falla el detalle: el borrado provocaba que
