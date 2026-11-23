@@ -452,6 +452,10 @@
 /* --- Horario de atención compacto (centrado) --- */
 .dlg:has(.hc1){padding:20px 16px 14px;gap:0;border-radius:22px}
 .hc1{display:flex;flex-direction:column;text-align:left;width:100%}
+.hc1 .hcH{display:flex;flex-direction:row;align-items:center;gap:12px;text-align:left;padding:0;border:0;margin:0 0 14px}
+.hc1 .hcI{flex:0 0 44px;width:44px;height:44px;border-radius:13px;background:#FDEBDF;color:#C4410C;display:flex;align-items:center;justify-content:center}.hc1 .hcI svg{width:22px;height:22px}
+.hc1 .hcT{flex:1 1 0%;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:5px}.hc1 .hcT>b{font-size:17px;line-height:1.2}
+.hc1 .hcT .st{max-width:100%}
 .hc1 .sm{border:1px solid #F1E4DA;border-radius:14px;background:#FFFFFF;padding:4px}
 .hc1 .r{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;padding:8px 10px;border-radius:10px;font-weight:600;font-size:14px;color:#1F1A17}
 .hc1 .r>span{flex:1 1 0%;min-width:0}.hc1 .r>b{flex:0 0 auto;text-align:right;white-space:pre;font-weight:600;line-height:1.45}.hc1 .r b.off{color:#6B5E55}
@@ -1026,8 +1030,9 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
         let filas=(hoyD?`<div class="r hoy"><span>${DSEM[hoyD.d]} · hoy</span><b class="${hoyD.v==='Cerrado'?'off':''}">${E(hoyD.v)}</b></div>`:'')+gr.map(g=>`<div class="r"><span>${etq(g.d)}</span><b class="${g.v==='Cerrado'?'off':''}">${E(g.v)}</b></div>`).join('');
         let nota='';try{const sem=window.pdHorarioSemana&&pdHorarioSemana();const no=(sem||[]).filter(x=>!x.activo).map(x=>x.dia.toLowerCase());if(no.length)nota='Pidemás no atiende '+(no.length===1?'los '+no[0]+'s':'los días '+no.join(', '))+'.'}catch(e){}
         const on=s.tipo==='on',enCarta=sub==='negocio'&&String(F.neg)===String(r.id);
+        const pill=s.tipo==='off'&&/^Abre /.test(s.txt||'')?s.pill+' · '+s.txt.replace(/^Abre /,'abre ').replace(/\.$/,''):(on?'Abierto ahora':s.pill);
         const CALI=S('<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/>');
-        return {dlg:true,title:'Horario de '+nomN(r),body:`<div class="hc1"><div class="sm">${filas}</div></div>`,
+        return {dlg:true,title:'Horario de '+nomN(r),body:`<div class="hc1"><div class="hcH"><span class="hcI">${IC.clock}</span><span class="hcT"><b>${E(nomN(r))}</b><span class="st ${E(s.tipo)}">${E(pill)}</span></span></div><div class="sm">${filas}</div></div>`,
           btns:'<div class="bb hc1b">'+(on?'':`<button type="button" class="bp" data-h="reservar">${CALI}Reservar pedido</button>`)+(enCarta?`<button type="button" class="bs" data-h="cerrar">Cerrar</button>`:`<button type="button" class="bs" data-h="carta">Ver la carta</button>`)+'</div>'+(nota?`<p class="hcN">${E(nota)}</p>`:'')}},
       on(a){if(a==='cerrar'){hojaCerrar();return}if(a==='carta'){hojaCerrar();if(!(sub==='negocio'&&String(F.neg)===String(r.id)))abrirNeg(r.id)}if(a==='reservar'){hojaCerrar();setTimeout(()=>reservar(r.id),80)}}});
   }
