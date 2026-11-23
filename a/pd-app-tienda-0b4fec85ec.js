@@ -449,6 +449,18 @@
 .pdProgBar .pt{grid-column:2/4;min-width:0;display:flex;flex-direction:column;gap:1px}.pdProgBar .pt b{font-size:15px;line-height:1.2}.pdProgBar .pt small{font-size:13px;line-height:1.3;color:#6B5E55;font-weight:600}
 .pdProgBar button{height:42px;padding:0 10px;border-radius:12px;border:1.5px solid #EADFD6;background:#fff;color:#1F1A17;font-family:inherit;font-size:14px;font-weight:800;cursor:pointer}
 .pdProgBar button[data-prog=cambiar]{grid-column:1/3}.pdProgBar button.q{grid-column:3;background:#C4410C;border-color:#C4410C;color:#fff}
+/* --- Horario de atención compacto (centrado) --- */
+.dlg:has(.hc1){padding:18px 16px 14px;gap:12px}
+.hc1{display:flex;flex-direction:column;gap:10px;text-align:left;width:100%}
+.hc1 .hcH{display:flex;flex-direction:row;align-items:center;gap:12px;text-align:left;padding:0;border:0;margin:0}
+.hc1 .hcI{flex:0 0 44px;width:44px;height:44px;border-radius:13px;background:#FDEBDF;color:#C4410C;display:flex;align-items:center;justify-content:center}.hc1 .hcI svg{width:22px;height:22px}
+.hc1 .hcT{flex:1 1 0%;min-width:0;display:flex;flex-direction:column;gap:5px}.hc1 .hcT>b{font-size:17px;line-height:1.2}
+.hc1 .hcT .st{max-width:100%}
+.hc1 .sm{border:1px solid #F1E4DA;border-radius:14px;padding:6px 14px}
+.hc1 .r{display:flex;justify-content:space-between;gap:10px;font-size:14px;padding:6px 0}.hc1 .r>b{white-space:nowrap}.hc1 .r b.off{color:#8A7B70}
+.hc1 .r.hoy{background:#FDEBDF;border-radius:10px;margin:2px -8px;padding:6px 8px}
+.hc1 .nt{font-size:12.5px;color:#6B5E55;margin:0 2px}
+.bb.hc1b{display:flex!important;flex-direction:row!important;gap:10px}.bb.hc1b>button{flex:1 1 0%;height:48px!important;margin:0!important}.bb.hc1b>.bp{flex:1.5 1 0%}
 /* --- Categorías con íconos en la tienda principal («¿Qué se te antoja?») --- */
 .sec.antoja h2{font-size:17px!important}
 .chsHome.cti{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:2px 16px 4px;scroll-behavior:smooth}
@@ -946,14 +958,19 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
   function verHorario(id){const r=negPorId(id);if(!r)return;
     hojaAbrir({t:'horario',id:String(id),
       view(){const s=estado(r),hor=r.horario||r.horarios||r.horario_atencion||'',n=(()=>{try{return getLimaNow()}catch(e){return new Date()}})();
-        const lun=new Date(n);lun.setDate(n.getDate()-((n.getDay()+6)%7));let filas='';
-        for(let i=0;i<7;i++){const f=new Date(lun);f.setDate(lun.getDate()+i);let rg=null;try{rg=window.getDailySchedule(hor,f)}catch(e){}const hoy=f.getDay()===n.getDay();
-          filas+=`<div class="d${hoy?' hoy':''}"><span>${DSEM[f.getDay()]}${hoy?'<i>Hoy</i>':''}</span><b class="${rg?'':'off'}">${rg?E(h12(rg.open)+' – '+h12(rg.close)):'Cerrado'}</b></div>`}
-        let nota='Estos horarios ya incluyen el horario de atención de Pidemás.';try{const sem=window.pdHorarioSemana&&pdHorarioSemana();const no=(sem||[]).filter(x=>!x.activo).map(x=>x.dia.toLowerCase());if(no.length)nota+=' Pidemás no atiende '+(no.length===1?'los '+no[0]+'s':'los días '+no.join(', '))+'.'}catch(e){}
+        const lun=new Date(n);lun.setDate(n.getDate()-((n.getDay()+6)%7));const AB=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];const dias=[];
+        for(let i=0;i<7;i++){const f=new Date(lun);f.setDate(lun.getDate()+i);let rg=null;try{rg=window.getDailySchedule(hor,f)}catch(e){}dias.push({d:f.getDay(),hoy:f.getDay()===n.getDay(),v:rg?h12(rg.open)+' – '+h12(rg.close):'Cerrado'})}
+        /* días con el mismo horario en una sola fila; hoy va aparte y resaltado */
+        const gr=[];dias.filter(x=>!x.hoy).forEach(x=>{const g=gr.find(y=>y.v===x.v);if(g)g.d.push(x.d);else gr.push({v:x.v,d:[x.d]})});
+        const hoyD=dias.find(x=>x.hoy);
+        let filas=gr.map(g=>`<div class="r"><span>${g.d.map(d=>AB[d]).join(' · ')}</span><b class="${g.v==='Cerrado'?'off':''}">${E(g.v)}</b></div>`).join('');
+        if(hoyD)filas+=`<div class="r hoy"><span><b>${DSEM[hoyD.d]} · hoy</b></span><b class="${hoyD.v==='Cerrado'?'off':''}">${E(hoyD.v)}</b></div>`;
+        let nota='';try{const sem=window.pdHorarioSemana&&pdHorarioSemana();const no=(sem||[]).filter(x=>!x.activo).map(x=>x.dia.toLowerCase());if(no.length)nota='Pidemás no atiende '+(no.length===1?'los '+no[0]+'s':'los días '+no.join(', '))+'.'}catch(e){}
         const on=s.tipo==='on',enCarta=sub==='negocio'&&String(F.neg)===String(r.id);
-        return {dlg:true,title:'Horario de atención',body:`<span class="ic">${IC.clock}</span><h2>Horario de atención</h2><p style="margin-top:-6px">${E(nomN(r))}</p><div class="hora-al"><div class="est${on?' on':''}"><span class="i">${on?IC.clock:S('<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>')}</span><span class="tx"><b>${E(s.tit||(on?'Abierto ahora':s.tipo==='warn'?s.pill:'Cerrado ahora'))}</b><span>${E(s.txt||'')}</span></span></div><div class="sem"><div class="lb">Esta semana</div>${filas}</div><div class="nt">${E(nota)}</div></div>`,
-          btns:'<div class="bb u">'+(on?'':`<button type="button" class="bp" data-h="reservar">Reservar para cuando atienda</button>`)+`<button type="button" class="${on?'bp':'bs'}" data-h="carta">${enCarta?'Cerrar':'Ver la carta'}</button>`+'</div>'}},
-      on(a){if(a==='carta'){hojaCerrar();if(!(sub==='negocio'&&String(F.neg)===String(r.id)))abrirNeg(r.id)}if(a==='reservar'){hojaCerrar();setTimeout(()=>reservar(r.id),80)}}});
+        const pill=s.tipo==='off'&&/^Abre /.test(s.txt||'')?s.pill+' · '+s.txt.replace(/^Abre /,'abre ').replace(/\.$/,''):(on?'Abierto ahora':s.pill);
+        return {dlg:true,title:'Horario de atención',body:`<div class="hc1"><div class="hcH"><span class="hcI">${IC.clock}</span><span class="hcT"><b>${E(nomN(r))}</b><span class="st ${E(s.tipo)}">${E(pill)}</span></span></div><div class="sm">${filas}</div>${nota?`<div class="nt">${E(nota)}</div>`:''}</div>`,
+          btns:'<div class="bb hc1b">'+(enCarta?`<button type="button" class="bs" data-h="cerrar">Cerrar</button>`:`<button type="button" class="bs" data-h="carta">Ver la carta</button>`)+(on?'':`<button type="button" class="bp" data-h="reservar">Reservar pedido</button>`)+'</div>'}},
+      on(a){if(a==='cerrar'){hojaCerrar();return}if(a==='carta'){hojaCerrar();if(!(sub==='negocio'&&String(F.neg)===String(r.id)))abrirNeg(r.id)}if(a==='reservar'){hojaCerrar();setTimeout(()=>reservar(r.id),80)}}});
   }
   window.showRestaurantSchedule=verHorario;
 
