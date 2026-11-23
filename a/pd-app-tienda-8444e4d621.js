@@ -476,13 +476,12 @@
 @keyframes pdTrz{to{stroke-dashoffset:0}}.okA svg path{stroke-dasharray:44;stroke-dashoffset:44;animation:pdTrz .45s .25s cubic-bezier(.4,0,.2,1) forwards}
 @keyframes pdOkIn{from{transform:scale(.4);opacity:0}60%{transform:scale(1.12)}to{transform:none;opacity:1}}.okA{animation:pdOkIn .45s cubic-bezier(.2,.8,.2,1)}
 @keyframes pdBarra{0%{background-position:100% 0}100%{background-position:-100% 0}}
-.bar5 i.c{background:linear-gradient(90deg,#C4410C 0%,#F59E0B 50%,#C4410C 100%)!important;background-size:200% 100%!important;animation:pdBarra 1.6s linear infinite}
 @keyframes pdLat{0%{box-shadow:0 0 0 0 rgba(196,65,12,.45)}100%{box-shadow:0 0 0 10px rgba(196,65,12,0)}}.tln .p.cur .d{animation:pdLat 1.5s ease-out infinite}
 .pdCar{position:relative;margin:0 0 4px}.pdCarS{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;border-radius:20px;gap:0}.pdCarS::-webkit-scrollbar{display:none}
 .pdCarI{flex:0 0 100%;height:150px;scroll-snap-align:center;border:0;border-radius:20px;background:#9A330A center/cover no-repeat;display:flex;align-items:flex-end;padding:14px;text-align:left;cursor:pointer;color:#FFFFFF;font-family:inherit}
 .pdCarT{display:flex;flex-direction:column;gap:2px}.pdCarT b{font-size:19px;font-weight:800;text-shadow:0 1px 6px rgba(0,0,0,.35)}.pdCarT small{font-size:13px;font-weight:700;opacity:.95}
 .pdCarD{position:absolute;right:14px;bottom:14px;display:flex;gap:5px}.pdCarD i{width:6px;height:6px;border-radius:9px;background:rgba(255,255,255,.55);transition:width .25s}.pdCarD i.on{width:18px;background:#FFFFFF}
-@media (prefers-reduced-motion:reduce){.skb,.bar5 i.c,.tln .p.cur .d{animation:none!important}}
+@media (prefers-reduced-motion:reduce){.skb,.tln .p.cur .d{animation:none!important}}
 /* --- Seguimiento compacto --- */
 .segP .top .h1{font-size:18px!important}.segP .top .kick{font-size:11px}
 .segP .bar5 i{height:5px}.segP .top span[style*="font-size:14px"]{font-size:12.5px!important}
