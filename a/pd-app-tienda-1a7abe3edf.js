@@ -523,7 +523,7 @@
 .chsHome.cti button.on .lb{color:#C4410C;font-weight:800}
 /* Las categorías quedan fijas arriba al bajar por los negocios */
 .list>.chsHome.cti{position:sticky;top:0;z-index:6;background:#FFF9F5;margin:0 -16px;padding:10px 16px 10px;box-shadow:0 1px 0 #F1E4DA}
-.list>.chsHome.cti.pegada::before{content:'';position:absolute;left:0;right:0;bottom:100%;height:80px;background:#FFF9F5;pointer-events:none}
+.list>.chsHome.cti.pegada{box-shadow:0 -60px 0 #FFF9F5,0 1px 0 #F1E4DA}
 `;
   /* Lo de la tienda vieja que queda debajo se esconde mientras se ve la app nueva */
   const ESTILO_DOC=`html.pdtApp body{overflow:hidden!important}
