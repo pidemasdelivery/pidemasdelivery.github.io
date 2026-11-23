@@ -147,7 +147,7 @@
 .ng .tx b{font-size:17px;font-weight:800}
 .ng .tx span{font-size:14px;color:#6B5E55}
 .ng>svg{color:#A8988C;flex:0 0 auto}
-.st{align-self:flex-start;display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:999px;font-size:13px;font-weight:800;white-space:nowrap}
+.st{align-self:flex-start;display:inline-block;line-height:26px;height:26px;padding:0 10px;border-radius:999px;font-size:13px;font-weight:800;white-space:nowrap;max-width:100%;box-sizing:border-box;overflow:hidden;text-overflow:ellipsis}
 .st.on{background:#E9F6EE;color:#0F5E2E}.st.warn{background:#FFF4EC;color:#9A330A}.st.off{background:#F6EFE9;color:#6B5E55}
 .fav{width:40px;height:40px;border-radius:12px;border:0;background:transparent;color:#A8988C;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;flex:0 0 auto}
 .fav.on{color:#C4410C}.fav.on svg{fill:#C4410C}
@@ -271,7 +271,7 @@
 @keyframes pdPulse{0%{box-shadow:0 0 0 0 rgba(196,65,12,.45)}100%{box-shadow:0 0 0 12px rgba(196,65,12,0)}}
 @keyframes pdBlink{0%,100%{opacity:1}50%{opacity:.35}}
 .vivo i{animation:pdBlink 1.4s ease-in-out infinite}
-.st{gap:6px}.st::before{content:'';width:7px;height:7px;border-radius:50%;flex:0 0 auto}
+.st{gap:6px}.st::before{content:'';display:inline-block;vertical-align:middle;margin:-2px 7px 0 0;width:7px;height:7px;border-radius:50%;flex:0 0 auto}
 .st.on::before{background:#16A34A;animation:pdBlink 1.4s ease-in-out infinite}.st.warn::before{background:#E8590C}.st.off::before{background:#A8988C}
 .curso{flex-direction:row;align-items:center;gap:14px;background:#FFF1E8;border:1.5px solid #F6CDB3;border-radius:20px}
 .curso .ci{width:46px;height:46px;border-radius:14px;background:#C4410C;color:#FFFFFF;display:flex;align-items:center;justify-content:center;flex:0 0 auto;animation:pdPulse 1.8s ease-out infinite}
@@ -576,7 +576,7 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
     if(F.filtro==='abiertos')L=L.filter(abierto);
     const d=r=>{const x=dist(r);return x==null?1e9:x};
     L=L.slice().sort((a,b)=>F.filtro==='cerca'?d(a)-d(b):(abierto(b)-abierto(a))||(fv.includes(String(b.id))-fv.includes(String(a.id)))||nomN(a).localeCompare(nomN(b),'es'));
-    const filaNeg=(r,s,km,t,f)=>`<div style="position:relative"><button type="button" class="ng${s.tipo==='off'?' off':''}" data-neg="${E(r.id)}">${logoHtml(r)}<span class="tx"><b>${E(nomN(r))}</b><span>${E([catN(r),t,km!=null?km.toFixed(1)+' km':''].filter(Boolean).join(' · '))}</span><span class="st ${E(s.tipo)}">${E(s.tipo==='off'&&s.txt?s.pill+' · '+s.txt.replace(/^Abre /,'abre ').replace(/\.$/,''):s.pill)}</span></span>${IC.chev}</button><button type="button" class="fav${f?' on':''}" data-fav="${E(r.id)}" aria-label="${f?'Quitar de favoritos':'Guardar en favoritos'}" aria-pressed="${f}" style="position:absolute;top:8px;right:36px">${IC.heart}</button></div>`;
+    const filaNeg=(r,s,km,t,f)=>`<div style="position:relative"><button type="button" class="ng${s.tipo==='off'?' off':''}" data-neg="${E(r.id)}">${logoHtml(r)}<span class="tx"><b>${E(nomN(r))}</b><span>${E([catN(r),t,km!=null?km.toFixed(1)+' km':''].filter(Boolean).join(' · '))}</span><span class="st ${E(s.tipo)}">${E(s.tipo==='off'&&/^Abre /.test(s.txt||'')?s.pill+' · '+s.txt.replace(/^Abre /,'abre ').replace(/\.$/,''):s.pill)}</span></span>${IC.chev}</button><button type="button" class="fav${f?' on':''}" data-fav="${E(r.id)}" aria-label="${f?'Quitar de favoritos':'Guardar en favoritos'}" aria-pressed="${f}" style="position:absolute;top:8px;right:36px">${IC.heart}</button></div>`;
     let h=L.map(r=>{const s=estado(r),km=dist(r),t=tiempo(r),f=fv.includes(String(r.id));return filaNeg(r,s,km,t,f)}).join('');
     /* Igual que la carta de un negocio: los negocios van separados por categoría */
     const cs=[...new Set(L.map(catN).filter(Boolean))];
