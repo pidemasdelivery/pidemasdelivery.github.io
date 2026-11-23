@@ -30,7 +30,8 @@
   if(!meta){meta=document.createElement('meta');meta.name='theme-color';document.head.appendChild(meta)}
   const parse=c=>{const m=/rgba?\(([^)]+)\)/.exec(c);if(!m)return null;const p=m[1].split(/[\s,\/]+/).filter(Boolean).map(Number);return {r:p[0],g:p[1],b:p[2],a:p.length>3?p[3]:1}};
   function colorArriba(){
-    const pila=document.elementsFromPoint(innerWidth/2,1);if(!pila.length)return null;
+    const x=innerWidth/2,abrir=l=>{const o=[];l.forEach(el=>{const sr=el.shadowRoot;if(sr&&sr.elementsFromPoint)try{o.push(...abrir(sr.elementsFromPoint(x,1).filter(e=>e.getRootNode()===sr)))}catch(_){}o.push(el)});return o};
+    const pila=abrir(document.elementsFromPoint(x,1));if(!pila.length)return null;
     let c={r:255,g:249,b:245};
     for(const el of pila.slice().reverse()){
       const cs=getComputedStyle(el);const k=parse(cs.backgroundColor);if(!k||k.a===0)continue;
@@ -38,8 +39,8 @@
     }
     const h=v=>Math.round(v).toString(16).padStart(2,'0');return '#'+h(c.r)+h(c.g)+h(c.b);
   }
-  let tColor=null;
-  function pintarBarra(){clearTimeout(tColor);tColor=setTimeout(()=>{const c=colorArriba();if(c&&meta.content!==c)meta.content=c},140)}
+  let tColor=null,tColor2=null;
+  function pintarBarra(){clearTimeout(tColor);clearTimeout(tColor2);const f=()=>{const c=colorArriba();if(c&&meta.content!==c)meta.content=c};tColor=setTimeout(f,140);tColor2=setTimeout(f,420)}
   new MutationObserver(pintarBarra).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class','hidden','style','open']});
   addEventListener('scroll',pintarBarra,{passive:true});addEventListener('resize',pintarBarra);
   document.addEventListener('animationend',pintarBarra,true);document.addEventListener('transitionend',pintarBarra,true);

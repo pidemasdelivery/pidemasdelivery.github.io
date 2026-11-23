@@ -450,17 +450,17 @@
 .pdProgBar button{height:42px;padding:0 10px;border-radius:12px;border:1.5px solid #EADFD6;background:#fff;color:#1F1A17;font-family:inherit;font-size:14px;font-weight:800;cursor:pointer}
 .pdProgBar button[data-prog=cambiar]{grid-column:1/3}.pdProgBar button.q{grid-column:3;background:#C4410C;border-color:#C4410C;color:#fff}
 /* --- Horario de atención compacto (centrado) --- */
-.dlg:has(.hc1){padding:18px 16px 14px;gap:12px}
-.hc1{display:flex;flex-direction:column;gap:10px;text-align:left;width:100%}
-.hc1 .hcH{display:flex;flex-direction:row;align-items:center;gap:12px;text-align:left;padding:0;border:0;margin:0}
-.hc1 .hcI{flex:0 0 44px;width:44px;height:44px;border-radius:13px;background:#FDEBDF;color:#C4410C;display:flex;align-items:center;justify-content:center}.hc1 .hcI svg{width:22px;height:22px}
-.hc1 .hcT{flex:1 1 0%;min-width:0;display:flex;flex-direction:column;gap:5px}.hc1 .hcT>b{font-size:17px;line-height:1.2}
-.hc1 .hcT .st{max-width:100%}
-.hc1 .sm{border:1px solid #F1E4DA;border-radius:14px;padding:6px 14px}
-.hc1 .r{display:flex;justify-content:space-between;gap:10px;font-size:14px;padding:6px 0}.hc1 .r>span{flex:1 1 0%;min-width:0}.hc1 .r>b{flex:0 0 auto;text-align:right;white-space:pre;line-height:1.45}.hc1 .r b.off{color:#8A7B70}
-.hc1 .r.hoy{background:#FDEBDF;border-radius:10px;margin:2px -8px;padding:6px 8px}
-.hc1 .nt{font-size:12.5px;color:#6B5E55;margin:0 2px}
-.bb.hc1b{display:flex!important;flex-direction:row!important;gap:10px}.bb.hc1b>button{flex:1 1 0%;height:48px!important;margin:0!important}.bb.hc1b>.bp{flex:1.5 1 0%}
+.dlg:has(.hc1){padding:20px 16px 14px;gap:0;border-radius:22px}
+.hc1{display:flex;flex-direction:column;text-align:left;width:100%}
+.hc1 .sm{border:1px solid #F1E4DA;border-radius:14px;background:#FFFFFF;padding:4px}
+.hc1 .r{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;padding:8px 10px;border-radius:10px;font-weight:600;font-size:14px;color:#1F1A17}
+.hc1 .r>span{flex:1 1 0%;min-width:0}.hc1 .r>b{flex:0 0 auto;text-align:right;white-space:pre;font-weight:600;line-height:1.45}.hc1 .r b.off{color:#6B5E55}
+.hc1 .r.hoy{background:#FDEBDF;color:#9A330A;font-weight:800}.hc1 .r.hoy>b{font-weight:800}.hc1 .r.hoy b.off{color:#9A330A}
+.bb.hc1b{display:flex!important;flex-direction:column!important;gap:0;width:100%;margin:0!important}
+.bb.hc1b>button{width:100%;height:48px!important;border-radius:14px!important;font:800 15px PdInter,Inter,system-ui,sans-serif!important;margin:10px 0 0!important;box-shadow:none!important}
+.bb.hc1b>.bp{background:#C4410C;color:#FFFFFF}.bb.hc1b>.bp svg{width:20px;height:20px}
+.bb.hc1b>.bs{background:#FFFFFF;border:1px solid #F1E4DA;color:#1F1A17}
+.hcN{font:500 12.5px/1.4 PdInter,Inter,system-ui,sans-serif;color:#6B5E55;text-align:center;margin:10px 0 0;width:100%}
 /* --- Efectos estilo app nativa --- */
 @keyframes pdSh{from{background-position:100% 0}to{background-position:-50% 0}}
 .skl{display:flex;flex-direction:column;gap:10px}.skc{display:flex;gap:12px;align-items:center;padding:14px;border-radius:20px;background:#FFFFFF;border:1px solid #F1E4DA}
@@ -1023,13 +1023,12 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
         const pos=d=>(d+6)%7;/* lunes=0 … domingo=6 */
         const etq=L=>{const q=L.map(pos).sort((a,b)=>a-b),A=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];const tr=[];q.forEach(x=>{const u=tr[tr.length-1];if(u&&x===u[1]+1)u[1]=x;else tr.push([x,x])});
           const ps=[];tr.forEach(([a,b])=>{if(b-a>=2)ps.push(A[a]+' a '+A[b]);else for(let k=a;k<=b;k++)ps.push(A[k])});return ps.length>1?ps.slice(0,-1).join(', ')+' y '+ps[ps.length-1]:ps[0]};
-        let filas=gr.map(g=>`<div class="r"><span>${etq(g.d)}</span><b class="${g.v==='Cerrado'?'off':''}">${E(g.v)}</b></div>`).join('');
-        if(hoyD)filas+=`<div class="r hoy"><span><b>${DSEM[hoyD.d]} · hoy</b></span><b class="${hoyD.v==='Cerrado'?'off':''}">${E(hoyD.v)}</b></div>`;
+        let filas=(hoyD?`<div class="r hoy"><span>${DSEM[hoyD.d]} · hoy</span><b class="${hoyD.v==='Cerrado'?'off':''}">${E(hoyD.v)}</b></div>`:'')+gr.map(g=>`<div class="r"><span>${etq(g.d)}</span><b class="${g.v==='Cerrado'?'off':''}">${E(g.v)}</b></div>`).join('');
         let nota='';try{const sem=window.pdHorarioSemana&&pdHorarioSemana();const no=(sem||[]).filter(x=>!x.activo).map(x=>x.dia.toLowerCase());if(no.length)nota='Pidemás no atiende '+(no.length===1?'los '+no[0]+'s':'los días '+no.join(', '))+'.'}catch(e){}
         const on=s.tipo==='on',enCarta=sub==='negocio'&&String(F.neg)===String(r.id);
-        const pill=s.tipo==='off'&&/^Abre /.test(s.txt||'')?s.pill+' · '+s.txt.replace(/^Abre /,'abre ').replace(/\.$/,''):(on?'Abierto ahora':s.pill);
-        return {dlg:true,title:'Horario de atención',body:`<div class="hc1"><div class="hcH"><span class="hcI">${IC.clock}</span><span class="hcT"><b>${E(nomN(r))}</b><span class="st ${E(s.tipo)}">${E(pill)}</span></span></div><div class="sm">${filas}</div>${nota?`<div class="nt">${E(nota)}</div>`:''}</div>`,
-          btns:'<div class="bb hc1b">'+(enCarta?`<button type="button" class="bs" data-h="cerrar">Cerrar</button>`:`<button type="button" class="bs" data-h="carta">Ver la carta</button>`)+(on?'':`<button type="button" class="bp" data-h="reservar">Reservar pedido</button>`)+'</div>'}},
+        const CALI=S('<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/>');
+        return {dlg:true,title:'Horario de '+nomN(r),body:`<div class="hc1"><div class="sm">${filas}</div></div>`,
+          btns:'<div class="bb hc1b">'+(on?'':`<button type="button" class="bp" data-h="reservar">${CALI}Reservar pedido</button>`)+(enCarta?`<button type="button" class="bs" data-h="cerrar">Cerrar</button>`:`<button type="button" class="bs" data-h="carta">Ver la carta</button>`)+'</div>'+(nota?`<p class="hcN">${E(nota)}</p>`:'')}},
       on(a){if(a==='cerrar'){hojaCerrar();return}if(a==='carta'){hojaCerrar();if(!(sub==='negocio'&&String(F.neg)===String(r.id)))abrirNeg(r.id)}if(a==='reservar'){hojaCerrar();setTimeout(()=>reservar(r.id),80)}}});
   }
   window.showRestaurantSchedule=verHorario;
