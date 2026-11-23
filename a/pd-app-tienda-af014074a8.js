@@ -523,6 +523,7 @@
 .chsHome.cti button.on .lb{color:#C4410C;font-weight:800}
 /* Las categorías quedan fijas arriba al bajar por los negocios */
 .list>.chsHome.cti{position:sticky;top:0;z-index:6;background:#FFF9F5;margin:0 -16px;padding:10px 16px 10px;box-shadow:0 1px 0 #F1E4DA}
+.list>.chsHome.cti.pegada::before{content:'';position:absolute;left:0;right:0;bottom:100%;height:80px;background:#FFF9F5;pointer-events:none}
 `;
   /* Lo de la tienda vieja que queda debajo se esconde mientras se ve la app nueva */
   const ESTILO_DOC=`html.pdtApp body{overflow:hidden!important}
@@ -1198,6 +1199,9 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
       const wrap=document.createElement('header');wrap.id='pdAppShell';wrap.style.cssText='display:contents';wrap.appendChild(host);document.body.appendChild(wrap);
       root=host.attachShadow({mode:'open'});try{PdPasos.flechas(root)}catch(_){}
       root.addEventListener('click',clic);root.addEventListener('input',entrada);
+      /* Categorías fijas: cuando quedan pegadas arriba se tapa la franja de encima para que no se vea nada detrás */
+      {const pegar=()=>{const L=root.querySelector('.list'),c=L&&L.querySelector(':scope>.chsHome.cti');if(!c)return;const on=c.getBoundingClientRect().top-L.getBoundingClientRect().top<=40&&L.scrollTop>0;if(c.classList.contains('pegada')!==on)c.classList.toggle('pegada',on)};
+        root.addEventListener('scroll',e=>{if(e.target&&e.target.classList&&e.target.classList.contains('list'))pegar()},true);setInterval(pegar,300)}
       {let tsp=null,bloq=false,qt=null,toca=0;
         const soltar=()=>{clearTimeout(qt);qt=setTimeout(()=>{bloq=false},200)};
         root.addEventListener('pointerdown',e=>{if(e.target.closest&&e.target.closest('.chsBar'))toca=Date.now()+100000},true);
