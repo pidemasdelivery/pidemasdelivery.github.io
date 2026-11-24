@@ -304,7 +304,7 @@
 .ng{border-radius:20px;padding:12px}
 .ng .tx b{font-size:16px}.ng .tx span{font-size:13px}
 .lg{width:62px;height:62px}
-.ng>svg{display:none}.ng{padding-right:52px}
+.ng>svg{display:none}.ng{padding-right:52px} .ng .tx>b{display:block;padding-right:40px;overflow-wrap:anywhere}
 .pc .tx .pr{color:#C4410C}.catN{color:#C4410C}.sec h2{color:#C4410C}.catC{background:#FDEBDF;color:#9A330A}
 .it>b,.it .tx>span,.ln b,.pt2,.sug button span{color:#C4410C}.ln.t b{color:#C4410C;font-weight:800}
 .ln{align-items:baseline;font-size:16px}.ln span{flex:1 1 auto;min-width:0;line-height:1.35}.ln b{flex:0 0 auto;white-space:nowrap;text-align:right;font-weight:800}
