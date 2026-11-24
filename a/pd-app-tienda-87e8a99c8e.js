@@ -304,7 +304,7 @@
 .ng{border-radius:20px;padding:12px}
 .ng .tx b{font-size:16px}.ng .tx span{font-size:13px}
 .lg{width:62px;height:62px}
-.ng>svg{display:none}.ng{padding-right:52px} .ng .tx>b{display:block;padding-right:40px;overflow-wrap:anywhere}
+.ng>svg{display:none}.ng{padding-right:52px} .sede,b span.sede,.tx b span.sede,.ng .tx b span.sede,.h1 span.sede{display:inline-block;vertical-align:2px;margin:0 0 0 6px;padding:2px 8px;border-radius:999px;background:#FDEBDF;color:#9A330A;font-size:12px!important;font-weight:800!important;line-height:1.45;white-space:nowrap;letter-spacing:0;text-transform:none;margin-top:2px} .ng .tx>b{display:block;padding-right:50px;overflow-wrap:anywhere}
 .pc .tx .pr{color:#C4410C}.catN{color:#C4410C}.sec h2{color:#C4410C}.catC{background:#FDEBDF;color:#9A330A}
 .it>b,.it .tx>span,.ln b,.pt2,.sug button span{color:#C4410C}.ln.t b{color:#C4410C;font-weight:800}
 .ln{align-items:baseline;font-size:16px}.ln span{flex:1 1 auto;min-width:0;line-height:1.35}.ln b{flex:0 0 auto;white-space:nowrap;text-align:right;font-weight:800}
@@ -563,6 +563,10 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
 
   /* ---------- negocios ---------- */
   const nomN=r=>String(r&&(r.nombre||r.nombre_negocio||r.razon_social)||'Negocio');
+  /* sedes: «La Pera Madura (Jr. Arequipa)» se muestra como nombre + pastilla «Jr. Arequipa» */
+  const sedeN=r=>{const n=nomN(r),m=n.match(/^(.*\S)\s*\(([^()]+)\)\s*$/);return m?{b:m[1],s:m[2].trim()}:{b:n,s:''}};
+  const nomH=r=>{const x=sedeN(r);return E(x.b)+(x.s?`<span class="sede">${E(x.s)}</span>`:'')};
+  const nomT=r=>{const x=sedeN(r);return {h:x.s?`<span style="display:block;white-space:normal;line-height:1.2">${E(x.b)}<span class="sede">${E(x.s)}</span></span>`:E(x.b)}};
   const catN=r=>String(r&&r.categoria_negocio||'').trim();
   /* Categoría en singular para la cabecera de un solo negocio (la lista sigue en plural) */
   const CAT1={'restaurantes':'Restaurante','pizzerías':'Pizzería','pollerías':'Pollería','hamburgueserías':'Hamburguesería','sangucherías':'Sanguchería','paviferías':'Pavifería','cevicherías':'Cevichería','chifas':'Chifa','parrillas y anticuchos':'Parrilla y anticuchos','heladerías':'Heladería','cafeterías':'Cafetería','juguerías':'Juguería','dulcerías y pastelerías':'Dulcería y pastelería','panaderías':'Panadería','bodegas y minimarkets':'Bodega y minimarket','fruterías y verdulerías':'Frutería y verdulería','carnicerías':'Carnicería','licorerías':'Licorería','farmacias y boticas':'Farmacia y botica','ferreterías':'Ferretería','florerías y regalos':'Florería y regalos','mascotas':'Tienda de mascotas','librerías y útiles escolares':'Librería y útiles escolares','jugueterías':'Juguetería','lavanderías':'Lavandería'};
@@ -616,7 +620,7 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
   const ICFOTO=S('<rect x="3" y="5" width="18" height="14" rx="3"/><circle cx="9" cy="11" r="2"/><path d="m21 16-5-5-8 8"/>');
 
   /* ---------- páginas ---------- */
-  const top=(k,t,izq,der)=>`<div class="top"><div class="row">${izq||''}<div class="ttl" style="flex:1 1 0%;min-width:0"><div class="kick">${E(k)}</div><div class="h1" style="font-size:22px">${E(t)}</div></div>${der||''}${cartBtn()}</div></div>`;
+  const top=(k,t,izq,der)=>`<div class="top"><div class="row">${izq||''}<div class="ttl" style="flex:1 1 0%;min-width:0"><div class="kick">${E(k)}</div><div class="h1" style="font-size:22px">${t&&t.h?t.h:E(t)}</div></div>${der||''}${cartBtn()}</div></div>`;
   const back=(a,lab)=>`<button type="button" class="ib bk${['negocio','producto','carrito','seguir'].includes(sub)?' bkv':''}" data-a="${a||'volver'}" aria-label="${E(lab||'Volver')}">${IC.back}</button>`;
   const cartBtn=()=>{const n=nCart();return `<button type="button" class="ib" data-a="carrito" aria-label="Ver tu pedido${n?', '+n+' producto'+(n===1?'':'s'):''}">${IC.cart}${n?`<span class="bd">${n}</span>`:''}</button>`};
   function dirTxt(){try{const d=window.pdDatosClienteGuardados&&window.pdDatosClienteGuardados();if(d&&d.direccion)return d.direccion}catch(e){}return ''}
@@ -634,7 +638,7 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
     if(o){const n=negPorId(o.negocio_id);h+=`<button type="button" class="curso" data-seg="${E(o.id)}"><span class="ci">${S('<path d="M6 8h12l-1 12H7z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>')}</span><span class="ct"><span class="vivo"><i></i>Pedido en curso · ${E(etiqueta(o))}</span><b style="font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${E(n?nomN(n):'Tu pedido')}${o.total!=null?' · '+M(o.total):''}</b><span style="font-size:14px;font-weight:800;color:#C4410C">Ver seguimiento</span></span>${S('<path d="m9 6 6 6-6 6"/>')}</button>`}
     {const pv=window.__pdProg;if(pv)h+=`<div class="pdProgBar" role="status"><span class="pi">${S('<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/>')}</span><span class="pt"><b>Pedido programado</b><small>${E(pv.txt||'')}</small></span><button type="button" data-prog="cambiar">Cambiar</button><button type="button" class="q" data-prog="quitar">Pedir ahora</button></div>`}
     if(!F.q.trim()){const D=L.filter(r=>r.imagen_url).sort((a,b)=>(abierto(b)-abierto(a))||nomN(a).localeCompare(nomN(b),'es')).slice(0,6);
-      if(D.length>1)h+=`<div class="pdCar" aria-label="Negocios destacados"><div class="pdCarS">${D.map(r=>`<button type="button" class="pdCarI" data-neg="${E(r.id)}" style="background-image:linear-gradient(180deg,rgba(0,0,0,0) 35%,rgba(0,0,0,.62)),url('${E(r.imagen_url)}')"><span class="pdCarT"><b>${E(nomN(r))}</b><small>${E([catS(r),abierto(r)?'Abierto ahora':''].filter(Boolean).join(' · '))}</small></span></button>`).join('')}</div><div class="pdCarD">${D.map((_,i)=>`<i${i?'':' class="on"'}></i>`).join('')}</div></div>`}
+      if(D.length>1)h+=`<div class="pdCar" aria-label="Negocios destacados"><div class="pdCarS">${D.map(r=>`<button type="button" class="pdCarI" data-neg="${E(r.id)}" style="background-image:linear-gradient(180deg,rgba(0,0,0,0) 35%,rgba(0,0,0,.62)),url('${E(r.imagen_url)}')"><span class="pdCarT"><b>${nomH(r)}</b><small>${E([catS(r),abierto(r)?'Abierto ahora':''].filter(Boolean).join(' · '))}</small></span></button>`).join('')}</div><div class="pdCarD">${D.map((_,i)=>`<i${i?'':' class="on"'}></i>`).join('')}</div></div>`}
     const cats=[...new Set(L.map(catN).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'es'));
     if(cats.length>1)h+=`<div class="sec antoja"><h2>¿Qué se te antoja?</h2></div><div class="chsHome cti" role="group" aria-label="Categorías"><button type="button" class="${!F.cat?'on':''}" data-cat="" aria-pressed="${!F.cat}"><span class="ico">${S('<rect x="4" y="4" width="6.5" height="6.5" rx="2"/><rect x="13.5" y="4" width="6.5" height="6.5" rx="2"/><rect x="4" y="13.5" width="6.5" height="6.5" rx="2"/><rect x="13.5" y="13.5" width="6.5" height="6.5" rx="2"/>')}</span><span class="lb">Todos</span></button>${cats.map(c=>`<button type="button" class="${F.cat===c?'on':''}" data-cat="${E(c)}" aria-pressed="${F.cat===c}"><span class="ico">${catIcon(c)}</span><span class="lb">${E(c)}</span></button>`).join('')}</div>`;
     {const nf=F.cat?L.filter(r=>catN(r)===F.cat).length:L.length;h+=`<div class="sec"><h2>${E(F.cat||'Negocios')}</h2><span>${nf} ${F.cat?(nf===1?'negocio':'negocios'):'en Piura'}</span></div>`}
@@ -652,7 +656,7 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
     if(F.filtro==='abiertos')L=L.filter(abierto);
     const d=r=>{const x=dist(r);return x==null?1e9:x};
     L=L.slice().sort((a,b)=>F.filtro==='cerca'?d(a)-d(b):(abierto(b)-abierto(a))||(fv.includes(String(b.id))-fv.includes(String(a.id)))||nomN(a).localeCompare(nomN(b),'es'));
-    const filaNeg=(r,s,km,t,f)=>`<div style="position:relative"><button type="button" class="ng${s.tipo==='off'?' off':''}" data-neg="${E(r.id)}">${logoHtml(r)}<span class="tx"><b>${E(nomN(r))}</b><span>${E([catN(r),t,km!=null?km.toFixed(1)+' km':''].filter(Boolean).join(' · '))}</span><span class="st ${E(s.tipo)}">${E(s.tipo==='off'&&/^Abre /.test(s.txt||'')?s.pill+' · '+s.txt.replace(/^Abre /,'abre ').replace(/\.$/,''):s.pill)}</span></span>${IC.chev}</button><button type="button" class="fav${f?' on':''}" data-fav="${E(r.id)}" aria-label="${f?'Quitar de favoritos':'Guardar en favoritos'}" aria-pressed="${f}" style="position:absolute;top:8px;right:36px">${IC.heart}</button></div>`;
+    const filaNeg=(r,s,km,t,f)=>`<div style="position:relative"><button type="button" class="ng${s.tipo==='off'?' off':''}" data-neg="${E(r.id)}">${logoHtml(r)}<span class="tx"><b>${nomH(r)}</b><span>${E([catN(r),t,km!=null?km.toFixed(1)+' km':''].filter(Boolean).join(' · '))}</span><span class="st ${E(s.tipo)}">${E(s.tipo==='off'&&/^Abre /.test(s.txt||'')?s.pill+' · '+s.txt.replace(/^Abre /,'abre ').replace(/\.$/,''):s.pill)}</span></span>${IC.chev}</button><button type="button" class="fav${f?' on':''}" data-fav="${E(r.id)}" aria-label="${f?'Quitar de favoritos':'Guardar en favoritos'}" aria-pressed="${f}" style="position:absolute;top:8px;right:36px">${IC.heart}</button></div>`;
     let h=L.map(r=>{const s=estado(r),km=dist(r),t=tiempo(r),f=fv.includes(String(r.id));return filaNeg(r,s,km,t,f)}).join('');
     /* Igual que la carta de un negocio: los negocios van separados por categoría */
     const cs=[...new Set(L.map(catN).filter(Boolean))];
@@ -668,7 +672,7 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
     const r=negPorId(F.neg);
     if(!r)return {head:top('Negocio','Cargando…',back('inicio')),body:'<div class="load">Cargando…</div>'};
     const fv=favs().includes(String(r.id));
-    const head=top(catS(r)||'Negocio',nomN(r),back('inicio','Volver al inicio'));
+    const head=top(catS(r)||'Negocio',nomT(r),back('inicio','Volver al inicio'));
     const s=estado(r),c=carta(r.id);
     let h='';
     if(!c.data)return {head,body:h+(c.err?`<div class="err">No se pudo cargar la carta: ${E(c.err)}</div>`:'<div class="load">Cargando la carta…</div>')};
@@ -1037,7 +1041,7 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
         const on=s.tipo==='on',enCarta=sub==='negocio'&&String(F.neg)===String(r.id);
         const pill=s.tipo==='off'&&/^Abre /.test(s.txt||'')?s.pill+' · '+s.txt.replace(/^Abre /,'abre ').replace(/\.$/,''):(on?'Abierto ahora':s.pill);
         const CALI=S('<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/>');
-        return {dlg:true,title:'Horario de '+nomN(r),body:`<div class="hc1"><div class="hcH"><span class="hcI">${IC.clock}</span><span class="hcT"><b>${E(nomN(r))}</b><span class="st ${E(s.tipo)}">${E(pill)}</span></span></div><div class="sm">${filas}</div>${nota?`<div style="display:flex;gap:10px;align-items:flex-start;margin-top:12px;padding:12px 14px;border-radius:14px;background:#FFF4EC;color:#9A330A;font-size:14.5px;line-height:1.4;font-weight:600">${IC.clock}<span>${E(nota)}</span></div>`:''}</div>`,
+        return {dlg:true,title:'Horario de '+nomN(r),body:`<div class="hc1"><div class="hcH"><span class="hcI">${IC.clock}</span><span class="hcT"><b>${nomH(r)}</b><span class="st ${E(s.tipo)}">${E(pill)}</span></span></div><div class="sm">${filas}</div>${nota?`<div style="display:flex;gap:10px;align-items:flex-start;margin-top:12px;padding:12px 14px;border-radius:14px;background:#FFF4EC;color:#9A330A;font-size:14.5px;line-height:1.4;font-weight:600">${IC.clock}<span>${E(nota)}</span></div>`:''}</div>`,
           btns:'<div class="bb hc1b">'+(on?'':`<button type="button" class="bp" data-h="reservar">${CALI}Reservar pedido</button>`)+(enCarta?`<button type="button" class="bs" data-h="cerrar">Cerrar</button>`:`<button type="button" class="bs" data-h="carta">Ver la carta</button>`)+'</div>'}},
       on(a){if(a==='cerrar'){hojaCerrar();return}if(a==='carta'){hojaCerrar();if(!(sub==='negocio'&&String(F.neg)===String(r.id)))abrirNeg(r.id)}if(a==='reservar'){hojaCerrar();setTimeout(()=>reservar(r.id),80)}}});
   }
