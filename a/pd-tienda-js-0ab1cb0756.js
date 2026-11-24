@@ -15,7 +15,7 @@ const pidemasFetchConTimeout=async(input,init={})=>{
 /* Sesión propia de la tienda: no se mezcla con la del Admin, Negocio o Motorizado abiertos en el mismo navegador */
 const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{global:{fetch:pidemasFetchConTimeout},auth:{storageKey:'pidemas-tienda-cliente',persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
 
-/* Acceso de clientes con Google. No concede permisos de administración ni de negocio. */
+/* Acceso de clientes con Google. No concede permisos de Pidemás ni de negocio. */
 let pdClienteSesion=null;
 
 function pdCerrarCuentaCliente(){const overlay=document.getElementById('pdGoogleAuthOverlay');if(overlay)overlay.hidden=true;}
@@ -85,7 +85,7 @@ async function loadData(){
     sb.from('productos_stock').select('*').eq('disponible',true).gt('stock',0).order('nombre',{ascending:true}),
     sb.from('categorias_negocio').select('*').order('orden',{ascending:true})
   ]);
-  restaurants=(r.data||[]).filter(n=>n&&n.visible_admin!==false); /* el administrador puede ocultar un negocio de la tienda */
+  restaurants=(r.data||[]).filter(n=>n&&n.visible_admin!==false); /* Pidemás puede ocultar un negocio de la tienda */
   allProductCategories=c.data||[]; productCategories=allProductCategories.filter(x=>x.activo!==false);
   // Solo se publican en la Tienda los productos cuyo negocio está activo.
   // Esto evita que un negocio oculto siga apareciendo a través de su carta.
@@ -776,7 +776,7 @@ function openCheckout(){
       <div id="cProofStatus" style="font-size:13px;color:var(--fr-muted);margin-top:5px">o arrastra una imagen aquí</div>
       <input id="cProof" type="file" accept="image/*" onchange="previewProof(this,'cProofPreview'); updateProofStatus(this)" style="display:none">
     </div>
-    <div class="locationStatus" style="margin-top:7px">Sube una captura del pago para que el administrador la revise.</div>
+    <div class="locationStatus" style="margin-top:7px">Sube una captura del pago para que Pidemás la revise.</div>
     <img id="cProofPreview" class="previewImg hidden" alt="Vista previa del comprobante">
   </div>
   <div class="field" id="cCompBox">
@@ -1376,11 +1376,11 @@ async function calculateCurrentDelivery(){
     origin=await geocodeRestaurantInPiura(restaurant);
   }
   if(!origin){
-    throw new Error('No se pudo localizar correctamente el negocio en Piura. Revisa su dirección en el panel administrador.');
+    throw new Error('No se pudo localizar correctamente el negocio en Piura. Revisa su dirección en el panel de Pidemás.');
   }
   const roughKm=straightLineKm(origin,{latitude:lat,longitude:lng});
   if(!Number.isFinite(roughKm)||roughKm>40){
-    throw new Error('La ubicación del negocio no es válida para esta entrega. Revisa sus coordenadas GPS en el panel administrador.');
+    throw new Error('La ubicación del negocio no es válida para esta entrega. Revisa sus coordenadas GPS en el panel de Pidemás.');
   }
   let distanceKm,aproximado=false;
   try{distanceKm=await getRoadDistanceKm(origin,{latitude:lat,longitude:lng});}
@@ -1640,7 +1640,7 @@ async function submitCartOrder(){
   console.info('[Pidemás] Registrando productos del pedido…', orderId);
   const d=await sb.from('detalle_pedidos').insert(detalles);
   // No borrar el pedido principal si falla el detalle: el borrado provocaba que
-  // el cliente creyera que envió el pedido, pero este desaparecía del administrador.
+  // el cliente creyera que envió el pedido, pero este desaparecía de Pidemás.
   // Conservamos el registro principal y mostramos una advertencia visible para
   // poder localizar el fallo de detalle_pedidos en Supabase.
   let detalleErrorMensaje='';
@@ -1770,7 +1770,7 @@ submitCartOrder=async function(){
   try{
     // Si una consulta de red queda pendiente, avisar en vez de dejar la pantalla sin explicación.
     const timeoutPromise=new Promise((_,reject)=>{
-      watchdog=setTimeout(()=>reject(new Error('El envío se detuvo porque el servidor no respondió. El resultado puede ser incierto: revisa primero el panel de administrador antes de reintentar.')),45000);
+      watchdog=setTimeout(()=>reject(new Error('El envío se detuvo porque el servidor no respondió. El resultado puede ser incierto: revisa primero el panel de Pidemás antes de reintentar.')),45000);
     });
     await Promise.race([pidemasOriginalSubmitCartOrder(),timeoutPromise]);
   }catch(error){
@@ -1999,7 +1999,7 @@ function trackingSlide(o){
       <div class="pdBars">${bars}</div>
       <div class="pdBandMeta">${idx<0?'Pedido cancelado':'Paso '+(idx+1)+' de 6'}</div>
     </div>
-    ${o.pago_confirmado?`<div class="pdPaidNote">Pago confirmado por administración</div>`:''}
+    ${o.pago_confirmado?`<div class="pdPaidNote">Pago confirmado por Pidemás</div>`:''}
     ${renderTracking(o)}
     ${(items.length||o.total)?`<div class="pdPayBox">${items.map(x=>`<div class="pdLine"><span>${Number(x.cantidad||1)} × ${esc(x.nombre)}</span><span>S/ ${(Number(x.precio||0)*Number(x.cantidad||1)).toFixed(2)}</span></div>`).join('')}${pago?`<div class="pdLine"><span>Pago</span><strong>${esc(pago)}</strong></div>`:''}<div class="pdTotal"><span>Total</span><strong>S/ ${Number(o.total||0).toFixed(2)}</strong></div></div>`:''}
   </div>`;
