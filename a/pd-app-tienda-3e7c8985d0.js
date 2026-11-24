@@ -104,7 +104,7 @@
 .list{scrollbar-width:none}.list::-webkit-scrollbar{display:none}
 .opt span{font-size:13px;color:#6B5E55}
 .msgok{padding:10px 12px;border-radius:12px;background:#E9F6EE;color:#0F5E2E;font-size:14px;font-weight:700}
-.load{padding:24px;text-align:center;color:#6B5E55;font-size:15px}
+.load{padding:56px 24px 24px;text-align:center;color:#6B5E55;font-size:15px;display:flex;flex-direction:column;align-items:center;gap:14px} .eq{display:flex;gap:6px;align-items:center;height:44px} .eq i{display:block;width:8px;height:44px;border-radius:5px;background:#C4410C;transform:scaleY(.4);animation:pdEq 1s ease-in-out infinite} .eq i:nth-child(even){background:#E8A06E} .eq i:nth-child(2){animation-delay:.15s} .eq i:nth-child(3){animation-delay:.3s} .eq i:nth-child(4){animation-delay:.45s} .eq i:nth-child(5){animation-delay:.6s} @keyframes pdEq{0%,100%{transform:scaleY(.4)}50%{transform:scaleY(1)}} @media (prefers-reduced-motion:reduce){.eq i{animation-duration:2.4s}}
 `+`
 :host{z-index:2147482000}
 .app{animation:none}
@@ -632,7 +632,7 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
       </div>`;
     const buscador=`<label class="srch inicio">${IC.search}<span style="position:absolute;width:1px;height:1px;overflow:hidden">Buscar</span><input id="tQ" type="search" placeholder="Busca un negocio o un producto" value="${E(F.q)}" data-in="q" autocomplete="off"></label>`;
     const L=negs();
-    if(!L.length)return {head,body:buscador+'<div class="load">Cargando los negocios…</div>'};
+    if(!L.length)return {head,body:buscador+'<div class="load"><span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>Cargando los negocios…</div>'};
     let h=buscador;
     const o=ultimoPedido();
     if(o){const n=negPorId(o.negocio_id);h+=`<button type="button" class="curso" data-seg="${E(o.id)}"><span class="ci">${S('<path d="M6 8h12l-1 12H7z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/>')}</span><span class="ct"><span class="vivo"><i></i>Pedido en curso · ${E(etiqueta(o))}</span><b style="font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${E(n?nomN(n):'Tu pedido')}${o.total!=null?' · '+M(o.total):''}</b><span style="font-size:14px;font-weight:800;color:#C4410C">Ver seguimiento</span></span>${S('<path d="m9 6 6 6-6 6"/>')}</button>`}
@@ -670,12 +670,12 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
 
   function negocio(){
     const r=negPorId(F.neg);
-    if(!r)return {head:top('Negocio','Cargando…',back('inicio')),body:'<div class="load">Cargando…</div>'};
+    if(!r)return {head:top('Negocio','Cargando…',back('inicio')),body:'<div class="load"><span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>Cargando…</div>'};
     const fv=favs().includes(String(r.id));
     const head=top(catS(r)||'Negocio',nomT(r),back('inicio','Volver al inicio'));
     const s=estado(r),c=carta(r.id);
     let h='';
-    if(!c.data)return {head,body:h+(c.err?`<div class="err">No se pudo cargar la carta: ${E(c.err)}</div>`:'<div class="load">Cargando la carta…</div>')};
+    if(!c.data)return {head,body:h+(c.err?`<div class="err">No se pudo cargar la carta: ${E(c.err)}</div>`:'<div class="load"><span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>Cargando la carta…</div>')};
     const {cats,prods}=c.data;
     if(!prods.length)return {head,body:h+'<div class="vac">Este negocio todavía no tiene productos en su carta.</div>'};
     const phC=/belleza|cuidado|farmac|botica|ropa|moda|tecnolog|celular|ferreter|librer|mascota|veterin|regalo|perfum|cosm|hogar|bazar|juguet|calzad|zapat|accesori|joyer|óptic|optic/i.test(catN(r)||'')?'Buscar un producto':'Buscar en la carta';
@@ -736,7 +736,7 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
     if(!L.length){cerrarCk();return {head,body:'<div class="vac">Tu pedido está vacío. Elige un negocio y agrega productos.</div><button type="button" class="b o" data-a="inicio">Ver negocios</button>'}}
     abrirCk();
     let h=`<div class="cd dash"><div class="lbl">Productos</div>${L.map((x,i)=>`<div class="it"><span class="tx"><b>${E(x.nombre)}</b><span>${M(x.precio)} c/u</span></span><span class="qty s"><button type="button" data-ci="${i}:-1" aria-label="${x.cantidad>1?'Quitar uno':'Quitar del pedido'}">${x.cantidad>1?IC.minus:IC.trash}</button><b>${x.cantidad}</b><button type="button" data-ci="${i}:1" aria-label="Agregar uno">${IC.plus}</button></span><b>${M(x.precio*x.cantidad)}</b></div>`).join('')}<button type="button" class="lnk" data-a="anegocio2" style="text-decoration:none">+ Agregar más productos</button></div>`;
-    if(!ck())return {head,body:h+'<div class="load">Preparando tu pedido…</div>'};
+    if(!ck())return {head,body:h+'<div class="load"><span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>Preparando tu pedido…</div>'};
     const la=val('cLat'),ln=val('cLng'),on=!!(la&&ln),stx=String(($('cLocationStatus')||{}).textContent||'');
     const busc=ubicT&&Date.now()-ubicT<(ubicPrev?2500:12000)&&!(on&&!ubicPrev);if(on&&ubicT&&(!ubicPrev||Date.now()-ubicT>2500)){ubicT=0;setTimeout(()=>aviso('Listo, tomamos tu ubicación.'),50)}if(ubicT&&!busc)ubicT=0;
     h+=`<div class="cd"><div class="lbl">Entrega</div>
@@ -782,7 +782,7 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
   function pedidos(){
     const head=top('Tus compras','Mis pedidos','',SES()?`<button type="button" class="ib" data-a="hact" aria-label="Actualizar">${S('<path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/>')}</button>`:'');
     if(!SES())return {head,body:loginCard('Inicia sesión para ver tus pedidos','Tus pedidos quedan guardados en tu cuenta de Google.')};
-    const c=historial();if(!c.data)return {head,body:c.err?`<div class="err">${E(c.err)}</div>`:'<div class="load">Cargando tus pedidos…</div>'};
+    const c=historial();if(!c.data)return {head,body:c.err?`<div class="err">${E(c.err)}</div>`:'<div class="load"><span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>Cargando tus pedidos…</div>'};
     const H=c.data;if(!H.length)return {head,body:`<div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:48px 20px 8px"><span style="width:76px;height:76px;border-radius:50%;background:#FDEBDF;color:#C4410C;display:flex;align-items:center;justify-content:center">${String(IC.box).replace(/width="\d+" height="\d+"/,'width="34" height="34"')}</span><h2 style="margin:8px 0 0;font-size:22px;font-weight:800;color:#1F1A17">Aún no tienes pedidos</h2><p style="margin:0;font-size:15px;line-height:1.5;color:#6B5E55;max-width:300px">Explora los negocios de Piura y haz tu primer pedido.</p></div><button type="button" class="b o" style="height:54px;font-size:16px;margin-top:8px" data-a="inicio">Ver negocios</button>`};
     let cal={};try{cal=JSON.parse(localStorage.getItem('pidemas_calificados')||'{}')||{}}catch(e){}
     const curso=H.filter(o=>!FIN.includes(est(o))),antes=H.filter(o=>FIN.includes(est(o)));
@@ -804,7 +804,7 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
     if(!SES())return {head:head0('Tu pedido'),body:loginCard('Inicia sesión para seguir tu pedido','Así ves en qué paso va tu pedido desde cualquier teléfono.')};
     const c=cargar('seg',async()=>{const l=await getTrackingOrders();return Array.isArray(l)?l:[]});
     if(Date.now()-c.t>15000&&!c.busy)cargar('seg',async()=>{const l=await getTrackingOrders();return Array.isArray(l)?l:[]},true);
-    if(!c.data)return {head:head0('Tu pedido'),body:c.err?`<div class="err">${E(c.err)}</div>`:'<div class="load">Cargando tu pedido…</div>'};
+    if(!c.data)return {head:head0('Tu pedido'),body:c.err?`<div class="err">${E(c.err)}</div>`:'<div class="load"><span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>Cargando tu pedido…</div>'};
     const act=c.data.filter(o=>!FIN.includes(est(o)));const o=c.data.find(x=>String(x.id)===String(F.seg))||act[0];
     if(!o)return {head:head0('Tu pedido'),body:'<div class="vac">No tienes pedidos en curso. Cuando hagas un pedido, aquí verás cada paso en tiempo real.</div><button type="button" class="b" data-t="pedidos">Ver mis pedidos</button>'};
     const r=negPorId(o.negocio_id),s=est(o),canc=['cancelado','anulado','rechazado'].includes(s),p=pasos(o),cur=p.L[p.cur];

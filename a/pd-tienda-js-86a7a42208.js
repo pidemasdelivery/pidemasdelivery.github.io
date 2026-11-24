@@ -2063,7 +2063,7 @@ async function abrirCartaDesdeEnlace(){
   if(restaurantsSection)restaurantsSection.classList.add('hidden');
   if(businessCategoriesSection)businessCategoriesSection.classList.add('hidden');
   if(productsSection)productsSection.classList.remove('hidden');
-  if(productsEl)productsEl.innerHTML='<div class="empty" style="padding:24px;text-align:center">Cargando la carta del negocio…</div>';
+  if(productsEl)productsEl.innerHTML='<div class="empty" style="padding:24px;text-align:center"><span style="display:flex;gap:6px;justify-content:center;align-items:center;height:44px;margin-bottom:12px" aria-hidden="true"><i style="width:8px;height:44px;border-radius:5px;background:#C4410C;animation:pdEq 1s ease-in-out infinite"></i><i style="width:8px;height:44px;border-radius:5px;background:#E8A06E;animation:pdEq 1s .15s ease-in-out infinite"></i><i style="width:8px;height:44px;border-radius:5px;background:#C4410C;animation:pdEq 1s .3s ease-in-out infinite"></i><i style="width:8px;height:44px;border-radius:5px;background:#E8A06E;animation:pdEq 1s .45s ease-in-out infinite"></i><i style="width:8px;height:44px;border-radius:5px;background:#C4410C;animation:pdEq 1s .6s ease-in-out infinite"></i></span><style>@keyframes pdEq{0%,100%{transform:scaleY(.4)}50%{transform:scaleY(1)}}</style>Cargando la carta del negocio…</div>';
 
   try{
     // Consultar el registro exacto por ID aunque no aparezca en la lista general.
