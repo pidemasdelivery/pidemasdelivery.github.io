@@ -1030,7 +1030,9 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
         const pos=d=>(d+6)%7;/* lunes=0 … domingo=6 */
         const etq=L=>{const q=L.map(pos).sort((a,b)=>a-b),A=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];const tr=[];q.forEach(x=>{const u=tr[tr.length-1];if(u&&x===u[1]+1)u[1]=x;else tr.push([x,x])});
           const ps=[];tr.forEach(([a,b])=>{if(b-a>=2)ps.push(A[a]+' a '+A[b]);else for(let k=a;k<=b;k++)ps.push(A[k])});return ps.length>1?ps.slice(0,-1).join(', ')+' y '+ps[ps.length-1]:ps[0]};
-        let filas=(hoyD?`<div class="r hoy"><span>${DSEM[hoyD.d]} · hoy</span><b class="${hoyD.v==='Cerrado'?'off':''}">${E(hoyD.v)}</b></div>`:'')+gr.map(g=>`<div class="r"><span>${etq(g.d)}</span><b class="${g.v==='Cerrado'?'off':''}">${E(g.v)}</b></div>`).join('');
+        /* cada día en su fila, de lunes a domingo; hoy resaltado */
+        const DL=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+        let filas=dias.map(x=>`<div class="r${x.hoy?' hoy':''}"><span>${DL[x.d]}${x.hoy?' · hoy':''}</span><b class="${x.v==='Cerrado'?'off':''}">${E(x.v)}</b></div>`).join('');
         let nota='';try{const sem=window.pdHorarioSemana&&pdHorarioSemana();const no=(sem||[]).filter(x=>!x.activo).map(x=>x.dia.toLowerCase());if(no.length)nota='Pidemás no atiende '+(no.length===1?'los '+no[0]+'s':'los días '+no.join(', '))+'.'}catch(e){}
         const on=s.tipo==='on',enCarta=sub==='negocio'&&String(F.neg)===String(r.id);
         const pill=s.tipo==='off'&&/^Abre /.test(s.txt||'')?s.pill+' · '+s.txt.replace(/^Abre /,'abre ').replace(/\.$/,''):(on?'Abierto ahora':s.pill);
