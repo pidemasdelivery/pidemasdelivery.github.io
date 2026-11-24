@@ -1033,12 +1033,12 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
         /* cada día en su fila, de lunes a domingo; hoy resaltado */
         const DL=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
         let filas=dias.map(x=>`<div class="r${x.hoy?' hoy':''}"><span>${DL[x.d]}${x.hoy?' · hoy':''}</span><b class="${x.v==='Cerrado'?'off':''}">${E(x.v)}</b></div>`).join('');
-        let nota='';try{const sem=window.pdHorarioSemana&&pdHorarioSemana();const no=(sem||[]).filter(x=>!x.activo).map(x=>x.dia.toLowerCase());if(no.length)nota='Pidemás no atiende '+(no.length===1?'los '+no[0]+'s':'los días '+no.join(', '))+'.'}catch(e){}
+        let nota='';try{const sem=window.pdHorarioSemana&&pdHorarioSemana();const no=(sem||[]).filter(x=>!x.activo).map(x=>x.dia.toLowerCase());if(no.length)nota='Los '+(no.length===1?no[0]+'s':no.join(', '))+' Pidemás no hace repartos, por eso ese día no se reciben pedidos.'}catch(e){}
         const on=s.tipo==='on',enCarta=sub==='negocio'&&String(F.neg)===String(r.id);
         const pill=s.tipo==='off'&&/^Abre /.test(s.txt||'')?s.pill+' · '+s.txt.replace(/^Abre /,'abre ').replace(/\.$/,''):(on?'Abierto ahora':s.pill);
         const CALI=S('<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/>');
-        return {dlg:true,title:'Horario de '+nomN(r),body:`<div class="hc1"><div class="hcH"><span class="hcI">${IC.clock}</span><span class="hcT"><b>${E(nomN(r))}</b><span class="st ${E(s.tipo)}">${E(pill)}</span></span></div><div class="sm">${filas}</div></div>`,
-          btns:'<div class="bb hc1b">'+(on?'':`<button type="button" class="bp" data-h="reservar">${CALI}Reservar pedido</button>`)+(enCarta?`<button type="button" class="bs" data-h="cerrar">Cerrar</button>`:`<button type="button" class="bs" data-h="carta">Ver la carta</button>`)+'</div>'+(nota?`<p class="hcN">${E(nota)}</p>`:'')}},
+        return {dlg:true,title:'Horario de '+nomN(r),body:`<div class="hc1"><div class="hcH"><span class="hcI">${IC.clock}</span><span class="hcT"><b>${E(nomN(r))}</b><span class="st ${E(s.tipo)}">${E(pill)}</span></span></div><div class="sm">${filas}</div>${nota?`<div style="display:flex;gap:10px;align-items:flex-start;margin-top:12px;padding:12px 14px;border-radius:14px;background:#FFF4EC;color:#9A330A;font-size:14.5px;line-height:1.4;font-weight:600">${IC.clock}<span>${E(nota)}</span></div>`:''}</div>`,
+          btns:'<div class="bb hc1b">'+(on?'':`<button type="button" class="bp" data-h="reservar">${CALI}Reservar pedido</button>`)+(enCarta?`<button type="button" class="bs" data-h="cerrar">Cerrar</button>`:`<button type="button" class="bs" data-h="carta">Ver la carta</button>`)+'</div>'}},
       on(a){if(a==='cerrar'){hojaCerrar();return}if(a==='carta'){hojaCerrar();if(!(sub==='negocio'&&String(F.neg)===String(r.id)))abrirNeg(r.id)}if(a==='reservar'){hojaCerrar();setTimeout(()=>reservar(r.id),80)}}});
   }
   window.showRestaurantSchedule=verHorario;
