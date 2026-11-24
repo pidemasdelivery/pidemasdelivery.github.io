@@ -119,7 +119,7 @@
     const s=window.pdHorarioSemana?pdHorarioSemana():[];const hoy=DIAS[lima().getDay()].normalize('NFD').replace(/[̀-ͯ]/g,'');
     const h12=v=>{const m=String(v||'').match(/(\d{1,2}):(\d{2})/);return m?hora(+m[1]*60+(+m[2])):v};
     const fil=[];s.forEach(x=>{const k=x.dia.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');const val=x.activo?h12(x.abre)+' – '+h12(x.ultimo):'Cerrado';const last=fil[fil.length-1];
-      if(last&&last.val===val&&!last.hoy&&k!==hoy){last.hasta=x.dia}else fil.push({desde:x.dia,hasta:null,val,hoy:k===hoy,off:!x.activo})});
+      fil.push({desde:x.dia,hasta:null,val,hoy:k===hoy,off:!x.activo})});
     return fil.map(r=>'<div class="'+(r.hoy?'hoy':'')+'"><span>'+E(r.desde+(r.hasta?' a '+r.hasta.toLowerCase():''))+(r.hoy?' · hoy':'')+'</span><span class="'+(r.off?'off':'')+'">'+E(r.val)+'</span></div>').join('');
   }
   function pantalla(){
