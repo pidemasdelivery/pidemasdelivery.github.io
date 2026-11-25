@@ -85,7 +85,9 @@ async function loadData(){
     sb.from('productos_stock').select('*').eq('disponible',true).gt('stock',0).order('nombre',{ascending:true}),
     sb.from('categorias_negocio').select('*').order('orden',{ascending:true})
   ]);
-  restaurants=(r.data||[]).filter(n=>n&&n.visible_admin!==false); /* Pidemás puede ocultar un negocio de la tienda */
+  /* Regla de Pidemás: para salir en la tienda el negocio necesita logo y al menos un producto disponible */
+  const conProd=new Set((p.data||[]).map(x=>String(x.negocio_id||'')));
+  restaurants=(r.data||[]).filter(n=>n&&n.visible_admin!==false&&String(n.logo_url||'').trim()&&conProd.has(String(n.id))); /* Pidemás puede ocultar un negocio de la tienda */
   allProductCategories=c.data||[]; productCategories=allProductCategories.filter(x=>x.activo!==false);
   // Solo se publican en la Tienda los productos cuyo negocio está activo.
   // Esto evita que un negocio oculto siga apareciendo a través de su carta.
