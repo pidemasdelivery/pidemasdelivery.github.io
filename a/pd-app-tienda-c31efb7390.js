@@ -972,8 +972,10 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
 `;
   let HO=null,hHost=null,hRoot=null,hKey='',TS=null,tsT=0,hojaCola=Promise.resolve();
   const XI=S('<path d="M6 6l12 12M18 6 6 18"/>');
-  function hojaAbrir(o){if(HO&&HO.res&&HO!==o){const r=HO.res;HO.res=null;r(HO.cancel)}if(HO&&HO.alCerrar)try{HO.alCerrar()}catch(_){}HO=o;if(!o.sinHist)try{history.pushState({pdt:1,pdtM:1},'')}catch(_){}hKey='';pintarHoja()}
-  function hojaCerrar(v,desdePop){const h=HO;if(!h)return;HO=null;hKey='';pintarHoja();if(h.alCerrar)try{h.alCerrar(v)}catch(_){}if(h.res)h.res(v===undefined?h.cancel:v);if(!desdePop&&!h.sinHist&&history.state&&history.state.pdtM){ignorarPop=true;history.back()}}
+  /* Con una alerta abierta se oculta la pantalla «Estamos cerrados» de atrás, para que no se vean dos alertas encimadas */
+  function hojaFondo(on){try{if(!document.getElementById('pdHojaFondoCss')){const st=document.createElement('style');st.id='pdHojaFondoCss';st.textContent='body.pdHojaOn #ppCerrado{visibility:hidden!important}';document.head.appendChild(st)}document.body.classList.toggle('pdHojaOn',!!on)}catch(_){}}
+  function hojaAbrir(o){hojaFondo(1);if(HO&&HO.res&&HO!==o){const r=HO.res;HO.res=null;r(HO.cancel)}if(HO&&HO.alCerrar)try{HO.alCerrar()}catch(_){}HO=o;if(!o.sinHist)try{history.pushState({pdt:1,pdtM:1},'')}catch(_){}hKey='';pintarHoja()}
+  function hojaCerrar(v,desdePop){const h=HO;if(!h)return;HO=null;hojaFondo(0);hKey='';pintarHoja();if(h.alCerrar)try{h.alCerrar(v)}catch(_){}if(h.res)h.res(v===undefined?h.cancel:v);if(!desdePop&&!h.sinHist&&history.state&&history.state.pdtM){ignorarPop=true;history.back()}}
   function asegurarHoja(){if(hHost)return;const w=$('pdAppShell');hHost=document.createElement('pd-tienda-hoja');(w||document.body).appendChild(hHost);hRoot=hHost.attachShadow({mode:'open'});try{PdPasos.flechas(hRoot)}catch(_){}
     hRoot.addEventListener('click',hClic);hRoot.addEventListener('input',hEntrada)}
   function pintarHoja(){
