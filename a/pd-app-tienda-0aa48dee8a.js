@@ -66,27 +66,22 @@
 .nv button.on{color:#C4410C;font-weight:800}.nv button.on span.i{background:#FDEBDF}
 .nv .bd{top:2px;right:calc(50% - 26px)}
 .nv{position:relative}
-.nv button.fsv{position:absolute;left:auto;right:14px;bottom:calc(100% + 12px);transform:none;z-index:7;display:flex;flex-direction:row;flex:none;width:auto;align-items:center;gap:0;height:52px;width:52px;padding:0;justify-content:center;border-radius:50%;border:0;outline:0;background:#128C4A;color:#FFFFFF;font:inherit;font-size:13.5px;font-weight:800;white-space:nowrap;box-shadow:none;cursor:pointer;transition:transform .22s ease,opacity .22s ease}
+.nv button.fsv{position:absolute;left:auto;right:14px;bottom:calc(100% + 12px);transform:none;z-index:7;display:flex;flex-direction:row;flex:none;width:auto;align-items:center;gap:7px;height:44px;padding:0 16px 0 12px;border-radius:999px;border:0;outline:0;background:#128C4A;color:#FFFFFF;font:inherit;font-size:14.5px;font-weight:800;white-space:nowrap;box-shadow:none;cursor:pointer;transition:transform .22s ease,opacity .22s ease}
 .nv button.fsv.off{transform:translateY(24px);opacity:0;pointer-events:none}
-.nv button.fsv.abierto{background:#FFFFFF;color:#1F1A17}
-.nv button.fsv svg{width:26px;height:26px}
-.nv button.fsv.abierto svg{width:22px;height:22px}
-.svtip{position:absolute;z-index:7;right:76px;bottom:calc(100% + 22px);background:#FFFFFF;color:#1F1A17;font-size:13.5px;font-weight:800;white-space:nowrap;padding:8px 12px;border-radius:14px 14px 4px 14px;box-shadow:0 4px 14px rgba(31,26,23,.16);pointer-events:none;animation:waup .3s ease both;transition:opacity .3s ease}
-.svtip.off{opacity:0}
-.wabg{position:fixed;inset:0;z-index:6;background:rgba(31,26,23,.35);animation:fi .2s ease}
-.wap{position:absolute;z-index:7;right:12px;bottom:calc(100% + 64px);width:min(360px,calc(100vw - 24px));border-radius:22px;overflow:hidden;background:#EFE7DE;box-shadow:0 14px 40px rgba(31,26,23,.28);animation:waup .24s ease}
-@keyframes waup{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
-.wah{display:flex;align-items:center;gap:10px;padding:12px 10px 12px 14px;background:#075E54;color:#FFFFFF}
-.waav{width:40px;height:40px;border-radius:50%;background:#C4410C;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;flex:none}
-.wat{flex:1;display:flex;flex-direction:column;min-width:0}.wat b{font-size:16px}.wat small{font-size:12.5px;color:#D5EFE9}
-.nv .wah button.wax{flex:none;width:44px;height:44px;padding:0;border-radius:50%;color:#FFFFFF;display:flex;align-items:center;justify-content:center}
-.wab{display:flex;flex-direction:column;gap:8px;padding:14px 12px 14px}
-.wam{align-self:flex-start;max-width:88%;position:relative;background:#FFFFFF;color:#1F1A17;font-size:14.5px;line-height:1.4;padding:9px 12px 18px;border-radius:0 14px 14px 14px;box-shadow:0 1px 1px rgba(31,26,23,.12)}
-.wam i{position:absolute;right:10px;bottom:4px;font-style:normal;font-size:11px;color:#6B5E55}
-.nv .wab button.wao{align-self:flex-end;width:92%;flex:none;flex-direction:row;align-items:center;gap:10px;padding:10px 12px;border-radius:14px 0 14px 14px;background:#D9FDD3;color:#1F1A17;text-align:left;box-shadow:0 1px 1px rgba(31,26,23,.12);animation:waup2 .26s ease both}
-@keyframes waup2{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-.waoi{width:38px;height:38px;border-radius:50%;background:#FFFFFF;display:flex;align-items:center;justify-content:center;flex:none}
-.waot{display:flex;flex-direction:column;gap:1px;min-width:0}.waot b{font-size:15px;font-weight:800}.waot span{font-size:12.5px;color:#3B4A3F;font-weight:500;line-height:1.3}
+.nv button.fsv svg{width:22px;height:22px}
+.wabg{position:fixed;inset:0;z-index:8;background:rgba(31,26,23,.4);animation:fi .2s ease}
+.wal{position:absolute;z-index:9;left:0;right:0;bottom:0;background:#FFFFFF;border-radius:20px 20px 0 0;padding-bottom:calc(env(safe-area-inset-bottom,0px) + 12px);box-shadow:0 -8px 30px rgba(31,26,23,.18);animation:walup .26s ease}
+.wal.na,.wabg.na{animation:none}
+@keyframes walup{from{transform:translateY(100%)}to{transform:none}}
+.walh{position:relative;display:flex;align-items:center;justify-content:center;height:56px;border-bottom:1px solid #EEEEEE;font-size:16px;font-weight:800;color:#1F1A17}
+.nv .walh button.walx{position:absolute;left:6px;top:6px;flex:none;width:44px;height:44px;padding:0;border-radius:50%;color:#1F1A17;display:flex;align-items:center;justify-content:center}
+.wall{display:flex;flex-direction:column;padding:2px 18px}
+.nv .wall button.walo{flex:none;flex-direction:row;align-items:center;justify-content:space-between;gap:12px;width:100%;padding:14px 0;border-radius:0;border-bottom:1px solid #F2F2F2;color:#1F1A17;text-align:left}
+.nv .wall button.walo:last-child{border-bottom:0}
+.walt{display:flex;flex-direction:column;gap:2px;min-width:0}.walt b{font-size:16px;font-weight:700}.walt span{font-size:13.5px;color:#6B5E55;font-weight:500}
+.walr{width:22px;height:22px;border-radius:50%;border:2px solid #B9B0A8;box-sizing:border-box;flex:none;transition:border .15s ease}
+.walr.on{border:7px solid #128C4A}
+.nv .walf a.walenv{display:flex;align-items:center;justify-content:center;gap:8px;margin:6px 18px 0;height:50px;border-radius:999px;background:#128C4A;color:#FFFFFF;font-size:16px;font-weight:800;text-decoration:none}
 .gps{display:flex;gap:10px;align-items:center;padding:12px 14px;border-radius:14px;background:#FDE8E8;color:#9B1C1C;font-size:14px;font-weight:700}
 .gps button{margin-left:auto;height:36px;padding:0 12px;border-radius:10px;border:0;background:#C4410C;color:#FFFFFF;font-weight:800;cursor:pointer}
 
@@ -1218,7 +1213,7 @@ ${ben(sv('<path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/><path d
      El botón se esconde mientras el cliente baja por la página y vuelve cuando se detiene. */
   let svOculto=false,svY=0,svT=0,svAbierto=false,svTip=false;
   /* globito «¿Otro servicio?» junto al círculo: aparece unos segundos una vez por visita */
-  let svTipPend=true;try{svTipPend=!sessionStorage.getItem('pd_sv_tip')}catch(_){}
+  let svTipPend=false;
   function svTipArmar(){if(!svTipPend)return;svTipPend=false;setTimeout(()=>{if(svAbierto||sub||tab!=='inicio'||(HO&&HO.t))return void(svTipPend=true);try{sessionStorage.setItem('pd_sv_tip','1')}catch(_){}svTip=true;key='';try{pintar()}catch(_){}setTimeout(()=>{svTip=false;key='';try{pintar()}catch(_){}},6000)},1800)}
   function svScroll(L){if(svAbierto)return;const y=L.scrollTop,b=root&&root.querySelector('.fsv');if(!b)return;const bajar=y>svY+6&&y>80;if(bajar!==svOculto&&(bajar||y<svY-6)){svOculto=bajar;b.classList.toggle('off',svOculto);const tp=root.querySelector('.svtip');if(tp)tp.classList.toggle('off',svOculto)}svY=y;clearTimeout(svT);svT=setTimeout(()=>{svOculto=false;const c=root&&root.querySelector('.fsv');if(c)c.classList.remove('off')},900)}
   const WA_PD='51986233533';
@@ -1226,14 +1221,15 @@ ${ben(sv('<path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/><path d
     ['com','Compra','Te compramos lo que necesites y te lo llevamos','<path d="M6 7h12l-1 13H7z"/><path d="M9 7a3 3 0 0 1 6 0"/>','Hola Pidemás, quiero que me hagan una *compra*.\nQué compro: \nDónde lo compro: \nEntregar en: '],
     ['enc','Encomienda','Llevamos tu paquete a la agencia o al destino','<path d="M3 8l9-5 9 5v8l-9 5-9-5z"/><path d="M3 8l9 5 9-5"/><path d="M12 13v8"/>','Hola Pidemás, quiero enviar una *encomienda*.\nQué envío: \nAgencia o destino: \nRecoger en: ']];
   const WAIC='<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5l1.3-4A8.5 8.5 0 1 1 8 19.6z"/><path d="M9 9.5c0 3 2.5 5.5 5.5 5.5"/></svg>';
+  let svSel='rec',svAnim=false;
   function svPanel(){
-    const sv=d=>`<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#0B6B3A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
-    const hora=new Date().toLocaleTimeString('es-PE',{hour:'numeric',minute:'2-digit'});
-    return `<div class="wabg" data-sv="x"></div><section class="wap" role="dialog" aria-modal="true" aria-label="Otros servicios por WhatsApp">
-<div class="wah"><span class="waav">P</span><span class="wat"><b>Pidemás Delivery</b><small>Responde en minutos</small></span><button type="button" class="wax" data-sv="x" aria-label="Cerrar">${S('<path d="M6 6l12 12M18 6 6 18"/>')}</button></div>
-<div class="wab"><div class="wam">¡Hola! ¿Qué servicio necesitas? Elige uno y seguimos por WhatsApp.<i>${E(hora)}</i></div>
-${SVOPS.map((o,k)=>`<button type="button" class="wao" data-svo="${o[0]}" style="animation-delay:${80+k*70}ms"><span class="waoi">${sv(o[3])}</span><span class="waot"><b>${o[1]}</b><span>${o[2]}</span></span></button>`).join('')}
-</div></section>`;
+    const na=svAnim?'':' na';svAnim=false;
+    const o=SVOPS.find(x=>x[0]===svSel)||SVOPS[0];
+    return `<div class="wabg${na}" data-sv="x"></div><section class="wal${na}" role="dialog" aria-modal="true" aria-label="Elige un servicio">
+<div class="walh"><button type="button" class="walx" data-sv="x" aria-label="Cerrar">${S('<path d="M6 6l12 12M18 6 6 18"/>')}</button>Elige un servicio</div>
+<div class="wall" role="radiogroup" aria-label="Servicios">${SVOPS.map(x=>`<button type="button" class="walo" role="radio" aria-checked="${x[0]===svSel}" data-svs="${x[0]}"><span class="walt"><b>${x[1]}</b><span>${x[2]}</span></span><span class="walr${x[0]===svSel?' on':''}" aria-hidden="true"></span></button>`).join('')}</div>
+<div class="walf"><a class="walenv" href="https://wa.me/${WA_PD}?text=${encodeURIComponent(o[4])}" target="_blank" rel="noopener" data-svo="${o[0]}">${WAIC}Enviar</a></div>
+</section>`;
   }
   /* avisa a la barra de estado del celular que cambió el fondo (la ventanita vive dentro del shadow DOM) */
   function svBarra(){try{document.body.classList.toggle('pdSvAbierto',svAbierto)}catch(_){}}
@@ -1244,7 +1240,7 @@ ${SVOPS.map((o,k)=>`<button type="button" class="wao" data-svo="${o[0]}" style="
     const curso=ultimoPedido();
     if(svAbierto&&(sub||tab!=='inicio')){svAbierto=false;setTimeout(svBarra,0)}
     if(!sub&&tab==='inicio'&&svTipPend)setTimeout(svTipArmar,0);
-    const fsv=!sub&&tab==='inicio'?(svAbierto?svPanel():'')+`<button type="button" class="fsv${svOculto&&!svAbierto?' off':''}${svAbierto?' abierto':''}" data-sv="1" aria-expanded="${svAbierto}" aria-label="${svAbierto?'Cerrar':'¿Necesitas otro servicio? Escríbenos por WhatsApp'}">${svAbierto?S('<path d="M6 6l12 12M18 6 6 18"/>'):WAIC}</button>`+(svTip&&!svAbierto?`<span class="svtip${svOculto?' off':''}" aria-hidden="true">¿Otro servicio?</span>`:''):'';
+    const fsv=!sub&&tab==='inicio'?(svAbierto?svPanel():'')+`<button type="button" class="fsv${svOculto||svAbierto?' off':''}" data-sv="1" aria-expanded="${svAbierto}" aria-label="Chatea con Pidemás por WhatsApp para pedir otro servicio">${WAIC}Chatea</button>`:'';
     return `<nav class="nv" aria-label="Menú principal">${fsv}${it.map(x=>`<button type="button" data-t="${x[0]}" class="${!sub&&tab===x[0]?'on':''}"${!sub&&tab===x[0]?' aria-current="page"':''}><span class="i">${x[2]}</span>${x[1]}${x[0]==='pedidos'&&curso?'<span class="bd" style="top:2px;right:calc(50% - 26px)">1</span>':''}</button>`).join('')}</nav>`;
   }
   const IGN=new Set(['pdAppShell','ppCerrado','cartaModalNegocio','pdCartaCartBar','toast']);
@@ -1376,8 +1372,9 @@ ${SVOPS.map((o,k)=>`<button type="button" class="wao" data-svo="${o[0]}" style="
   }
   async function clic(e){
     tocando=false;
-    const svo=e.target.closest('[data-svo]');if(svo){svAbrirWa(svo.dataset.svo);return}
-    const svb=e.target.closest('[data-sv]');if(svb){svTip=false;svAbierto=svb.dataset.sv==='x'?false:!svAbierto;svOculto=false;key='';pintar();svBarra();return}
+    const svs=e.target.closest('[data-svs]');if(svs){svSel=svs.dataset.svs;key='';pintar();return}
+    const svo=e.target.closest('[data-svo]');if(svo){e.preventDefault();svAbrirWa(svo.dataset.svo);return}
+    const svb=e.target.closest('[data-sv]');if(svb){svTip=false;svAbierto=svb.dataset.sv==='x'?false:!svAbierto;if(svAbierto){svAnim=true;svSel='rec'}svOculto=false;key='';pintar();svBarra();return}
     const t=e.target.closest('[data-t]');if(t){if(HO&&HO.t!=='listo')try{hojaCerrar(undefined)}catch(_){}ir(t.dataset.t);return}
     const pgb=e.target.closest('[data-prog]');if(pgb){if(pgb.dataset.prog==='quitar'){try{window.pdCancelarProgramado&&window.pdCancelarProgramado()}catch(_){}try{window.pdAviso?window.pdAviso('Listo, ahora pides para entrega inmediata.'):0}catch(_){}}else{try{reservar(window.__pdProgNegId||'')}catch(_){}}key='';pintar();return}
     const fv=e.target.closest('[data-fav]');if(fv){try{window.pdToggleFav(fv.dataset.fav)}catch(_){}favPop=fv.dataset.fav;key='';pintar();return}
