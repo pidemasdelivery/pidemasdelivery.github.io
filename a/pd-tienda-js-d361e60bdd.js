@@ -1689,6 +1689,7 @@ async function submitCartOrder(){
         ${proof?`<div class="pdOkRow"><span>Comprobante</span><b class="pdOkYes">✓ En revisión</b></div>`:''}
       </div>
       ${detalleErrorMensaje?`<div class="pdOkWarn">Aviso técnico: ${esc(detalleErrorMensaje)}. Comunícate con Pidemás indicando el número de pedido.</div>`:''}
+      ${detalleErrorMensaje?'':(()=>{try{return window.pdAvisosCliente?window.pdAvisosCliente.bloque(orderId,tokenCliente):''}catch(_){return ''}})()}
       <button class="primary pdOkBtn" onclick="closeModal()">Aceptar</button>
     </div>
   </div>`);

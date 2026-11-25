@@ -15,3 +15,31 @@ self.addEventListener('fetch', e => {
     e.respondWith(caches.open(PD_CACHE).then(async c=>{const hit=await c.match(r);if(hit)return hit;const res=await fetch(r);if(res&&res.ok)c.put(r,res.clone()).catch(()=>{});return res}));
   }
 });
+
+/* ===== Avisos del pedido para el cliente (push) ===== */
+self.addEventListener('push', e => {
+  let d = {};
+  try { d = e.data ? e.data.json() : {}; } catch (_) { d = { title: 'Pidemás', body: e.data ? e.data.text() : '' }; }
+  if (d.rol && d.rol !== 'cliente') return;
+  e.waitUntil((async () => {
+    await self.registration.showNotification(d.title || 'Pidemás', {
+      body: d.body || '',
+      icon: 'icon-192.png',
+      badge: 'icon-192.png',
+      tag: d.tag || 'pidemas-pedido',
+      renotify: true,
+      data: { pedidoId: d.pedidoId || null }
+    });
+    const list = (await self.clients.matchAll({ type: 'window', includeUncontrolled: true })).filter(c => String(c.url || '').startsWith(self.registration.scope) && !/\/(admin|motorizado|negocio)\//.test(c.url));
+    list.forEach(c => c.postMessage({ type: 'pd-push-cliente', data: d }));
+  })());
+});
+self.addEventListener('notificationclick', e => {
+  e.notification.close();
+  const url = new URL('./?ver=pedidos', self.registration.scope).href;
+  e.waitUntil((async () => {
+    const list = (await self.clients.matchAll({ type: 'window', includeUncontrolled: true })).filter(c => String(c.url || '').startsWith(self.registration.scope) && !/\/(admin|motorizado|negocio)\//.test(c.url));
+    for (const c of list) { if ('focus' in c) { await c.focus(); c.postMessage({ type: 'pd-abrir-pedidos' }); return; } }
+    if (self.clients.openWindow) await self.clients.openWindow(url);
+  })());
+});
