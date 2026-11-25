@@ -1105,10 +1105,20 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
 
   /* ---------- cuenta: iniciar sesión y mis datos ---------- */
   const GOO='<svg viewBox="0 0 48 48" width="22" height="22" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>';
-  function entrar(){hojaAbrir({t:'login',view(){const ben=t=>`<div class="ben"><span>${IC.check}</span>${E(t)}</div>`;
-      /* Iniciar sesión como alerta (ventana al centro), igual en la tienda principal y en la tienda de cada negocio */
-      return {dlg:true,title:'Inicia sesión',body:`<img src="logo-pidemas-pe.svg?v=420ba567e9" alt="pidemas.pe" style="display:block;width:170px;max-width:70%;height:auto;margin:14px auto 10px"><h2>Inicia sesión</h2><p>Entra con tu cuenta de Google. No necesitas crear una contraseña.</p><div class="cdh" style="width:100%;box-sizing:border-box;text-align:left">${ben('Sigue tu pedido paso a paso')}${ben('Tus datos y dirección se llenan solos')}${ben('Pide de nuevo con un toque')}</div>`,
-        btns:`<div class="bb u"><button type="button" class="bs" style="height:52px;border-radius:14px;font-size:16px" data-h="g">${GOO}Continuar con Google</button><button type="button" class="bt" data-h="x">Ahora no</button></div>`}},
+  function entrar(){hojaAbrir({t:'login',view(){
+      /* Iniciar sesión: alerta al centro, compacta y clara (tienda principal y tienda de cada negocio) */
+      const sv=d=>`<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#C4410C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+      const ben=(ic,t,s)=>`<div style="display:flex;gap:12px;align-items:center"><span style="width:40px;height:40px;border-radius:12px;background:#FDEBDF;display:flex;align-items:center;justify-content:center;flex:none">${ic}</span><span style="display:flex;flex-direction:column;min-width:0;text-align:left"><b style="font-size:15px;color:#1F1A17">${t}</b><span style="font-size:13.5px;color:#6B5E55;line-height:1.35">${s}</span></span></div>`;
+      return {dlg:true,title:'Inicia sesión',body:`<div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:0;padding-top:4px">
+<img src="logo-pidemas-pe.svg?v=420ba567e9" alt="pidemas.pe" style="display:block;width:132px;height:auto;margin:6px auto 18px">
+<h2 style="margin:0;font-size:23px;line-height:1.2;font-weight:800;color:#1F1A17">Entra en un toque</h2>
+<p style="margin:8px 0 18px;font-size:15px;line-height:1.45;color:#6B5E55">Con tu cuenta de Google. Sin contraseñas ni formularios.</p>
+<div style="width:100%;box-sizing:border-box;display:flex;flex-direction:column;gap:14px;padding:16px;border-radius:18px;background:#FFF9F5;border:1px solid #F1E4DA">
+${ben(sv('<path d="M3 12h3l3-8 4 16 3-8h5"/>'),'Sigue tu pedido en vivo','Te avisamos cuando lo aceptan, sale y llega')}
+${ben(sv('<path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>'),'Tus datos listos','Nombre, celular y dirección se llenan solos')}
+${ben(sv('<path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 21v-5h5"/>'),'Pide de nuevo','Repite tus pedidos favoritos con un toque')}
+</div></div>`,
+        btns:`<div class="bb u" style="gap:6px"><button type="button" data-h="g" style="height:56px;border-radius:16px;border:0;background:#1F1A17;color:#FFFFFF;font:inherit;font-size:16.5px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:12px;cursor:pointer"><span style="width:30px;height:30px;border-radius:50%;background:#FFFFFF;display:flex;align-items:center;justify-content:center">${GOO}</span>Continuar con Google</button><button type="button" class="bt" data-h="x">Ahora no</button><small style="display:block;text-align:center;font-size:12.5px;color:#6B5E55;line-height:1.4;margin-top:2px">Solo usamos tu nombre y correo para tus pedidos.</small></div>`}},
     on(a){if(a==='g'){hojaCerrar();try{window.pdIngresarConGoogle()}catch(e){aviso('No se pudo abrir Google. Inténtalo de nuevo.')}}}})}
   const LSC={get(){try{return JSON.parse(localStorage.getItem('pidemas_customer_info')||'null')||{}}catch(e){return {}}},set(o){try{localStorage.setItem('pidemas_customer_info',JSON.stringify({...LSC.get(),...o}))}catch(e){}}};
   function misDatos(op){
