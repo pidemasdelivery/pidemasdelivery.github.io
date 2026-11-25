@@ -1229,12 +1229,14 @@ ${ben(sv('<path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/><path d
 ${SVOPS.map((o,k)=>`<button type="button" class="wao" data-svo="${o[0]}" style="animation-delay:${80+k*70}ms"><span class="waoi">${sv(o[3])}</span><span class="waot"><b>${o[1]}</b><span>${o[2]}</span></span></button>`).join('')}
 </div></section>`;
   }
-  function svAbrirWa(k){const o=SVOPS.find(x=>x[0]===k);if(!o)return;svAbierto=false;key='';pintar();const u='https://wa.me/'+WA_PD+'?text='+encodeURIComponent(o[4]);try{const w=window.open(u,'_blank');if(w){try{w.opener=null}catch(_){}}else location.href=u}catch(_){location.href=u}}
+  /* avisa a la barra de estado del celular que cambió el fondo (la ventanita vive dentro del shadow DOM) */
+  function svBarra(){try{document.body.classList.toggle('pdSvAbierto',svAbierto)}catch(_){}}
+  function svAbrirWa(k){const o=SVOPS.find(x=>x[0]===k);if(!o)return;svAbierto=false;key='';pintar();svBarra();const u='https://wa.me/'+WA_PD+'?text='+encodeURIComponent(o[4]);try{const w=window.open(u,'_blank');if(w){try{w.opener=null}catch(_){}}else location.href=u}catch(_){location.href=u}}
   function nav(){
     if(sub==='negocio'||sub==='producto'||sub==='carrito'||sub==='seguir')return '';
     const it=[['inicio','Inicio',IC.home],['buscar','Buscar',IC.search],['pedidos','Pedidos',IC.box],['perfil','Perfil',IC.user]];
     const curso=ultimoPedido();
-    if(sub||tab!=='inicio')svAbierto=false;
+    if(svAbierto&&(sub||tab!=='inicio')){svAbierto=false;setTimeout(svBarra,0)}
     const fsv=!sub&&tab==='inicio'?(svAbierto?svPanel():'')+`<button type="button" class="fsv${svOculto&&!svAbierto?' off':''}${svAbierto?' abierto':''}" data-sv="1" aria-expanded="${svAbierto}">${svAbierto?S('<path d="M6 6l12 12M18 6 6 18"/>'):WAIC}${svAbierto?'Cerrar':'¿Necesitas otro servicio?'}</button>`:'';
     return `<nav class="nv" aria-label="Menú principal">${fsv}${it.map(x=>`<button type="button" data-t="${x[0]}" class="${!sub&&tab===x[0]?'on':''}"${!sub&&tab===x[0]?' aria-current="page"':''}><span class="i">${x[2]}</span>${x[1]}${x[0]==='pedidos'&&curso?'<span class="bd" style="top:2px;right:calc(50% - 26px)">1</span>':''}</button>`).join('')}</nav>`;
   }
@@ -1368,7 +1370,7 @@ ${SVOPS.map((o,k)=>`<button type="button" class="wao" data-svo="${o[0]}" style="
   async function clic(e){
     tocando=false;
     const svo=e.target.closest('[data-svo]');if(svo){svAbrirWa(svo.dataset.svo);return}
-    const svb=e.target.closest('[data-sv]');if(svb){svAbierto=svb.dataset.sv==='x'?false:!svAbierto;svOculto=false;key='';pintar();return}
+    const svb=e.target.closest('[data-sv]');if(svb){svAbierto=svb.dataset.sv==='x'?false:!svAbierto;svOculto=false;key='';pintar();svBarra();return}
     const t=e.target.closest('[data-t]');if(t){if(HO&&HO.t!=='listo')try{hojaCerrar(undefined)}catch(_){}ir(t.dataset.t);return}
     const pgb=e.target.closest('[data-prog]');if(pgb){if(pgb.dataset.prog==='quitar'){try{window.pdCancelarProgramado&&window.pdCancelarProgramado()}catch(_){}try{window.pdAviso?window.pdAviso('Listo, ahora pides para entrega inmediata.'):0}catch(_){}}else{try{reservar(window.__pdProgNegId||'')}catch(_){}}key='';pintar();return}
     const fv=e.target.closest('[data-fav]');if(fv){try{window.pdToggleFav(fv.dataset.fav)}catch(_){}favPop=fv.dataset.fav;key='';pintar();return}
