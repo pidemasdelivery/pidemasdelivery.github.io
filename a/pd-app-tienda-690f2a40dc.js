@@ -66,8 +66,23 @@
 .nv button.on{color:#C4410C;font-weight:800}.nv button.on span.i{background:#FDEBDF}
 .nv .bd{top:2px;right:calc(50% - 26px)}
 .nv{position:relative}
-.nv button.fsv{position:absolute;left:50%;bottom:calc(100% + 12px);transform:translateX(-50%);z-index:5;display:flex;align-items:center;gap:8px;height:46px;padding:0 18px 0 14px;border-radius:999px;border:0;background:#C4410C;color:#FFFFFF;font:inherit;font-size:15px;font-weight:800;white-space:nowrap;box-shadow:0 6px 18px rgba(196,65,12,.35);cursor:pointer;flex:none;flex-direction:row;width:auto;transition:transform .22s ease,opacity .22s ease}
+.nv button.fsv{position:absolute;left:50%;bottom:calc(100% + 12px);transform:translateX(-50%);z-index:7;display:flex;flex-direction:row;flex:none;width:auto;align-items:center;gap:8px;height:48px;padding:0 20px 0 14px;border-radius:999px;border:0;background:#128C4A;color:#FFFFFF;font:inherit;font-size:15px;font-weight:800;white-space:nowrap;box-shadow:0 6px 18px rgba(18,140,74,.38);cursor:pointer;transition:transform .22s ease,opacity .22s ease}
 .nv button.fsv.off{transform:translate(-50%,24px);opacity:0;pointer-events:none}
+.nv button.fsv.abierto{background:#FFFFFF;color:#1F1A17;box-shadow:0 6px 18px rgba(31,26,23,.18)}
+.wabg{position:fixed;inset:0;z-index:6;background:rgba(31,26,23,.35);animation:fi .2s ease}
+.wap{position:absolute;z-index:7;left:50%;bottom:calc(100% + 72px);transform:translateX(-50%);width:min(360px,calc(100vw - 24px));border-radius:22px;overflow:hidden;background:#EFE7DE;box-shadow:0 14px 40px rgba(31,26,23,.28);animation:waup .24s ease}
+@keyframes waup{from{opacity:0;transform:translate(-50%,18px)}to{opacity:1;transform:translate(-50%,0)}}
+.wah{display:flex;align-items:center;gap:10px;padding:12px 10px 12px 14px;background:#075E54;color:#FFFFFF}
+.waav{width:40px;height:40px;border-radius:50%;background:#C4410C;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;flex:none}
+.wat{flex:1;display:flex;flex-direction:column;min-width:0}.wat b{font-size:16px}.wat small{font-size:12.5px;color:#D5EFE9}
+.nv .wah button.wax{flex:none;width:44px;height:44px;padding:0;border-radius:50%;color:#FFFFFF;display:flex;align-items:center;justify-content:center}
+.wab{display:flex;flex-direction:column;gap:8px;padding:14px 12px 14px}
+.wam{align-self:flex-start;max-width:88%;position:relative;background:#FFFFFF;color:#1F1A17;font-size:14.5px;line-height:1.4;padding:9px 12px 18px;border-radius:0 14px 14px 14px;box-shadow:0 1px 1px rgba(31,26,23,.12)}
+.wam i{position:absolute;right:10px;bottom:4px;font-style:normal;font-size:11px;color:#6B5E55}
+.nv .wab button.wao{align-self:flex-end;width:92%;flex:none;flex-direction:row;align-items:center;gap:10px;padding:10px 12px;border-radius:14px 0 14px 14px;background:#D9FDD3;color:#1F1A17;text-align:left;box-shadow:0 1px 1px rgba(31,26,23,.12);animation:waup2 .26s ease both}
+@keyframes waup2{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.waoi{width:38px;height:38px;border-radius:50%;background:#FFFFFF;display:flex;align-items:center;justify-content:center;flex:none}
+.waot{display:flex;flex-direction:column;gap:1px;min-width:0}.waot b{font-size:15px;font-weight:800}.waot span{font-size:12.5px;color:#3B4A3F;font-weight:500;line-height:1.3}
 .gps{display:flex;gap:10px;align-items:center;padding:12px 14px;border-radius:14px;background:#FDE8E8;color:#9B1C1C;font-size:14px;font-weight:700}
 .gps button{margin-left:auto;height:36px;padding:0 12px;border-radius:10px;border:0;background:#C4410C;color:#FFFFFF;font-weight:800;cursor:pointer}
 
@@ -1194,32 +1209,32 @@ ${ben(sv('<path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/><path d
   addEventListener('popstate',e=>{if(window.__pdPopPropio)return;if(ignorarPop)return;if(HO){e.stopImmediatePropagation();hojaCerrar(undefined,true)}},true);
 
   /* ---------- menú y pintado ---------- */
-  /* Botón flotante «Otros servicios»: recojo y entrega, compra o encomienda por el WhatsApp de Pidemás.
-     Se esconde mientras el cliente baja por la página y vuelve cuando sube o se detiene. */
-  let svOculto=false,svY=0,svT=0;
-  function svScroll(L){const y=L.scrollTop,b=root&&root.querySelector('.fsv');if(!b)return;const bajar=y>svY+6&&y>80;if(bajar!==svOculto&&(bajar||y<svY-6)){svOculto=bajar;b.classList.toggle('off',svOculto)}svY=y;clearTimeout(svT);svT=setTimeout(()=>{svOculto=false;const c=root&&root.querySelector('.fsv');if(c)c.classList.remove('off')},900)}
+  /* Botón flotante de WhatsApp «¿Necesitas otro servicio?»: al tocarlo sube una ventanita estilo chat de WhatsApp
+     con recojo y entrega, compra o encomienda; cada opción abre el WhatsApp de Pidemás con el mensaje listo.
+     El botón se esconde mientras el cliente baja por la página y vuelve cuando se detiene. */
+  let svOculto=false,svY=0,svT=0,svAbierto=false;
+  function svScroll(L){if(svAbierto)return;const y=L.scrollTop,b=root&&root.querySelector('.fsv');if(!b)return;const bajar=y>svY+6&&y>80;if(bajar!==svOculto&&(bajar||y<svY-6)){svOculto=bajar;b.classList.toggle('off',svOculto)}svY=y;clearTimeout(svT);svT=setTimeout(()=>{svOculto=false;const c=root&&root.querySelector('.fsv');if(c)c.classList.remove('off')},900)}
   const WA_PD='51986233533';
-  function otrosServicios(){
-    const ops=[['rec','Recojo y entrega','Recogemos algo y lo llevamos a donde digas','<path d="M3 7h11v9H3z"/><path d="M14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/>'],
-      ['com','Compra','Te compramos lo que necesites y te lo llevamos','<path d="M6 7h12l-1 13H7z"/><path d="M9 7a3 3 0 0 1 6 0"/>'],
-      ['enc','Encomienda','Llevamos tu paquete a la agencia o al destino','<path d="M3 8l9-5 9 5v8l-9 5-9-5z"/><path d="M3 8l9 5 9-5"/><path d="M12 13v8"/>']];
-    const msg={rec:'Hola Pidemás, quiero un *recojo y entrega*.\nRecoger en: \nEntregar en: \nQué es: ',
-      com:'Hola Pidemás, quiero que me hagan una *compra*.\nQué compro: \nDónde lo compro: \nEntregar en: ',
-      enc:'Hola Pidemás, quiero enviar una *encomienda*.\nQué envío: \nAgencia o destino: \nRecoger en: '};
-    hojaAbrir({t:'servicios',view(){
-      const sv=d=>`<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#C4410C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
-      return {dlg:true,title:'Otros servicios',body:`<div style="display:flex;flex-direction:column;gap:12px;text-align:left">
-<h2 style="margin:4px 0 0;font-size:22px;line-height:1.2;font-weight:800;color:#1F1A17">¿Qué necesitas?</h2>
-<p style="margin:0 0 4px;font-size:14.5px;line-height:1.45;color:#6B5E55">Elige el servicio y te atendemos por WhatsApp.</p>
-${ops.map(o=>`<button type="button" class="tl" data-h="${o[0]}"><span class="ic">${sv(o[3])}</span><span class="tx"><b>${o[1]}</b><span>${o[2]}</span></span>${IC.chev}</button>`).join('')}
-</div>`,btns:`<div class="bb u"><button type="button" class="bt" data-h="x">Ahora no</button></div>`}},
-      on(a){if(!msg[a])return;hojaCerrar();const u='https://wa.me/'+WA_PD+'?text='+encodeURIComponent(msg[a]);try{const w=window.open(u,'_blank');if(w){try{w.opener=null}catch(_){}}else location.href=u}catch(_){location.href=u}}});
+  const SVOPS=[['rec','Recojo y entrega','Recogemos algo y lo llevamos a donde digas','<path d="M3 7h11v9H3z"/><path d="M14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/>','Hola Pidemás, quiero un *recojo y entrega*.\nRecoger en: \nEntregar en: \nQué es: '],
+    ['com','Compra','Te compramos lo que necesites y te lo llevamos','<path d="M6 7h12l-1 13H7z"/><path d="M9 7a3 3 0 0 1 6 0"/>','Hola Pidemás, quiero que me hagan una *compra*.\nQué compro: \nDónde lo compro: \nEntregar en: '],
+    ['enc','Encomienda','Llevamos tu paquete a la agencia o al destino','<path d="M3 8l9-5 9 5v8l-9 5-9-5z"/><path d="M3 8l9 5 9-5"/><path d="M12 13v8"/>','Hola Pidemás, quiero enviar una *encomienda*.\nQué envío: \nAgencia o destino: \nRecoger en: ']];
+  const WAIC='<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5l1.3-4A8.5 8.5 0 1 1 8 19.6z"/><path d="M9 9.5c0 3 2.5 5.5 5.5 5.5"/></svg>';
+  function svPanel(){
+    const sv=d=>`<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#0B6B3A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+    const hora=new Date().toLocaleTimeString('es-PE',{hour:'numeric',minute:'2-digit'});
+    return `<div class="wabg" data-sv="x"></div><section class="wap" role="dialog" aria-modal="true" aria-label="Otros servicios por WhatsApp">
+<div class="wah"><span class="waav">P</span><span class="wat"><b>Pidemás Delivery</b><small>Responde en minutos</small></span><button type="button" class="wax" data-sv="x" aria-label="Cerrar">${S('<path d="M6 6l12 12M18 6 6 18"/>')}</button></div>
+<div class="wab"><div class="wam">¡Hola! ¿Qué servicio necesitas? Elige uno y seguimos por WhatsApp.<i>${E(hora)}</i></div>
+${SVOPS.map((o,k)=>`<button type="button" class="wao" data-svo="${o[0]}" style="animation-delay:${80+k*70}ms"><span class="waoi">${sv(o[3])}</span><span class="waot"><b>${o[1]}</b><span>${o[2]}</span></span></button>`).join('')}
+</div></section>`;
   }
+  function svAbrirWa(k){const o=SVOPS.find(x=>x[0]===k);if(!o)return;svAbierto=false;key='';pintar();const u='https://wa.me/'+WA_PD+'?text='+encodeURIComponent(o[4]);try{const w=window.open(u,'_blank');if(w){try{w.opener=null}catch(_){}}else location.href=u}catch(_){location.href=u}}
   function nav(){
     if(sub==='negocio'||sub==='producto'||sub==='carrito'||sub==='seguir')return '';
     const it=[['inicio','Inicio',IC.home],['buscar','Buscar',IC.search],['pedidos','Pedidos',IC.box],['perfil','Perfil',IC.user]];
     const curso=ultimoPedido();
-    const fsv=!sub&&tab==='inicio'?`<button type="button" class="fsv${svOculto?' off':''}" data-sv="1">${IC.plus}Otros servicios</button>`:'';
+    if(sub||tab!=='inicio')svAbierto=false;
+    const fsv=!sub&&tab==='inicio'?(svAbierto?svPanel():'')+`<button type="button" class="fsv${svOculto&&!svAbierto?' off':''}${svAbierto?' abierto':''}" data-sv="1" aria-expanded="${svAbierto}">${svAbierto?S('<path d="M6 6l12 12M18 6 6 18"/>'):WAIC}${svAbierto?'Cerrar':'¿Necesitas otro servicio?'}</button>`:'';
     return `<nav class="nv" aria-label="Menú principal">${fsv}${it.map(x=>`<button type="button" data-t="${x[0]}" class="${!sub&&tab===x[0]?'on':''}"${!sub&&tab===x[0]?' aria-current="page"':''}><span class="i">${x[2]}</span>${x[1]}${x[0]==='pedidos'&&curso?'<span class="bd" style="top:2px;right:calc(50% - 26px)">1</span>':''}</button>`).join('')}</nav>`;
   }
   const IGN=new Set(['pdAppShell','ppCerrado','cartaModalNegocio','pdCartaCartBar','toast']);
@@ -1351,7 +1366,8 @@ ${ops.map(o=>`<button type="button" class="tl" data-h="${o[0]}"><span class="ic"
   }
   async function clic(e){
     tocando=false;
-    const svb=e.target.closest('[data-sv]');if(svb){otrosServicios();return}
+    const svo=e.target.closest('[data-svo]');if(svo){svAbrirWa(svo.dataset.svo);return}
+    const svb=e.target.closest('[data-sv]');if(svb){svAbierto=svb.dataset.sv==='x'?false:!svAbierto;svOculto=false;key='';pintar();return}
     const t=e.target.closest('[data-t]');if(t){if(HO&&HO.t!=='listo')try{hojaCerrar(undefined)}catch(_){}ir(t.dataset.t);return}
     const pgb=e.target.closest('[data-prog]');if(pgb){if(pgb.dataset.prog==='quitar'){try{window.pdCancelarProgramado&&window.pdCancelarProgramado()}catch(_){}try{window.pdAviso?window.pdAviso('Listo, ahora pides para entrega inmediata.'):0}catch(_){}}else{try{reservar(window.__pdProgNegId||'')}catch(_){}}key='';pintar();return}
     const fv=e.target.closest('[data-fav]');if(fv){try{window.pdToggleFav(fv.dataset.fav)}catch(_){}favPop=fv.dataset.fav;key='';pintar();return}
