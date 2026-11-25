@@ -1104,11 +1104,8 @@ function renderTracking(o){
 
 async function refreshLastOrderTracking(){
   
-  if(!pdClienteSesion?.id){
-    toast('Inicia sesión con Google para guardar tus pedidos en tu cuenta.');
-    pdAbrirCuentaCliente();
-    return;
-  }
+  /* Sin sesión no se insiste: esta función se repite cada pocos segundos y antes abría la alerta de iniciar sesión cada vez */
+  if(!pdClienteSesion?.id)return;
 const o=getLastOrder();
   if(!o?.id)return;
   const {data,error}=await sb.from('pedidos')
