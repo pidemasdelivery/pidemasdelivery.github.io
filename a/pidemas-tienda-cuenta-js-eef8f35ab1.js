@@ -162,6 +162,16 @@
       if(error)throw error;
     }catch(e){if(b)b.disabled=false;msg('No se pudo iniciar sesión: '+(e.message||'inténtalo de nuevo.'))}
   };
+  /* Facebook: mismo recorrido que Google (vuelve a la misma carta). Requiere el proveedor Facebook activo en Supabase. */
+  window.pdIngresarConFacebook=async function(){
+    try{
+      const enlace=negEnlace(),id=enlace||cartaActual();
+      try{if(id)localStorage.setItem(VK,JSON.stringify({id,enlace:!!enlace,t:Date.now()}));else localStorage.removeItem(VK)}catch(_){}
+      const redirectTo=location.origin+location.pathname+(enlace?'?negocio='+encodeURIComponent(enlace)+'&v='+Date.now():'?v='+Date.now());
+      const {error}=await sb.auth.signInWithOAuth({provider:'facebook',options:{redirectTo,scopes:'email,public_profile'}});
+      if(error)throw error;
+    }catch(e){throw e}
+  };
   (async function volverACarta(){
     let p=null;try{p=JSON.parse(localStorage.getItem(VK)||'null')}catch(_){}
     if(!p||!p.id)return;
