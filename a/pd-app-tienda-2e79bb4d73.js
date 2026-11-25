@@ -66,12 +66,13 @@
 .nv button.on{color:#C4410C;font-weight:800}.nv button.on span.i{background:#FDEBDF}
 .nv .bd{top:2px;right:calc(50% - 26px)}
 .nv{position:relative}
-.nv button.fsv{position:absolute;left:50%;bottom:calc(100% + 12px);transform:translateX(-50%);z-index:7;display:flex;flex-direction:row;flex:none;width:auto;align-items:center;gap:8px;height:48px;padding:0 20px 0 14px;border-radius:999px;border:0;background:#128C4A;color:#FFFFFF;font:inherit;font-size:15px;font-weight:800;white-space:nowrap;box-shadow:0 6px 18px rgba(18,140,74,.38);cursor:pointer;transition:transform .22s ease,opacity .22s ease}
-.nv button.fsv.off{transform:translate(-50%,24px);opacity:0;pointer-events:none}
-.nv button.fsv.abierto{background:#FFFFFF;color:#1F1A17;box-shadow:0 6px 18px rgba(31,26,23,.18)}
+.nv button.fsv{position:absolute;left:auto;right:14px;bottom:calc(100% + 12px);transform:none;z-index:7;display:flex;flex-direction:row;flex:none;width:auto;align-items:center;gap:6px;height:40px;padding:0 14px 0 10px;border-radius:999px;border:0;outline:0;background:#128C4A;color:#FFFFFF;font:inherit;font-size:13.5px;font-weight:800;white-space:nowrap;box-shadow:none;cursor:pointer;transition:transform .22s ease,opacity .22s ease}
+.nv button.fsv.off{transform:translateY(24px);opacity:0;pointer-events:none}
+.nv button.fsv.abierto{background:#FFFFFF;color:#1F1A17}
+.nv button.fsv svg{width:18px;height:18px}
 .wabg{position:fixed;inset:0;z-index:6;background:rgba(31,26,23,.35);animation:fi .2s ease}
-.wap{position:absolute;z-index:7;left:50%;bottom:calc(100% + 72px);transform:translateX(-50%);width:min(360px,calc(100vw - 24px));border-radius:22px;overflow:hidden;background:#EFE7DE;box-shadow:0 14px 40px rgba(31,26,23,.28);animation:waup .24s ease}
-@keyframes waup{from{opacity:0;transform:translate(-50%,18px)}to{opacity:1;transform:translate(-50%,0)}}
+.wap{position:absolute;z-index:7;right:12px;bottom:calc(100% + 64px);width:min(360px,calc(100vw - 24px));border-radius:22px;overflow:hidden;background:#EFE7DE;box-shadow:0 14px 40px rgba(31,26,23,.28);animation:waup .24s ease}
+@keyframes waup{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
 .wah{display:flex;align-items:center;gap:10px;padding:12px 10px 12px 14px;background:#075E54;color:#FFFFFF}
 .waav{width:40px;height:40px;border-radius:50%;background:#C4410C;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:18px;flex:none}
 .wat{flex:1;display:flex;flex-direction:column;min-width:0}.wat b{font-size:16px}.wat small{font-size:12.5px;color:#D5EFE9}
