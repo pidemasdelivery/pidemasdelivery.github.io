@@ -1112,7 +1112,7 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
       const sv=d=>`<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#C4410C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
       const ben=(ic,t,s)=>`<div style="display:flex;gap:12px;align-items:center"><span style="width:40px;height:40px;border-radius:12px;background:#FDEBDF;display:flex;align-items:center;justify-content:center;flex:none">${ic}</span><span style="display:flex;flex-direction:column;min-width:0;text-align:left"><b style="font-size:15px;color:#1F1A17">${t}</b><span style="font-size:13.5px;color:#6B5E55;line-height:1.35">${s}</span></span></div>`;
       return {dlg:true,title:'Inicia sesión',body:`<div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:0;padding-top:4px">
-<img src="logo-pidemas-pe.svg?v=420ba567e9" alt="pidemas.pe" style="display:block;width:132px;height:auto;margin:6px auto 18px">
+<img src="logo-pidemas-pe.svg?v=420ba567e9" alt="pidemas.pe" style="display:block;width:196px;max-width:72%;height:auto;margin:10px auto 20px">
 <h2 style="margin:0;font-size:23px;line-height:1.2;font-weight:800;color:#1F1A17">Entra en un toque</h2>
 <p style="margin:8px 0 18px;font-size:15px;line-height:1.45;color:#6B5E55">Con tu cuenta de Google. Sin contraseñas ni formularios.</p>
 <div style="width:100%;box-sizing:border-box;display:flex;flex-direction:column;gap:14px;padding:16px;border-radius:18px;background:#FFF9F5;border:1px solid #F1E4DA">
@@ -1266,14 +1266,14 @@ ${ben(sv('<path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/><path d
     try{if(typeof hHost!=='undefined'&&hHost){const nv=root.querySelector('.nv'),ft=root.querySelector('.foot');hHost.style.setProperty('--pdTstB',Math.max(nv?nv.offsetHeight:0,ft&&ft.offsetHeight?Math.round(innerHeight-ft.getBoundingClientRect().top):0)+'px')}}catch(_){}
   }
   function ir(t){
-    if((t==='pedidos'||t==='perfil')&&!SES()){entrar();return}
+    /* Sin sesión ya no salta la alerta de iniciar sesión: la misma página de Pedidos o Perfil ofrece entrar, sin insistir */
     /* Mi perfil se edita directo: al tocar Perfil se abren los datos listos para cambiar */
-    if(t==='perfil'){const prev=tab==='perfil'?'inicio':tab;if(sub&&history.state&&history.state.pdt){ignorarPop=true;history.back()}sub=null;tab='perfil';key='';pintar();
+    if(t==='perfil'&&SES()){const prev=tab==='perfil'?'inicio':tab;if(sub&&history.state&&history.state.pdt){ignorarPop=true;history.back()}sub=null;tab='perfil';key='';pintar();
       misDatos({alCerrar(){setTimeout(()=>{if(HO&&(HO.t==='mapa'||HO.t==='datos'))return;if(tab==='perfil'&&!sub){tab=prev;key='';pintar()}},0)}});return}
     if(sub&&history.state&&history.state.pdt){ignorarPop=true;history.back()}
     sub=null;pila=[];
     if(t==='buscar'){tab='inicio';key='';pintar();setTimeout(()=>{const i=root&&root.getElementById('tQ');if(i)i.focus()},50);return}
-    if(t==='pedidos'){historial(true);tab='pedidos';key='';pintar();/* sin pedidos: la misma página de Pedidos lo dice, sin ventana encima de otra página */
+    if(t==='pedidos'){if(SES())historial(true);tab='pedidos';key='';pintar();/* sin pedidos: la misma página de Pedidos lo dice, sin ventana encima de otra página */
       const t0=Date.now(),iv=setInterval(()=>{const k=C.hist;if(k&&!k.busy){clearInterval(iv);if(tab==='pedidos'){key='';pintar()}}else if(Date.now()-t0>12000)clearInterval(iv)},150);return}
     tab=t;key='';pintar();
   }
