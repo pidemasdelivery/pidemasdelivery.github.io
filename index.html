@@ -44,7 +44,10 @@ else{
       (navigator.msMaxTouchPoints > 0);
     document.documentElement.classList.add('pd-mobile-device');if(touchDevice) document.documentElement.classList.add('pd-touch');
     var viewport=document.querySelector('meta[name="viewport"]');
-    if(viewport) viewport.setAttribute('content','width=device-width,initial-scale=1,viewport-fit=cover');
+    /* minimum-scale=1: si algo se sale de ancho por un momento (p. ej. al volver de iniciar sesión con Google),
+       Chrome no aleja la página y no se ve chiquita. El cliente igual puede acercar con los dedos. */
+    if(viewport) viewport.setAttribute('content','width=device-width,initial-scale=1,minimum-scale=1,viewport-fit=cover');
+    document.documentElement.style.overflowX='clip';
   }catch(e){}
 })();
 </script>
