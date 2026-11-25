@@ -240,6 +240,19 @@
 .tln .p.cur .tx b{color:#C4410C}.tln .p.no .tx b{color:#6B5E55}
 .vivo{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:800;color:#15803D}
 .vivo i{width:8px;height:8px;border-radius:50%;background:#15803D;box-shadow:0 0 0 4px rgba(21,128,61,.15)}
+.oP{display:flex;flex-direction:column;gap:12px;padding:16px;border-radius:22px;background:#FFFFFF;border:1px solid #F1E4DA;box-shadow:0 6px 20px rgba(31,26,23,.05)}
+.oP.x{opacity:.75}
+.oP .oAt small{white-space:normal}
+.oP .oAt b{white-space:normal;display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px;line-height:1.25}
+.oPs .st.on::before{animation:none}
+.oPs{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.oPr{display:inline-flex;align-items:center;gap:6px;font-size:14px;color:#E8A317;letter-spacing:1px}.oPr span{font-size:12.5px;color:#6B5E55;font-weight:700;letter-spacing:0}
+.oPi{list-style:none;margin:0;padding:10px 12px;border-radius:16px;background:#FFF9F5;display:flex;flex-direction:column;gap:6px}
+.oPi li{display:flex;gap:8px;align-items:baseline;font-size:14px;color:#3B302A;line-height:1.35}
+.oPi .q{flex:none;min-width:26px;font-weight:800;color:#C4410C}.oPi .n{min-width:0}
+.oPi li.m{font-size:13px;color:#6B5E55;font-weight:700;padding-left:34px}
+.oPb{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}.oPb.dos{grid-template-columns:repeat(2,minmax(0,1fr))}
+.oPb .b{height:48px;display:flex;align-items:center;justify-content:center;gap:8px;font-size:15px}.oPb .b svg{width:18px;height:18px}
 .oc2{display:flex;flex-direction:column;gap:10px;padding:14px;border-radius:18px;border:1px solid #F1E4DA;background:#FFFFFF}
 .oc2.a{border:1.5px solid #C4410C}
 .oc2 .r1{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
@@ -794,6 +807,13 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
           <span class="bar5" style="grid-template-columns:repeat(${n},minmax(0,1fr))" aria-hidden="true">${p.L.map((_,i)=>`<i class="${i<k?'d':i===k?'c':''}"></i>`).join('')}</span>
           <span class="oAf"><span>Paso ${k+1} de ${n} · ${E(etiqueta(o))}</span><span class="oAg">Ver seguimiento ${S('<path d="m9 6 6 6-6 6"/>')}</span></span>
         </button>`}
+      if(!p){const its=(o.items||[]),mas=its.length-3,rep=its.length>0,calf=fin&&!cl;
+        return `<div class="oP${canc?' x':''}">
+          <div class="oAh">${r?logoHtml(r):'<span class="lg"></span>'}<span class="oAt"><b>${r?nomH(r):E(o.negocio_nombre||'Pedido')}</b><small>${E(codP(o))} · ${E(fechaC(o.creado_en))}</small></span><b class="oAm">${M(o.total)}</b></div>
+          <div class="oPs"><span class="st ${canc?'off':'on'}">${canc?'Cancelado':'Entregado'}</span>${cl?`<span class="oPr" aria-label="Calificaste con ${E(cl)} estrellas">${'★'.repeat(Math.max(0,Math.min(5,Number(cl)||0)))}<span>Calificado</span></span>`:''}</div>
+          ${its.length?`<ul class="oPi">${its.slice(0,3).map(x=>`<li><span class="q">${E(Number(x.cantidad||1))}×</span><span class="n">${E(x.nombre)}</span></li>`).join('')}${mas>0?`<li class="m">+ ${mas} producto${mas===1?'':'s'} más</li>`:''}</ul>`:''}
+          ${rep||calf?`<div class="oPb${rep&&calf?' dos':''}">${rep?`<button type="button" class="b o" data-rep="${E(o.id)}">${S('<path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/>')}Pedir de nuevo</button>`:''}${calf?`<button type="button" class="b" data-cal="${E(o.id)}">${S('<path d="m12 3 2.7 5.6 6.1.8-4.5 4.2 1.1 6.1L12 16.8l-5.4 2.9 1.1-6.1L3.2 9.4l6.1-.8z"/>')}Calificar</button>`:''}</div>`:''}
+        </div>`}
       return `<div class="oc2${p?' a':''}"><div class="r1"><b>${E(r?nomN(r):o.negocio_nombre||'Pedido')}</b><b>${M(o.total)}</b></div><div class="r2"><span class="st ${canc?'off':fin?'on':'warn'}">${canc?'Cancelado':fin?'Entregado':E(etiqueta(o))}</span><span>${E(codP(o))} · ${E(fechaC(o.creado_en))}</span>${cl?`<span style="color:#9A330A;font-weight:800">★ ${E(cl)}</span>`:''}</div>${items?`<div class="r3">${E(items)}</div>`:''}${p?`<div class="bar5" style="grid-template-columns:repeat(${p.L.length},minmax(0,1fr))" aria-hidden="true">${p.L.map((_,i)=>`<i class="${i<p.cur?'d':i===p.cur?'c':''}"></i>`).join('')}</div><button type="button" class="b" data-seg="${E(o.id)}">Ver seguimiento</button>`:`<div class="btns${fin&&!cl&&(o.items||[]).length?' b2':''}">${(o.items||[]).length?`<button type="button" class="b o" data-rep="${E(o.id)}">Pedir de nuevo</button>`:''}${fin&&!cl?`<button type="button" class="b" data-cal="${E(o.id)}">Calificar</button>`:''}</div>`}</div>`};
     let h='';if(curso.length)h+=`<div class="lbl2">En curso</div>`+curso.map(card).join('');
     if(antes.length)h+=`<div class="lbl2" style="margin-top:6px">Anteriores</div>`+antes.slice(0,F.lim).map(card).join('')+(antes.length>F.lim?`<button type="button" class="b" data-a="hmas">Ver más pedidos</button>`:'');
