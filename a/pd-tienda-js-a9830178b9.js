@@ -2071,7 +2071,10 @@ async function abrirCartaDesdeEnlace(){
     // Consultar el registro exacto por ID aunque no aparezca en la lista general.
     const {data:negocio,error:negocioError}=await sb.from('negocios').select('*').eq('id',negocioId).maybeSingle();
     if(negocioError)throw negocioError;
-    if(!negocio || negocio.activo===false || negocio.visible_admin===false || String(negocio.activo).toLowerCase()==='false'){
+    /* Regla de Pidemás: sin logo no se abre la carta, ni con enlace directo */
+    const sinReq=negocio&&!String(negocio.logo_url||'').trim();
+    if(!negocio || sinReq || negocio.activo===false || negocio.visible_admin===false || String(negocio.activo).toLowerCase()==='false'){
+      window.pdNegNoDisp=negocioId;restaurants=[];
       if(head)head.innerHTML='<h2>Carta no disponible</h2>';try{window.piQuitarCarga&&window.piQuitarCarga()}catch(_){}
       if(productsEl)productsEl.innerHTML='<div class="empty" style="padding:24px;text-align:center">Este negocio no está disponible o el enlace no es válido.</div>';
       return;
@@ -2085,6 +2088,13 @@ async function abrirCartaDesdeEnlace(){
       sb.from('productos_negocio').select('*').eq('negocio_id',negocioId).eq('disponible',true).order('orden',{ascending:true})
     ]);
     if(prodRes.error)throw prodRes.error;
+    /* Regla de Pidemás: sin al menos un producto disponible tampoco se abre la carta */
+    if(!(prodRes.data||[]).some(p=>p&&p.disponible!==false)){
+      window.pdNegNoDisp=negocioId;restaurants=[];
+      if(head)head.innerHTML='<h2>Carta no disponible</h2>';try{window.piQuitarCarga&&window.piQuitarCarga()}catch(_){}
+      if(productsEl)productsEl.innerHTML='<div class="empty" style="padding:24px;text-align:center">Este negocio no está disponible o el enlace no es válido.</div>';
+      return;
+    }
 
     selectedRestaurantCategories=(catRes.data||[]).filter(c=>c.activo!==false && String(c.negocio_id)===String(negocioId));
     const cartaProductos=(prodRes.data||[])

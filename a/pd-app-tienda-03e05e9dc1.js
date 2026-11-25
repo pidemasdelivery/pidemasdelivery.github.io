@@ -670,6 +670,7 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
 
   function negocio(){
     const r=negPorId(F.neg);
+    if(!r&&(window.pdNegNoDisp||R().length))return {head:top('Negocio','No disponible',back('inicio')),body:'<div class="vac">Este negocio no está disponible en la tienda por ahora.</div>'};
     if(!r)return {head:top('Negocio','Cargando…',back('inicio')),body:'<div class="load"><span class="eq" aria-hidden="true"></span>Cargando…</div>'};
     const fv=favs().includes(String(r.id));
     const head=top(catS(r)||'Negocio',nomT(r),back('inicio','Volver al inicio'));
@@ -1352,7 +1353,7 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
   }
   addEventListener('popstate',()=>{if(window.__pdPopPropio)return;if(ignorarPop){ignorarPop=false;return}if(Date.now()-cerrT<1200||Date.now()-tapT<1500||eraTapada)return;if(history.state&&history.state.pdt)return;/* volvió de una ventana vieja, no de esta app */if(sub){if(document.querySelector('#modal.overlay')&&!ck())return;atras();if(sub)try{history.pushState({pdt:1},'')}catch(_){}}});
   /* Enlace directo a la carta de un negocio: ?negocio=ID */
-  (function(){const id=(new URLSearchParams(location.search).get('negocio')||'').trim();if(!id)return;const t=setInterval(()=>{const r=negPorId(id);if(!r)return;clearInterval(t);F.neg=String(r.id);carta(r.id);sub='negocio';try{const m=$('cartaModalNegocio');if(m&&window.volverMenuPrincipal)window.volverMenuPrincipal()}catch(_){}key='';pintar()},300);setTimeout(()=>clearInterval(t),20000)})();
+  (function(){const id=(new URLSearchParams(location.search).get('negocio')||'').trim();if(!id)return;const t=setInterval(()=>{const r=negPorId(id);if(!r&&window.pdNegNoDisp===id){clearInterval(t);F.neg=id;sub='negocio';key='';pintar();return}if(!r)return;clearInterval(t);F.neg=String(r.id);carta(r.id);sub='negocio';try{const m=$('cartaModalNegocio');if(m&&window.volverMenuPrincipal)window.volverMenuPrincipal()}catch(_){}key='';pintar()},300);setTimeout(()=>clearInterval(t),20000)})();
   setInterval(pintar,700);
   window.pdAppTienda={pintar,ir,abrirNeg,navH:()=>0,st:()=>({sub,tab,ck:ck(),cls:document.documentElement.className})};
 })();
