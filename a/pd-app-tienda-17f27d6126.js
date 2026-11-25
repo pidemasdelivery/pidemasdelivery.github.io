@@ -1107,72 +1107,29 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
 
   /* ---------- cuenta: iniciar sesión y mis datos ---------- */
   const GOO='<svg viewBox="0 0 48 48" width="22" height="22" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>';
-  /* Ingreso con código por WhatsApp (Supabase Auth · proveedor Twilio con canal WhatsApp) */
-  const SBc=()=>{try{if(typeof sb!=='undefined'&&sb)return sb}catch(_){}return window.sb||null};
-  const telPE=v=>{let d=String(v||'').replace(/\D/g,'');if(d.startsWith('51')&&d.length===11)d=d.slice(2);return /^9\d{8}$/.test(d)?'+51'+d:''};
-  /* Interruptor: el botón de WhatsApp se muestra a todos cuando WA_ON=true (Twilio ya configurado en Supabase).
-     Para probarlo antes en un celular: abrir pidemas.pe/?wa=1 una vez. */
-  const WA_ON=false;
-  try{const q=new URLSearchParams(location.search).get('wa');if(q==='1')localStorage.setItem('pd_wa_prueba','1');if(q==='0')localStorage.removeItem('pd_wa_prueba')}catch(_){}
   /* Facebook: se muestra a todos con FB_ON=true (proveedor Facebook activo en Supabase). Para probar antes: pidemas.pe/?fb=1 */
   const FB_ON=false;
   try{const q=new URLSearchParams(location.search).get('fb');if(q==='1')localStorage.setItem('pd_fb_prueba','1');if(q==='0')localStorage.removeItem('pd_fb_prueba')}catch(_){}
   const fbVisible=()=>{try{return FB_ON||localStorage.getItem('pd_fb_prueba')==='1'}catch(_){return FB_ON}};
   const FBI='<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="#1877F2"/><path fill="#FFFFFF" d="M13.4 19.5v-6h2l.3-2.4h-2.3V9.6c0-.7.2-1.2 1.2-1.2h1.2V6.3c-.2 0-1-.1-1.8-.1-1.8 0-3 1.1-3 3.1v1.8h-2v2.4h2v6z"/></svg>';
-  const waVisible=()=>{try{return WA_ON||localStorage.getItem('pd_wa_prueba')==='1'}catch(_){return WA_ON}};
-  const WAI='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21"/><path d="M9 10a.5.5 0 0 0 1 0V9a.5.5 0 0 0-1 0v1a5 5 0 0 0 5 5h1a.5.5 0 0 0 0-1h-1a.5.5 0 0 0 0 1"/></svg>';
-  function entrar(){hojaAbrir({t:'login',modo:'',f:{tel:'',cod:''},msg:'',busy:0,view(){
-      if(this.modo)return vistaWA(this);
+  function entrar(){hojaAbrir({t:'login',view(){
       /* Iniciar sesión: alerta al centro, compacta y clara (tienda principal y tienda de cada negocio) */
       const sv=d=>`<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#C4410C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
       const ben=(ic,t,s)=>`<div style="display:flex;gap:12px;align-items:center"><span style="width:40px;height:40px;border-radius:12px;background:#FDEBDF;display:flex;align-items:center;justify-content:center;flex:none">${ic}</span><span style="display:flex;flex-direction:column;min-width:0;text-align:left"><b style="font-size:15px;color:#1F1A17">${t}</b><span style="font-size:13.5px;color:#6B5E55;line-height:1.35">${s}</span></span></div>`;
       return {dlg:true,title:'Inicia sesión',body:`<div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:0;padding-top:4px">
 <img src="logo-pidemas-pe.svg?v=420ba567e9" alt="pidemas.pe" style="display:block;width:196px;max-width:72%;height:auto;margin:10px auto 20px">
 <h2 style="margin:0;font-size:23px;line-height:1.2;font-weight:800;color:#1F1A17">Entra en un toque</h2>
-<p style="margin:8px 0 18px;font-size:15px;line-height:1.45;color:#6B5E55">${(fbVisible()||waVisible())?'Elige cómo quieres entrar. Sin contraseñas.':'Con tu cuenta de Google. Sin contraseñas ni formularios.'}</p>
+<p style="margin:8px 0 18px;font-size:15px;line-height:1.45;color:#6B5E55">${fbVisible()?'Con tu cuenta de Google o Facebook. Sin contraseñas.':'Con tu cuenta de Google. Sin contraseñas ni formularios.'}</p>
 <div style="width:100%;box-sizing:border-box;display:flex;flex-direction:column;gap:14px;padding:16px;border-radius:18px;background:#FFF9F5;border:1px solid #F1E4DA">
 ${ben(sv('<path d="M3 12h3l3-8 4 16 3-8h5"/>'),'Sigue tu pedido en vivo','Te avisamos cuando lo aceptan, sale y llega')}
 ${ben(sv('<path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>'),'Tus datos listos','Nombre, celular y dirección se llenan solos')}
 ${ben(sv('<path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 21v-5h5"/>'),'Pide de nuevo','Repite tus pedidos favoritos con un toque')}
 </div></div>`,
-        btns:`<div class="bb u" style="gap:6px"><button type="button" class="bp" data-h="g" style="gap:12px"><span style="width:30px;height:30px;border-radius:50%;background:#FFFFFF;display:flex;align-items:center;justify-content:center">${GOO}</span>Continuar con Google</button>${fbVisible()?`<button type="button" class="bs" data-h="fb" style="gap:10px">${FBI}Continuar con Facebook</button>`:''}${waVisible()?`<button type="button" class="bs" data-h="wa" style="gap:10px;color:#146C36">${WAI}Recibir un código por WhatsApp</button>`:''}<button type="button" class="bt" data-h="x">Ahora no</button><small style="display:block;text-align:center;font-size:12.5px;color:#6B5E55;line-height:1.4;margin-top:2px">Solo usamos tus datos para tus pedidos. <a href="/privacidad/" target="_blank" rel="noopener" style="color:#9A330A;font-weight:700">Privacidad</a></small></div>`}},
-    input(k,el){if(k==='cod'&&String(el.value).replace(/\D/g,'').length===6&&!this.busy)this.on('vcod')},
+        btns:`<div class="bb u" style="gap:6px"><button type="button" class="bp" data-h="g" style="gap:12px"><span style="width:30px;height:30px;border-radius:50%;background:#FFFFFF;display:flex;align-items:center;justify-content:center">${GOO}</span>Continuar con Google</button>${fbVisible()?`<button type="button" class="bs" data-h="fb" style="gap:10px">${FBI}Continuar con Facebook</button>`:''}<button type="button" class="bt" data-h="x">Ahora no</button><small style="display:block;text-align:center;font-size:12.5px;color:#6B5E55;line-height:1.4;margin-top:2px">Solo usamos tus datos para tus pedidos. <a href="/privacidad/" target="_blank" rel="noopener" style="color:#9A330A;font-weight:700">Privacidad</a></small></div>`}},
     async on(a){const H=this;
       if(a==='g'){hojaCerrar();try{window.pdIngresarConGoogle()}catch(e){aviso('No se pudo abrir Google. Inténtalo de nuevo.')}return}
       if(a==='fb'){hojaCerrar();try{await window.pdIngresarConFacebook()}catch(e){aviso(/provider is not enabled|Unsupported provider/i.test(String(e&&e.message))?'El ingreso con Facebook aún no está activo. Entra con Google por ahora.':'No se pudo abrir Facebook. Inténtalo de nuevo.')}return}
-      if(a==='wa'){H.modo='tel';H.msg='';repintarHoja();setTimeout(()=>{try{hRoot.getElementById('waTel').focus()}catch(_){}},80);return}
-      if(a==='volver'){H.modo=H.modo==='cod'?'tel':'';H.msg='';repintarHoja();return}
-      if(a==='env'||a==='reenv'){const t=telPE(H.f.tel);if(!t){H.msg='Escribe tu celular de 9 dígitos (empieza con 9).';repintarHoja();return}
-        const c=SBc();if(!c){H.msg='Sin conexión. Inténtalo de nuevo.';repintarHoja();return}
-        H.busy=1;H.msg='';repintarHoja();
-        try{const {error}=await c.auth.signInWithOtp({phone:t,options:{channel:'whatsapp'}});if(error)throw error;
-          H.tel=t;H.modo='cod';H.f.cod='';H.msg=a==='reenv'?'Te enviamos un código nuevo.':'';}
-        catch(e){const m=String(e&&e.message||'');H.msg=/provider|phone.*disabled|unsupported/i.test(m)?'El ingreso por WhatsApp aún no está activo. Entra con Google por ahora.':/rate|seconds|security purposes/i.test(m)?'Espera un minuto antes de pedir otro código.':'No pudimos enviar el código. Revisa tu número e inténtalo de nuevo.'}
-        H.busy=0;repintarHoja();if(H.modo==='cod')setTimeout(()=>{try{hRoot.getElementById('waCod').focus()}catch(_){}},80);return}
-      if(a==='vcod'){const k=String(H.f.cod||'').replace(/\D/g,'');if(k.length!==6){H.msg='El código tiene 6 números.';repintarHoja();return}
-        const c=SBc();if(!c)return;H.busy=1;H.msg='';repintarHoja();
-        try{const {error}=await c.auth.verifyOtp({phone:H.tel,token:k,type:'sms'});if(error)throw error;
-          try{LSC.set({telefono:H.tel.replace('+51','')})}catch(_){}
-          hojaCerrar();aviso('Listo, ya iniciaste sesión.');setTimeout(()=>{key='';pintar()},300)}
-        catch(e){H.busy=0;H.msg='Ese código no es correcto o ya venció. Revísalo o pide uno nuevo.';repintarHoja()}}
     }})}
-  function vistaWA(H){
-    const enviando=H.busy?'<span class="eq" aria-hidden="true" style="width:18px;height:18px;border-width:3px"></span>':'';
-    const err=H.msg?`<div role="status" style="margin-top:12px;padding:10px 12px;border-radius:12px;background:${/nuevo/.test(H.msg)?'#E7F5EC;color:#146C36':'#FFF4E5;color:#8A4B00'};font-size:14px;line-height:1.4;text-align:left">${E(H.msg)}</div>`:'';
-    const cab=`<div style="display:flex;flex-direction:column;align-items:center;text-align:center"><span style="width:60px;height:60px;border-radius:18px;background:#E7F5EC;color:#146C36;display:flex;align-items:center;justify-content:center;margin:6px 0 14px">${WAI.replace('width="20" height="20"','width="30" height="30"')}</span>`;
-    if(H.modo==='tel')return {dlg:true,title:'Ingresa con WhatsApp',
-      body:cab+`<h2 style="margin:0;font-size:22px;font-weight:800;color:#1F1A17">Ingresa con WhatsApp</h2><p style="margin:8px 0 16px;font-size:15px;line-height:1.45;color:#6B5E55">Te enviaremos un código de 6 números a tu WhatsApp.</p></div>
-<div style="width:100%;box-sizing:border-box;text-align:left"><label for="waTel" style="display:block;font-size:14px;font-weight:700;color:#1F1A17;margin-bottom:6px">Tu celular</label>
-<div style="display:flex;align-items:center;width:100%;box-sizing:border-box;height:56px;border-radius:14px;border:1.5px solid #E2D6CD;background:#FFFFFF;overflow:hidden"><span style="padding:0 12px 0 14px;font-size:17px;font-weight:700;color:#6B5E55;border-right:1px solid #F1E4DA;height:100%;display:flex;align-items:center">+51</span><input id="waTel" data-hin="tel" inputmode="tel" autocomplete="tel-national" maxlength="11" placeholder="987 654 321" value="${E(H.f.tel||'')}" style="flex:1;min-width:0;border:0;outline:none;height:100%;padding:0 14px;font:inherit;font-size:18px;font-weight:700;letter-spacing:.04em;color:#1F1A17;background:transparent"></div>${err}</div>`,
-      btns:`<div class="bb u" style="gap:6px"><button type="button" class="bp" data-h="env"${H.busy?' disabled':''} style="gap:10px">${enviando||WAI}${H.busy?'Enviando…':'Enviarme el código'}</button><button type="button" class="bt" data-h="volver">Volver</button></div>`};
-    const tel=String(H.tel||'').replace('+51','').replace(/(\d{3})(\d{3})(\d{3})/,'$1 $2 $3');
-    return {dlg:true,title:'Escribe el código',
-      body:cab+`<h2 style="margin:0;font-size:22px;font-weight:800;color:#1F1A17">Escribe el código</h2><p style="margin:8px 0 16px;font-size:15px;line-height:1.45;color:#6B5E55">Lo enviamos por WhatsApp al <b style="color:#1F1A17;white-space:nowrap">${E(tel)}</b>.</p></div>
-<label for="waCod" class="sr" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Código de 6 números</label>
-<input id="waCod" data-hin="cod" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="••••••" value="${E(H.f.cod||'')}" style="display:block;width:100%;box-sizing:border-box;height:64px;border-radius:16px;border:1.5px solid #E2D6CD;background:#FFFFFF;text-align:center;font:inherit;font-size:30px;font-weight:800;letter-spacing:.5em;padding-left:.5em;color:#1F1A17;outline:none">${err}`,
-      btns:`<div class="bb u" style="gap:6px"><button type="button" class="bp" data-h="vcod"${H.busy?' disabled':''} style="gap:10px">${enviando}${H.busy?'Verificando…':'Entrar'}</button><div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px"><button type="button" class="bt" data-h="volver">Cambiar número</button><button type="button" class="bt" data-h="reenv">Enviar otro código</button></div></div>`};
-  }
-
   const LSC={get(){try{return JSON.parse(localStorage.getItem('pidemas_customer_info')||'null')||{}}catch(e){return {}}},set(o){try{localStorage.setItem('pidemas_customer_info',JSON.stringify({...LSC.get(),...o}))}catch(e){}}};
   function misDatos(op){
     const d=(window.pdDatosClienteGuardados&&window.pdDatosClienteGuardados())||{};
