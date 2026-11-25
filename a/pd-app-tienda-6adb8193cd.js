@@ -66,10 +66,13 @@
 .nv button.on{color:#C4410C;font-weight:800}.nv button.on span.i{background:#FDEBDF}
 .nv .bd{top:2px;right:calc(50% - 26px)}
 .nv{position:relative}
-.nv button.fsv{position:absolute;left:auto;right:14px;bottom:calc(100% + 12px);transform:none;z-index:7;display:flex;flex-direction:row;flex:none;width:auto;align-items:center;gap:6px;height:40px;padding:0 14px 0 10px;border-radius:999px;border:0;outline:0;background:#128C4A;color:#FFFFFF;font:inherit;font-size:13.5px;font-weight:800;white-space:nowrap;box-shadow:none;cursor:pointer;transition:transform .22s ease,opacity .22s ease}
+.nv button.fsv{position:absolute;left:auto;right:14px;bottom:calc(100% + 12px);transform:none;z-index:7;display:flex;flex-direction:row;flex:none;width:auto;align-items:center;gap:0;height:52px;width:52px;padding:0;justify-content:center;border-radius:50%;border:0;outline:0;background:#128C4A;color:#FFFFFF;font:inherit;font-size:13.5px;font-weight:800;white-space:nowrap;box-shadow:none;cursor:pointer;transition:transform .22s ease,opacity .22s ease}
 .nv button.fsv.off{transform:translateY(24px);opacity:0;pointer-events:none}
 .nv button.fsv.abierto{background:#FFFFFF;color:#1F1A17}
-.nv button.fsv svg{width:18px;height:18px}
+.nv button.fsv svg{width:26px;height:26px}
+.nv button.fsv.abierto svg{width:22px;height:22px}
+.svtip{position:absolute;z-index:7;right:76px;bottom:calc(100% + 22px);background:#FFFFFF;color:#1F1A17;font-size:13.5px;font-weight:800;white-space:nowrap;padding:8px 12px;border-radius:14px 14px 4px 14px;box-shadow:0 4px 14px rgba(31,26,23,.16);pointer-events:none;animation:waup .3s ease both;transition:opacity .3s ease}
+.svtip.off{opacity:0}
 .wabg{position:fixed;inset:0;z-index:6;background:rgba(31,26,23,.35);animation:fi .2s ease}
 .wap{position:absolute;z-index:7;right:12px;bottom:calc(100% + 64px);width:min(360px,calc(100vw - 24px));border-radius:22px;overflow:hidden;background:#EFE7DE;box-shadow:0 14px 40px rgba(31,26,23,.28);animation:waup .24s ease}
 @keyframes waup{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
@@ -1213,8 +1216,11 @@ ${ben(sv('<path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/><path d
   /* Botón flotante de WhatsApp «¿Necesitas otro servicio?»: al tocarlo sube una ventanita estilo chat de WhatsApp
      con recojo y entrega, compra o encomienda; cada opción abre el WhatsApp de Pidemás con el mensaje listo.
      El botón se esconde mientras el cliente baja por la página y vuelve cuando se detiene. */
-  let svOculto=false,svY=0,svT=0,svAbierto=false;
-  function svScroll(L){if(svAbierto)return;const y=L.scrollTop,b=root&&root.querySelector('.fsv');if(!b)return;const bajar=y>svY+6&&y>80;if(bajar!==svOculto&&(bajar||y<svY-6)){svOculto=bajar;b.classList.toggle('off',svOculto)}svY=y;clearTimeout(svT);svT=setTimeout(()=>{svOculto=false;const c=root&&root.querySelector('.fsv');if(c)c.classList.remove('off')},900)}
+  let svOculto=false,svY=0,svT=0,svAbierto=false,svTip=false;
+  /* globito «¿Otro servicio?» junto al círculo: aparece unos segundos una vez por visita */
+  let svTipPend=true;try{svTipPend=!sessionStorage.getItem('pd_sv_tip')}catch(_){}
+  function svTipArmar(){if(!svTipPend)return;svTipPend=false;setTimeout(()=>{if(svAbierto||sub||tab!=='inicio'||(HO&&HO.t))return void(svTipPend=true);try{sessionStorage.setItem('pd_sv_tip','1')}catch(_){}svTip=true;key='';try{pintar()}catch(_){}setTimeout(()=>{svTip=false;key='';try{pintar()}catch(_){}},6000)},1800)}
+  function svScroll(L){if(svAbierto)return;const y=L.scrollTop,b=root&&root.querySelector('.fsv');if(!b)return;const bajar=y>svY+6&&y>80;if(bajar!==svOculto&&(bajar||y<svY-6)){svOculto=bajar;b.classList.toggle('off',svOculto);const tp=root.querySelector('.svtip');if(tp)tp.classList.toggle('off',svOculto)}svY=y;clearTimeout(svT);svT=setTimeout(()=>{svOculto=false;const c=root&&root.querySelector('.fsv');if(c)c.classList.remove('off')},900)}
   const WA_PD='51986233533';
   const SVOPS=[['rec','Recojo y entrega','Recogemos algo y lo llevamos a donde digas','<path d="M3 7h11v9H3z"/><path d="M14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/>','Hola Pidemás, quiero un *recojo y entrega*.\nRecoger en: \nEntregar en: \nQué es: '],
     ['com','Compra','Te compramos lo que necesites y te lo llevamos','<path d="M6 7h12l-1 13H7z"/><path d="M9 7a3 3 0 0 1 6 0"/>','Hola Pidemás, quiero que me hagan una *compra*.\nQué compro: \nDónde lo compro: \nEntregar en: '],
@@ -1237,7 +1243,8 @@ ${SVOPS.map((o,k)=>`<button type="button" class="wao" data-svo="${o[0]}" style="
     const it=[['inicio','Inicio',IC.home],['buscar','Buscar',IC.search],['pedidos','Pedidos',IC.box],['perfil','Perfil',IC.user]];
     const curso=ultimoPedido();
     if(svAbierto&&(sub||tab!=='inicio')){svAbierto=false;setTimeout(svBarra,0)}
-    const fsv=!sub&&tab==='inicio'?(svAbierto?svPanel():'')+`<button type="button" class="fsv${svOculto&&!svAbierto?' off':''}${svAbierto?' abierto':''}" data-sv="1" aria-expanded="${svAbierto}">${svAbierto?S('<path d="M6 6l12 12M18 6 6 18"/>'):WAIC}${svAbierto?'Cerrar':'¿Necesitas otro servicio?'}</button>`:'';
+    if(!sub&&tab==='inicio'&&svTipPend)setTimeout(svTipArmar,0);
+    const fsv=!sub&&tab==='inicio'?(svAbierto?svPanel():'')+`<button type="button" class="fsv${svOculto&&!svAbierto?' off':''}${svAbierto?' abierto':''}" data-sv="1" aria-expanded="${svAbierto}" aria-label="${svAbierto?'Cerrar':'¿Necesitas otro servicio? Escríbenos por WhatsApp'}">${svAbierto?S('<path d="M6 6l12 12M18 6 6 18"/>'):WAIC}</button>`+(svTip&&!svAbierto?`<span class="svtip${svOculto?' off':''}" aria-hidden="true">¿Otro servicio?</span>`:''):'';
     return `<nav class="nv" aria-label="Menú principal">${fsv}${it.map(x=>`<button type="button" data-t="${x[0]}" class="${!sub&&tab===x[0]?'on':''}"${!sub&&tab===x[0]?' aria-current="page"':''}><span class="i">${x[2]}</span>${x[1]}${x[0]==='pedidos'&&curso?'<span class="bd" style="top:2px;right:calc(50% - 26px)">1</span>':''}</button>`).join('')}</nav>`;
   }
   const IGN=new Set(['pdAppShell','ppCerrado','cartaModalNegocio','pdCartaCartBar','toast']);
@@ -1370,7 +1377,7 @@ ${SVOPS.map((o,k)=>`<button type="button" class="wao" data-svo="${o[0]}" style="
   async function clic(e){
     tocando=false;
     const svo=e.target.closest('[data-svo]');if(svo){svAbrirWa(svo.dataset.svo);return}
-    const svb=e.target.closest('[data-sv]');if(svb){svAbierto=svb.dataset.sv==='x'?false:!svAbierto;svOculto=false;key='';pintar();svBarra();return}
+    const svb=e.target.closest('[data-sv]');if(svb){svTip=false;svAbierto=svb.dataset.sv==='x'?false:!svAbierto;svOculto=false;key='';pintar();svBarra();return}
     const t=e.target.closest('[data-t]');if(t){if(HO&&HO.t!=='listo')try{hojaCerrar(undefined)}catch(_){}ir(t.dataset.t);return}
     const pgb=e.target.closest('[data-prog]');if(pgb){if(pgb.dataset.prog==='quitar'){try{window.pdCancelarProgramado&&window.pdCancelarProgramado()}catch(_){}try{window.pdAviso?window.pdAviso('Listo, ahora pides para entrega inmediata.'):0}catch(_){}}else{try{reservar(window.__pdProgNegId||'')}catch(_){}}key='';pintar();return}
     const fv=e.target.closest('[data-fav]');if(fv){try{window.pdToggleFav(fv.dataset.fav)}catch(_){}favPop=fv.dataset.fav;key='';pintar();return}
