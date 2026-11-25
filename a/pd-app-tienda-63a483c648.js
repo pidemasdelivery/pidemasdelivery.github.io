@@ -65,6 +65,9 @@
 .nv button span.i{width:52px;height:30px;border-radius:999px;display:flex;align-items:center;justify-content:center}
 .nv button.on{color:#C4410C;font-weight:800}.nv button.on span.i{background:#FDEBDF}
 .nv .bd{top:2px;right:calc(50% - 26px)}
+.nv{position:relative}
+.nv button.fsv{position:absolute;left:50%;bottom:calc(100% + 12px);transform:translateX(-50%);z-index:5;display:flex;align-items:center;gap:8px;height:46px;padding:0 18px 0 14px;border-radius:999px;border:0;background:#C4410C;color:#FFFFFF;font:inherit;font-size:15px;font-weight:800;white-space:nowrap;box-shadow:0 6px 18px rgba(196,65,12,.35);cursor:pointer;flex:none;flex-direction:row;width:auto;transition:transform .22s ease,opacity .22s ease}
+.nv button.fsv.off{transform:translate(-50%,24px);opacity:0;pointer-events:none}
 .gps{display:flex;gap:10px;align-items:center;padding:12px 14px;border-radius:14px;background:#FDE8E8;color:#9B1C1C;font-size:14px;font-weight:700}
 .gps button{margin-left:auto;height:36px;padding:0 12px;border-radius:10px;border:0;background:#C4410C;color:#FFFFFF;font-weight:800;cursor:pointer}
 
@@ -1191,11 +1194,33 @@ ${ben(sv('<path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/><path d
   addEventListener('popstate',e=>{if(window.__pdPopPropio)return;if(ignorarPop)return;if(HO){e.stopImmediatePropagation();hojaCerrar(undefined,true)}},true);
 
   /* ---------- menú y pintado ---------- */
+  /* Botón flotante «Otros servicios»: recojo y entrega, compra o encomienda por el WhatsApp de Pidemás.
+     Se esconde mientras el cliente baja por la página y vuelve cuando sube o se detiene. */
+  let svOculto=false,svY=0,svT=0;
+  function svScroll(L){const y=L.scrollTop,b=root&&root.querySelector('.fsv');if(!b)return;const bajar=y>svY+6&&y>80;if(bajar!==svOculto&&(bajar||y<svY-6)){svOculto=bajar;b.classList.toggle('off',svOculto)}svY=y;clearTimeout(svT);svT=setTimeout(()=>{svOculto=false;const c=root&&root.querySelector('.fsv');if(c)c.classList.remove('off')},900)}
+  const WA_PD='51986233533';
+  function otrosServicios(){
+    const ops=[['rec','Recojo y entrega','Recogemos algo y lo llevamos a donde digas','<path d="M3 7h11v9H3z"/><path d="M14 10h4l3 3v3h-7"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/>'],
+      ['com','Compra','Te compramos lo que necesites y te lo llevamos','<path d="M6 7h12l-1 13H7z"/><path d="M9 7a3 3 0 0 1 6 0"/>'],
+      ['enc','Encomienda','Llevamos tu paquete a la agencia o al destino','<path d="M3 8l9-5 9 5v8l-9 5-9-5z"/><path d="M3 8l9 5 9-5"/><path d="M12 13v8"/>']];
+    const msg={rec:'Hola Pidemás, quiero un *recojo y entrega*.\nRecoger en: \nEntregar en: \nQué es: ',
+      com:'Hola Pidemás, quiero que me hagan una *compra*.\nQué compro: \nDónde lo compro: \nEntregar en: ',
+      enc:'Hola Pidemás, quiero enviar una *encomienda*.\nQué envío: \nAgencia o destino: \nRecoger en: '};
+    hojaAbrir({t:'servicios',view(){
+      const sv=d=>`<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#C4410C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+      return {dlg:true,title:'Otros servicios',body:`<div style="display:flex;flex-direction:column;gap:12px;text-align:left">
+<h2 style="margin:4px 0 0;font-size:22px;line-height:1.2;font-weight:800;color:#1F1A17">¿Qué necesitas?</h2>
+<p style="margin:0 0 4px;font-size:14.5px;line-height:1.45;color:#6B5E55">Elige el servicio y te atendemos por WhatsApp.</p>
+${ops.map(o=>`<button type="button" class="tl" data-h="${o[0]}"><span class="ic">${sv(o[3])}</span><span class="tx"><b>${o[1]}</b><span>${o[2]}</span></span>${IC.chev}</button>`).join('')}
+</div>`,btns:`<div class="bb u"><button type="button" class="bt" data-h="x">Ahora no</button></div>`}},
+      on(a){if(!msg[a])return;hojaCerrar();const u='https://wa.me/'+WA_PD+'?text='+encodeURIComponent(msg[a]);try{const w=window.open(u,'_blank');if(w){try{w.opener=null}catch(_){}}else location.href=u}catch(_){location.href=u}}});
+  }
   function nav(){
     if(sub==='negocio'||sub==='producto'||sub==='carrito'||sub==='seguir')return '';
     const it=[['inicio','Inicio',IC.home],['buscar','Buscar',IC.search],['pedidos','Pedidos',IC.box],['perfil','Perfil',IC.user]];
     const curso=ultimoPedido();
-    return `<nav class="nv" aria-label="Menú principal">${it.map(x=>`<button type="button" data-t="${x[0]}" class="${!sub&&tab===x[0]?'on':''}"${!sub&&tab===x[0]?' aria-current="page"':''}><span class="i">${x[2]}</span>${x[1]}${x[0]==='pedidos'&&curso?'<span class="bd" style="top:2px;right:calc(50% - 26px)">1</span>':''}</button>`).join('')}</nav>`;
+    const fsv=!sub&&tab==='inicio'?`<button type="button" class="fsv${svOculto?' off':''}" data-sv="1">${IC.plus}Otros servicios</button>`:'';
+    return `<nav class="nv" aria-label="Menú principal">${fsv}${it.map(x=>`<button type="button" data-t="${x[0]}" class="${!sub&&tab===x[0]?'on':''}"${!sub&&tab===x[0]?' aria-current="page"':''}><span class="i">${x[2]}</span>${x[1]}${x[0]==='pedidos'&&curso?'<span class="bd" style="top:2px;right:calc(50% - 26px)">1</span>':''}</button>`).join('')}</nav>`;
   }
   const IGN=new Set(['pdAppShell','ppCerrado','cartaModalNegocio','pdCartaCartBar','toast']);
   function tapada(){
@@ -1228,7 +1253,7 @@ ${ben(sv('<path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/><path d
       root.addEventListener('click',clic);root.addEventListener('input',entrada);
       /* Categorías fijas: cuando quedan pegadas arriba se tapa la franja de encima para que no se vea nada detrás */
       {const pegar=()=>{const L=root.querySelector('.list'),c=L&&L.querySelector(':scope>.chsHome.cti');if(!c)return;const on=c.getBoundingClientRect().top-L.getBoundingClientRect().top<=40&&L.scrollTop>0;if(c.classList.contains('pegada')!==on)c.classList.toggle('pegada',on)};
-        root.addEventListener('scroll',e=>{if(e.target&&e.target.classList&&e.target.classList.contains('list'))pegar()},true);setInterval(pegar,300)}
+        root.addEventListener('scroll',e=>{if(e.target&&e.target.classList&&e.target.classList.contains('list')){pegar();try{svScroll(e.target)}catch(_){}}},true);setInterval(pegar,300)}
       {let tsp=null,bloq=false,qt=null,toca=0;
         const soltar=()=>{clearTimeout(qt);qt=setTimeout(()=>{bloq=false},200)};
         root.addEventListener('pointerdown',e=>{if(e.target.closest&&e.target.closest('.chsBar'))toca=Date.now()+100000},true);
@@ -1252,7 +1277,7 @@ ${ben(sv('<path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/><path d
     const cx=(root.querySelector('.chsHome')||{}).scrollLeft||0,carX=(root.querySelector('.pdCarS')||{}).scrollLeft||0,carT=(root.querySelector('.pdCarS')||{}).__t||0;
     /* al elegir categoría: la fila de categorías se queda quieta en su sitio */
     const anc=alCat&&root.__pag===pag&&root.querySelector('.chsHome')?root.querySelector('.chsHome').getBoundingClientRect().top:null;
-    root.innerHTML=`<style>${ESTILO}</style><div class="app${sub==='seguir'?' segP':''}">${v.head}<div class="list">${v.body}</div>${v.foot?`<div class="foot">${v.foot}</div>`:''}${nav()}</div>`;
+    root.innerHTML=`<style>${ESTILO}</style><div class="app${sub==='seguir'?' segP':''}">${v.head}<div class="list">${v.body}${!sub&&tab==='inicio'?'<div aria-hidden="true" style="height:64px;flex:none"></div>':''}</div>${v.foot?`<div class="foot">${v.foot}</div>`:''}${nav()}</div>`;
     const nueva=root.__pag!==pag;const nl=root.querySelector('.list');{const c2=root.querySelector('.chsHome');/* con pocos resultados la página no se encoge de golpe: deja espacio abajo para que nada salte */
       if(nl&&c2&&F.cat&&root.__pag===pag){const top=c2.offsetTop-nl.offsetTop,ul=nl.lastElementChild,alto=ul?ul.offsetTop-nl.offsetTop+ul.offsetHeight+(parseFloat(getComputedStyle(nl).paddingBottom)||0):0,falta=Math.ceil(top+nl.clientHeight-alto);if(falta>0){const sp=document.createElement('div');sp.style.cssText='height:'+falta+'px;flex:0 0 auto';sp.setAttribute('aria-hidden','true');nl.appendChild(sp)}}}if(nl)nl.scrollTop=root.__pag===pag?(scrollMem[pag]||0):(scrollMem[pag]=0,0);root.__pag=pag;
     try{const ap=root.querySelector('.app');if(nueva&&ap){ap.classList.add('entra');clearTimeout(root.__entT);root.__entT=setTimeout(()=>{const a2=root.querySelector('.app');a2&&a2.classList.remove('entra')},1100)}
@@ -1326,6 +1351,7 @@ ${ben(sv('<path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/><path d
   }
   async function clic(e){
     tocando=false;
+    const svb=e.target.closest('[data-sv]');if(svb){otrosServicios();return}
     const t=e.target.closest('[data-t]');if(t){if(HO&&HO.t!=='listo')try{hojaCerrar(undefined)}catch(_){}ir(t.dataset.t);return}
     const pgb=e.target.closest('[data-prog]');if(pgb){if(pgb.dataset.prog==='quitar'){try{window.pdCancelarProgramado&&window.pdCancelarProgramado()}catch(_){}try{window.pdAviso?window.pdAviso('Listo, ahora pides para entrega inmediata.'):0}catch(_){}}else{try{reservar(window.__pdProgNegId||'')}catch(_){}}key='';pintar();return}
     const fv=e.target.closest('[data-fav]');if(fv){try{window.pdToggleFav(fv.dataset.fav)}catch(_){}favPop=fv.dataset.fav;key='';pintar();return}
