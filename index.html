@@ -48,6 +48,15 @@ else{
        Chrome no aleja la página y no se ve chiquita. El cliente igual puede acercar con los dedos. */
     if(viewport) viewport.setAttribute('content','width=device-width,initial-scale=1,minimum-scale=1,viewport-fit=cover');
     document.documentElement.style.overflowX='clip';
+    /* Si Chrome abre la tienda en «versión para ordenador» en un celular (pasa a veces al volver de iniciar sesión),
+       la página se dibuja a ~980 px y se ve chiquita. Se agranda todo para que vuelva a verse como en el celular. */
+    var ajustarEscritorio=function(){try{
+      var H=document.documentElement,sw=Math.min(screen.width,screen.height)||0,w=window.innerWidth||0;
+      var tactil=(navigator.maxTouchPoints||0)>0||('ontouchstart' in window);
+      var z=(tactil&&sw>0&&sw<=600&&w>sw*1.3)?w/sw:1;
+      if(z>1){H.style.zoom=String(z);H.classList.add('pd-escritorio')}else if(H.classList.contains('pd-escritorio')){H.style.zoom='';H.classList.remove('pd-escritorio')}
+    }catch(_){}};
+    ajustarEscritorio();window.addEventListener('resize',ajustarEscritorio);window.addEventListener('pageshow',ajustarEscritorio);
   }catch(e){}
 })();
 </script>
