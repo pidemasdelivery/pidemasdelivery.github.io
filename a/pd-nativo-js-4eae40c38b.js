@@ -140,8 +140,8 @@
   window.pdOfrecerInstalar=function(){if(instalada())return;forzar=true;intentos=0;if(card)card.hidden=true;clearTimeout(programar.t);programar.t=setTimeout(intentar,1200)};
   const descartado=()=>{const t=Number(ls.get(NO)||0);return t&&Date.now()-t<DIAS*864e5};
   let aviso=null,card=null,intentos=0;
-  addEventListener('beforeinstallprompt',e=>{e.preventDefault();aviso=e;programar(400)});
-  setTimeout(function(){if(!aviso&&android&&!instalada())programar(0)},3000);
+  addEventListener('beforeinstallprompt',e=>{e.preventDefault();aviso=e;if(card&&!card.hidden&&!card.querySelector('.si')){mostrarCard();return}programar(400)});
+  setTimeout(function(){if(!aviso&&android&&!instalada())programar(0)},9000);
   addEventListener('appinstalled',()=>{ls.set(NO,String(Date.now()+3650*864e5));if(card)card.hidden=true});
   function programar(ms){if(instalada()||(!forzar&&descartado())||card&&!card.hidden)return;clearTimeout(programar.t);programar.t=setTimeout(intentar,ms)}
   function intentar(){
