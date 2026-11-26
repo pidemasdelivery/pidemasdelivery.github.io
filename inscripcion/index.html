@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta name="pd-instalacion" content="1">
-<meta name="pd-version" content="202611260047">
+<meta name="pd-version" content="202611260050">
 <meta charset="utf-8">
 <style id="pd-modal-unico-css">
 /* ===== pd-modal-unico · todas las ventanas iguales en todas las apps de Pidemás =====
@@ -1474,7 +1474,7 @@ try{const orig=HTMLInputElement.prototype.showPicker;if(orig)HTMLInputElement.pr
   function chequear(){
     if(document.hidden||Date.now()-ultimo<60000)return;ultimo=Date.now();
     fetch(url+'?pdv='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){
-      var m=t&&t.match(/<meta name="pd-version" content="202611260047"]+)"/);if(m&&m[1]!==V){pendiente=true;intentar()}
+      var m=t&&t.match(/<meta name="pd-version" content="202611260050"]+)"/);if(m&&m[1]!==V){pendiente=true;intentar()}
     }).catch(function(){});
   }
   function ocupado(){
