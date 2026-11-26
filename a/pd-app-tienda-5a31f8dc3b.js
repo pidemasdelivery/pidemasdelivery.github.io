@@ -1152,7 +1152,7 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
       /* Iniciar sesión: alerta al centro, compacta y clara (tienda principal y tienda de cada negocio) */
       const sv=d=>`<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#C4410C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
       const ben=(ic,t,s)=>`<div style="display:flex;gap:12px;align-items:center"><span style="width:40px;height:40px;border-radius:12px;background:#FDEBDF;display:flex;align-items:center;justify-content:center;flex:none">${ic}</span><span style="display:flex;flex-direction:column;min-width:0;text-align:left"><b style="font-size:15px;color:#1F1A17">${t}</b><span style="font-size:13.5px;color:#6B5E55;line-height:1.35">${s}</span></span></div>`;
-      return {dlg:true,title:'Inicia sesión',body:`<div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:0;padding-top:4px">
+      return {dlg:true,title:'Inicia sesión',css:'<style>.hbg{background:#FFFFFF!important;touch-action:none}.dlg{position:fixed!important;inset:0!important;top:0!important;left:0!important;right:0!important;transform:none!important;max-width:none!important;margin:0!important;border-radius:0!important;box-shadow:none!important;box-sizing:border-box!important;height:100dvh!important;padding:calc(env(safe-area-inset-top) + 22px) 22px calc(env(safe-area-inset-bottom) + 14px)!important;justify-content:space-between!important;overflow-y:auto!important;overscroll-behavior:contain!important;animation:lgIn .22s ease-out!important}@keyframes lgIn{from{opacity:0}to{opacity:1}}.dlg>div:first-child{margin:auto!important;padding-bottom:18px;max-width:420px;width:100%}.dlg>.bb{max-width:420px;width:100%;margin:0 auto!important}</style>',body:`<div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:0;padding-top:4px">
 <img src="logo-pidemas-pe.svg?v=420ba567e9" alt="pidemas.pe" style="display:block;width:196px;max-width:72%;height:auto;margin:10px auto 20px">
 <h2 style="margin:0;font-size:23px;line-height:1.2;font-weight:800;color:#1F1A17">Entra en un toque</h2>
 <p style="margin:8px 0 18px;font-size:15px;line-height:1.45;color:#6B5E55">${fbVisible()?'Con tu cuenta de Google o Facebook. Sin contraseñas.':'Con tu cuenta de Google. Sin contraseñas ni formularios.'}</p>
@@ -1444,13 +1444,14 @@ ${ben(sv('<path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/><path d
   /* Bienvenida y «Estamos cerrados» quedan fijas: la página de atrás no se desplaza (así no asoma el diseño viejo ni se mueve la barra del navegador) */
   (function(){let on=false,ov=['',''];
     const cerr=()=>{const c=$('ppCerrado');return c&&!c.hidden&&c.getClientRects().length?c:null};
-    const activo=()=>!!(cerr()||(HO&&HO.t==='bienv'));
+    const activo=()=>!!(cerr()||(HO&&(HO.t==='bienv'||HO.t==='login')));
     setInterval(()=>{const v=activo();if(v===on)return;on=v;const de=document.documentElement,b=document.body;
       if(v){ov=[de.style.overflow,b.style.overflow];de.style.overflow='hidden';b.style.overflow='hidden';de.style.overscrollBehavior='none';b.style.overscrollBehavior='none'}
       else{de.style.overflow=ov[0];b.style.overflow=ov[1];de.style.overscrollBehavior='';b.style.overscrollBehavior=''}},200);
     document.addEventListener('touchmove',e=>{if(!activo())return;const c=cerr();
       if(c&&!(HO&&HO.t==='bienv')&&c.contains(e.target)&&c.scrollHeight>c.clientHeight+2)return;
-      if(HO&&HO.t!=='bienv'&&!c)return;
+      if(HO&&HO.t==='login'){try{const d=hRoot.querySelector('.dlg');if(d&&d.scrollHeight>d.clientHeight+2)return}catch(_){}}
+      if(HO&&HO.t!=='bienv'&&HO.t!=='login'&&!c)return;
       if(e.cancelable)e.preventDefault()},{passive:false,capture:true});
   })();
   window.pdBienvenida=bienvenida;
