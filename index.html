@@ -5,7 +5,22 @@
 <link rel="stylesheet" id="pd-ui-unico-css" href="a/pd-ui-unico-css-4973d39fdb.css">
 
 <meta name="pd-instalacion" content="1">
-<meta name="pd-version" content="202611252258"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><link rel="stylesheet" id="pidemas-estilos" href="a/pidemas-estilos-css-e8ef5e05d9.css"><script>(function(){var h=document.documentElement;try{
+<style id="pdPreS">html.pdPre::after{content:"";position:fixed;inset:0;z-index:2147483646;background:#FFF8F3}html.pdPre::before{content:"";position:fixed;left:50%;top:50%;width:38px;height:38px;margin:-19px 0 0 -19px;box-sizing:border-box;border-radius:50%;border:4px solid #F6D3C0;border-top-color:#C4410C;z-index:2147483647;animation:pdPreG .8s linear infinite}@keyframes pdPreG{to{transform:rotate(360deg)}}</style>
+<script id="pd-pre-version">
+/* Al entrar: primero revisa si hay versión nueva (con el círculo de carga). Si la hay, la carga antes de mostrar la tienda. */
+(function(){try{
+  if(location.protocol==='file:')return;
+  var d=document.documentElement,K='pd_pre_v',listo=false;
+  d.classList.add('pdPre');
+  function fin(){if(listo)return;listo=true;d.classList.remove('pdPre')}
+  setTimeout(fin,2500);
+  fetch(location.pathname+'?pdv='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){
+    if(listo)return;var mv=document.querySelector('meta[name="pd-version"]'),V=mv?mv.content:'';var m=V&&t&&t.match(/name="pd-version" content="([^"]+)"/);
+    if(m&&m[1]!==V&&sessionStorage.getItem(K)!==m[1]){sessionStorage.setItem(K,m[1]);listo=true;var go=function(){location.reload()};fetch(location.href,{cache:'reload'}).then(go,go);setTimeout(go,2500);return}
+    fin()}).catch(fin);
+}catch(e){try{document.documentElement.classList.remove('pdPre')}catch(_){}}})();
+</script>
+<meta name="pd-version" content="202611252301"><meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"><meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0"><link rel="stylesheet" id="pidemas-estilos" href="a/pidemas-estilos-css-e8ef5e05d9.css"><script>(function(){var h=document.documentElement;try{
 var neg=(new URLSearchParams(location.search).get("negocio")||"").trim(),fin=false,t0=Date.now();
 h.classList.add("piCartaCarga");
 function salir(){if(fin)return;fin=true;h.classList.add("piCargaSale");setTimeout(function(){h.classList.remove("piCartaCarga","piCargaSale")},300)}
@@ -238,27 +253,7 @@ else{
 <script id="pidemas-app-total-js" src="a/pidemas-app-total-js-ab5a11d9b5.js"></script>
 <!-- ===== Pidemás · Botón «atrás» del celular: cierra la ventana abierta o vuelve a la pantalla principal ===== -->
 <script id="pidemas-boton-atras" src="a/pidemas-boton-atras-33e438ba28.js"></script>
-<script id="pidemas-version">
-/* Si el servidor ya tiene una versión más nueva de esta página, se recarga sola con la nueva (evita ver una versión guardada vieja). */
-(function(){
-  const V='20261112230000',K='pd_ver_'+location.pathname;
-  async function revisar(){
-    try{
-      if(location.protocol==='file:')return;
-      if(window.pdAtrasDebug&&pdAtrasDebug().nivel>0)return;            // no recargar con una ventana abierta
-      const a=document.activeElement;if(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))return; // ni mientras escribe
-      const r=await fetch(location.pathname+'?chk='+Date.now(),{cache:'no-store'});if(!r.ok)return;
-      const m=(await r.text()).match(/name="pd-version" content="([^"]+)"/);
-      if(!m||m[1]===V)return;
-      if(sessionStorage.getItem(K)===m[1])return;sessionStorage.setItem(K,m[1]);
-      const u=new URL(location.href);u.searchParams.set('v',m[1]);location.replace(u.toString());
-    }catch(e){}
-  }
-  setTimeout(revisar,2500);
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden)revisar()});
-  setInterval(revisar,5*60*1000);
-})();
-</script>
+
 
 <script id="pd-solo-x" src="a/pd-solo-x-874f4444c1.js"></script>
 
