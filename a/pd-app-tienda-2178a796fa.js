@@ -1433,6 +1433,12 @@ ${ben(sv('<path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/><path d
     if(SES()){localStorage.setItem('pd_bienvenida','1');return}
     if(HO)return;bienvenida()}catch(_){}},1500);
   setInterval(()=>{try{if(HO&&HO.t==='bienv'&&SES())hojaCerrar()}catch(_){}},800);
+
+  /* si el ingreso con Google/Facebook falla, Supabase vuelve con ?error=…: se explica y se limpia la dirección */
+  setTimeout(function(){try{const h=new URLSearchParams(location.hash.slice(1)),q=new URLSearchParams(location.search);const d=h.get('error_description')||q.get('error_description');if(!d)return;
+    const t=/email/i.test(d)?'No se pudo entrar: tu cuenta de Facebook no tiene un correo confirmado. Agrega un correo en Facebook o entra con Google.':'No se pudo iniciar sesión. Inténtalo de nuevo o entra con Google.';
+    try{aviso(t)}catch(_){alert(t)}
+    ['error','error_code','error_description'].forEach(k=>q.delete(k));history.replaceState(history.state,'',location.pathname+(q.toString()?'?'+q:''))}catch(_){}},1800);
   window.pdBienvenida=bienvenida;
   setInterval(pintar,700);
   window.pdAppTienda={pintar,ir,abrirNeg,navH:()=>0,st:()=>({sub,tab,ck:ck(),cls:document.documentElement.className})};
