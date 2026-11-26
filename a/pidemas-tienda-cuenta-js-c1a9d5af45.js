@@ -163,7 +163,7 @@
     }catch(e){if(b)b.disabled=false;msg('No se pudo iniciar sesión: '+(e.message||'inténtalo de nuevo.'))}
   };
   /* Google rápido («One Tap»): hojita de Google dentro de pidemas.pe. Si no se puede mostrar, usa el ingreso de siempre. */
-  const GID='';/* ID de cliente web de Google (público). Vacío = ingreso de siempre */
+  const GID='123729912252-hpcomke4go7khbi0qom4c7cllu8i3kjc.apps.googleusercontent.com';/* ID de cliente web de Google (público). Vacío = ingreso de siempre */
   const googleRedir=window.pdIngresarConGoogle;
   let gisP=null;function gis(){if(window.google&&google.accounts&&google.accounts.id)return Promise.resolve();if(gisP)return gisP;gisP=new Promise((ok,ko)=>{const x=document.createElement('script');x.src='https://accounts.google.com/gsi/client';x.async=true;x.onload=ok;x.onerror=()=>{gisP=null;ko(new Error('gis'))};document.head.appendChild(x)});return gisP}
   async function sha(t){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
