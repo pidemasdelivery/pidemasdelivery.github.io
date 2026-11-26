@@ -513,7 +513,14 @@
 .segP .cd .lbl{font-size:11px}.segP .cd .ln,.segP .cd .ln span,.segP .cd .ln b{font-size:14px}
 /* --- Tarjeta de pedido en curso (Mis pedidos) --- */
 .oA{all:unset;box-sizing:border-box;width:100%;display:flex;flex-direction:column;gap:12px;padding:16px;border-radius:22px;background:#FFFFFF;border:1px solid #F1E4DA;box-shadow:0 6px 20px rgba(31,26,23,.07);cursor:pointer;transition:transform .14s}
-.oA:active{transform:scale(.985)}
+.oA:active{transform:none}
+.oAbt{all:unset;box-sizing:border-box;width:100%;display:flex;flex-direction:column;gap:12px;cursor:pointer}.oAbt:active{opacity:.8}
+.oAg svg{transition:transform .2s}.oA.ab .oAg svg{transform:rotate(180deg)}
+.oAx{display:flex;flex-direction:column;gap:12px;border-top:1px dashed #F1E4DA;padding-top:12px;animation:oAin .22s ease}
+@keyframes oAin{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.oAx .cdg{display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px 12px;padding:12px 14px;border-radius:16px;text-align:left}
+.oAx .cdg .cdk{font-size:11.5px}.oAx .cdg .cds{font-size:12.5px;line-height:1.35}.oAx .cdg .cdn{font-size:30px;letter-spacing:.14em;grid-row:1/3;grid-column:2;line-height:1}
+.oAd{display:flex;flex-direction:column;gap:8px}
 .oAh{display:flex;align-items:center;gap:12px}.oAh .lg{width:48px;height:48px;flex:0 0 48px;border-radius:14px}
 .oAt{flex:1 1 0%;min-width:0;display:flex;flex-direction:column;gap:2px}.oAt b{font-size:16px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.oAt small{font-size:12.5px;color:#6B5E55;font-weight:600}
 .oAm{font-size:16px;font-weight:800;white-space:nowrap}
@@ -800,13 +807,16 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
     const H=c.data;if(!H.length)return {head,body:`<div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;padding:48px 20px 8px"><span style="width:76px;height:76px;border-radius:50%;background:#FDEBDF;color:#C4410C;display:flex;align-items:center;justify-content:center">${String(IC.box).replace(/width="\d+" height="\d+"/,'width="34" height="34"')}</span><h2 style="margin:8px 0 0;font-size:22px;font-weight:800;color:#1F1A17">Aún no tienes pedidos</h2><p style="margin:0;font-size:15px;line-height:1.5;color:#6B5E55;max-width:300px">Explora los negocios de Piura y haz tu primer pedido.</p></div><button type="button" class="b o" style="height:54px;font-size:16px;margin-top:8px" data-a="inicio">Ver negocios</button>`};
     let cal={};try{cal=JSON.parse(localStorage.getItem('pidemas_calificados')||'{}')||{}}catch(e){}
     const curso=H.filter(o=>!FIN.includes(est(o))),antes=H.filter(o=>FIN.includes(est(o)));
+    if(F.exp==='__1')F.exp=curso[0]?String(curso[0].id):null;
+    if(curso.length&&Date.now()-c.t>15000&&!c.busy)historial(true);
     const card=o=>{const s=est(o),canc=['cancelado','anulado','rechazado'].includes(s),fin=s==='entregado',r=negPorId(o.negocio_id),items=(o.items||[]).map(x=>Number(x.cantidad||1)+'× '+x.nombre).join(' · '),p=!fin&&!canc?pasos(o):null,cl=cal[o.id];
       if(p){const n=p.L.length,k=Math.min(p.cur,n-1),pc=Math.round((k+1)/n*100),sig=p.L[k+1];
-        return `<button type="button" class="oA" data-seg="${E(o.id)}" aria-label="Ver seguimiento de tu pedido de ${E(r?nomN(r):'Pidemás')}">
+        const ab=String(F.exp)===String(o.id);
+        return `<div class="oA${ab?' ab':''}" id="oa-${E(o.id)}"><button type="button" class="oAbt" data-exp="${E(o.id)}" aria-expanded="${ab}" aria-label="${ab?'Ocultar':'Ver'} detalle de tu pedido de ${E(r?nomN(r):'Pidemás')}">
           <span class="oAh">${r?logoHtml(r):'<span class="lg"></span>'}<span class="oAt"><b>${E(r?nomN(r):o.negocio_nombre||'Pedido')}</b><small>${E(codP(o))} · ${E(fechaC(o.creado_en))}</small></span><b class="oAm">${M(o.total)}</b></span>
           <span class="bar5" style="grid-template-columns:repeat(${n},minmax(0,1fr))" aria-hidden="true">${p.L.map((_,i)=>`<i class="${i<k?'d':i===k?'c':''}"></i>`).join('')}</span>
-          <span class="oAf"><span>Paso ${k+1} de ${n} · ${E(etiqueta(o))}</span><span class="oAg">Ver seguimiento ${S('<path d="m9 6 6 6-6 6"/>')}</span></span>
-        </button>`}
+          <span class="oAf"><span>Paso ${k+1} de ${n} · ${E(etiqueta(o))}</span><span class="oAg">${ab?'Ocultar':'Ver detalle'} ${S('<path d="m6 9 6 6 6-6"/>')}</span></span>
+        </button>${ab?detExp(o):''}</div>`}
       if(!p){const its=(o.items||[]),mas=its.length-3,rep=its.length>0,calf=fin&&!cl;
         return `<div class="oP${canc?' x':''}">
           <div class="oAh">${r?logoHtml(r):'<span class="lg"></span>'}<span class="oAt"><b>${r?nomH(r):E(o.negocio_nombre||'Pedido')}</b><small>${E(codP(o))} · ${E(fechaC(o.creado_en))}</small></span><b class="oAm">${M(o.total)}</b></div>
@@ -820,6 +830,12 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
     return {head,body:h};
   }
   let segT=0;
+  function detExp(o){const s=est(o);let h='<div class="oAx">';
+    if(o.negocio_id&&!FIN.includes(s)){const cc=cargar('cod:'+o.id,async()=>{const x=await SB().rpc('codigo_entrega',{p_pedido:o.id,p_token:(window.pdTokenPedido?window.pdTokenPedido(o.id):null)});return x&&!x.error&&x.data?String(x.data):''});
+      h+=`<div class="cdg"><div class="cdk">Tu código de entrega</div><div class="cds">Dáselo al motorizado solo cuando tengas tu pedido en la mano.</div><div class="cdn">${cc.data?E(cc.data):'····'}</div></div>`}
+    const sub2=Number(o.subtotal),del=Number(o.delivery_cost??o.costo_delivery);
+    h+=`<div class="oAd">${(o.items||[]).map(x=>`<div class="ln"><span>${Number(x.cantidad||1)} × ${E(x.nombre)}</span><b>${M(Number(x.precio||0)*Number(x.cantidad||1))}</b></div>`).join('')}${sub2>0?`<div class="ln"><span>Subtotal</span><b>${M(sub2)}</b></div>`:''}${Number.isFinite(del)?`<div class="ln"><span>Delivery</span><b>${M(del)}</b></div>`:''}${o.metodo_pago?`<div class="ln"><span>Pago</span><b class="pgm ${/yape/i.test(o.metodo_pago)?'y':'e'}">${E(String(o.metodo_pago).replace(/^./,m=>m.toUpperCase()))}</b></div>`:''}<div class="ln t"><span>Total</span><b>${M(o.total)}</b></div></div></div>`;
+    return h}
   function seguimiento(){
     const head0=t=>top('Seguimiento',t,back('volver'));
     if(!SES())return {head:head0('Tu pedido'),body:loginCard('Inicia sesión para seguir tu pedido','Así ves en qué paso va tu pedido desde cualquier teléfono.')};
@@ -845,7 +861,7 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
   /* ---------- seguimiento como alerta (la página completa queda para «Ver detalle completo») ---------- */
   let segIv=null;
   function seguirAlerta(){
-    if(sub==='seguir'){key='';pintar();return}abrir('seguir');return;
+    F.exp=F.seg?String(F.seg):'__1';ir('pedidos');setTimeout(()=>{try{const el=root.getElementById('oa-'+F.exp);el&&el.scrollIntoView({behavior:'smooth',block:'start'})}catch(_){}},600);return;
     hojaAbrir({t:'segal',view(){
       const v=seguimiento();const d=document.createElement('div');d.innerHTML=v.head+'<div class="__b">'+v.body+'</div>';
       const q=x=>d.querySelector(x);const kick=q('.top .kick'),tit=q('.top .h1'),bar=q('.top .bar5');const paso=bar&&bar.nextElementSibling?bar.nextElementSibling.outerHTML:'';
@@ -1363,6 +1379,7 @@ ${ben(sv('<path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/><path d
     const pg=e.target.closest('[data-pago]');if(pg){const b=btnTxt(pg.dataset.pago==='yape'?/^Yape$/i:/^Efectivo$/i);if(b)b.click();else{setVal('cPago',pg.dataset.pago);try{togglePaymentProof()}catch(_){}}setTimeout(()=>{key='';pintar()},60);return}
     const yp=e.target.closest('[data-yape]');if(yp){const r2=document.querySelector(`#modal input[name="pdYapeModo"][value="${CSS.escape(yp.dataset.yape)}"]`);if(r2){r2.checked=true;r2.dispatchEvent(new Event('change',{bubbles:true}));r2.click()}setTimeout(()=>{key='';pintar()},60);return}
     const cp=e.target.closest('[data-comp]');if(cp){const cur=val('cCompTipo');try{if(cur===cp.dataset.comp){setVal('cCompTipo','ninguno');window.pdCompSel&&window.pdCompSel('ninguno')}else window.pdCompSel(cp.dataset.comp)}catch(_){}setTimeout(()=>{key='';pintar()},60);return}
+    const ex=e.target.closest('[data-exp]');if(ex){const id=ex.dataset.exp;F.exp=String(F.exp)===id?null:id;key='';pintar();if(F.exp)setTimeout(()=>{try{const el=root.getElementById('oa-'+id);el&&el.scrollIntoView({behavior:'smooth',block:'nearest'})}catch(_){}},60);return}
     const sg=e.target.closest('[data-seg]');if(sg){F.seg=sg.dataset.seg;if(C.seg)C.seg.t=0;if(sub==='seguir'){key='';pintar()}else seguirAlerta();return}
     const rp=e.target.closest('[data-rep]');if(rp){try{await window.pdReorder(rp.dataset.rep)}catch(_){}setTimeout(()=>{const id=cartNeg();if(id&&!document.querySelector('#modal.overlay')){F.neg=id;carta(id);sub=null;pila=[];abrir('carrito')}},700);return}
     const cl=e.target.closest('[data-cal]');if(cl){try{window.pdOpenRating(cl.dataset.cal)}catch(_){}return}
