@@ -647,7 +647,7 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
 
   function ultimoPedido(){if(!SES())return null;try{const o=JSON.parse(localStorage.getItem('pidemas_last_order')||'null');return o&&o.id&&!FIN.includes(est(o))?o:null}catch(e){return null}}
   function inicio(){
-    const dir=dirTxt();
+    const dir=SES()?dirTxt():'';
     const head=`<div class="hd"><div class="hrow"><button type="button" class="dir" data-a="cuenta"><span class="pi">${IC.pin}</span><span class="tx"><small>Entregar en</small><b>${E(dir||'Agrega tu dirección')}</b></span></button>${cartBtn()}</div>
       </div>`;
     const buscador=`<label class="srch inicio">${IC.search}<span style="position:absolute;width:1px;height:1px;overflow:hidden">Buscar</span><input id="tQ" type="search" placeholder="Busca un negocio o un producto" value="${E(F.q)}" data-in="q" autocomplete="off"></label>`;
@@ -1192,7 +1192,7 @@ ${ben(sv('<path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/><path d
           const u=SES();if(!u){this.busy=0;hojaCerrar();aviso('Datos guardados en este teléfono.');key='';pintar();return}
           try{const {data:r,error}=await SB().auth.updateUser({data});if(error)throw error;try{window.pdActualizarCuentaCliente&&window.pdActualizarCuentaCliente(r.user||u)}catch(_){}this.busy=0;hojaCerrar();aviso('Tus datos se guardaron.');key='';pintar()}
           catch(e){this.busy=0;this.msg='Se guardó en este teléfono, pero no en tu cuenta: '+(e.message||'inténtalo de nuevo.');this.ok=0;repintarHoja()}return}
-        if(a==='salir'){if(!(await window.pdConfirmar('¿Cerrar sesión en este teléfono?')))return;try{const {error}=await SB().auth.signOut();if(error)throw error;try{localStorage.removeItem('pidemas_last_order')}catch(_){}try{window.pdActualizarCuentaCliente&&window.pdActualizarCuentaCliente(null)}catch(_){}aviso('Sesión cerrada.');C.hist=null;key='';pintar()}catch(e){aviso('No se pudo cerrar la sesión: '+(e.message||''))}}}});
+        if(a==='salir'){if(!(await window.pdConfirmar('¿Cerrar sesión en este teléfono?')))return;try{const {error}=await SB().auth.signOut();if(error)throw error;try{localStorage.removeItem('pidemas_last_order');localStorage.removeItem('pidemas_customer_info')}catch(_){}try{window.pdActualizarCuentaCliente&&window.pdActualizarCuentaCliente(null)}catch(_){}aviso('Sesión cerrada.');C.hist=null;key='';pintar()}catch(e){aviso('No se pudo cerrar la sesión: '+(e.message||''))}}}});
   }
   window.pdAbrirCuentaCliente=function(){SES()?misDatos():entrar()};
   window.pdMostrarPerfilCliente=window.pdAbrirCuentaCliente;
@@ -1393,7 +1393,7 @@ ${ben(sv('<path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/><path d
       case 'agregar':{const ok=agregar(F.pid,F.qty);if(ok){sub='negocio';key='';pintar()}break}
       case 'horario':{try{window.showRestaurantSchedule(F.neg)}catch(_){}break}
       case 'cuenta':{try{window.pdAbrirCuentaCliente()}catch(_){}break}
-      case 'salirCuenta':{if(!(await window.pdConfirmar('¿Cerrar sesión en este teléfono?')))break;try{const {error}=await SB().auth.signOut();if(error)throw error;try{localStorage.removeItem('pidemas_last_order')}catch(_){}try{window.pdActualizarCuentaCliente&&window.pdActualizarCuentaCliente(null)}catch(_){}aviso('Sesión cerrada.');C.hist=null;key='';pintar()}catch(e){aviso('No se pudo cerrar la sesión: '+(e.message||''))}break}
+      case 'salirCuenta':{if(!(await window.pdConfirmar('¿Cerrar sesión en este teléfono?')))break;try{const {error}=await SB().auth.signOut();if(error)throw error;try{localStorage.removeItem('pidemas_last_order');localStorage.removeItem('pidemas_customer_info')}catch(_){}try{window.pdActualizarCuentaCliente&&window.pdActualizarCuentaCliente(null)}catch(_){}aviso('Sesión cerrada.');C.hist=null;key='';pintar()}catch(e){aviso('No se pudo cerrar la sesión: '+(e.message||''))}break}
       case 'facebook':{(async()=>{try{await window.pdIngresarConFacebook()}catch(e){aviso(/provider is not enabled|Unsupported provider/i.test(String(e&&e.message))?'El ingreso con Facebook aún no está activo. Entra con Google por ahora.':'No se pudo abrir Facebook. Inténtalo de nuevo.')}})();break}
       case 'google':{try{window.pdIngresarConGoogle()}catch(_){try{window.pdAbrirCuentaCliente()}catch(__){}}break}
       case 'seguirult':F.seg=null;if(C.seg)C.seg.t=0;seguirAlerta();break;
