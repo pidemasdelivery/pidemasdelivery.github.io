@@ -8,7 +8,7 @@
   var mv=document.querySelector('meta[name="pd-version"]');if(!mv)return;var V=mv.content;
   var mi=document.querySelector('meta[name="pd-instalacion"]');var I=mi?mi.content:'1';
   var ls={get:function(k){try{return localStorage.getItem(k)}catch(e){return null}},set:function(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
-  var url=location.pathname,ultimo=0,pendiente=false,toque=Date.now();
+  var T0=Date.now(),url=location.pathname,ultimo=0,pendiente=false,toque=Date.now();
   var instalada=matchMedia('(display-mode: standalone)').matches||matchMedia('(display-mode: fullscreen)').matches||navigator.standalone===true;
   ['pointerdown','keydown','scroll','touchstart'].forEach(function(e){addEventListener(e,function(){toque=Date.now()},{passive:true,capture:true})});
 
@@ -16,7 +16,7 @@
   function chequear(){
     if(document.hidden||Date.now()-ultimo<60000)return;ultimo=Date.now();
     fetch(url+'?pdv='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){
-      var m=t&&t.match(/<meta name="pd-version" content="([^"]+)"/);if(m&&m[1]!==V){pendiente=true;intentar()}
+      var m=t&&t.match(/<meta name="pd-version" content="([^"]+)"/);if(m&&m[1]!==V){if(Date.now()-T0<120000){try{fetch(location.href,{cache:'reload'}).catch(function(){})}catch(_){}return}pendiente=true;intentar()}
     }).catch(function(){});
   }
   function ocupado(){
