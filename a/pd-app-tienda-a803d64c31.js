@@ -1109,7 +1109,7 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
     },120);
   }
   document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('#ppCerrado [data-a="prog"]');if(!b||!document.documentElement.classList.contains('pdtApp'))return;e.stopImmediatePropagation();e.preventDefault();
-    const c=$('ppCerrado');if(c)c.hidden=true;try{sessionStorage.setItem('pp_visto_'+new Date(new Date().toLocaleString('en-US',{timeZone:'America/Lima'})).toDateString(),'1')}catch(_){}reservar()},true);
+    const c=$('ppCerrado');try{sessionStorage.setItem('pp_visto_'+new Date(new Date().toLocaleString('en-US',{timeZone:'America/Lima'})).toDateString(),'1')}catch(_){}reservar();setTimeout(()=>{if(c)c.hidden=true},450)},true);
   window.pdReservarNegocio=function(id){try{closeModal()}catch(_){}reservar(id)};
   window.pdProgramarNuevo=reservar;
 
