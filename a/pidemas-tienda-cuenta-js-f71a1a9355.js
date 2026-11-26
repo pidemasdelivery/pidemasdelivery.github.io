@@ -180,6 +180,21 @@
       if(n.isNotDisplayed&&n.isNotDisplayed())return googleRedir();
       if(n.isSkippedMoment&&n.isSkippedMoment()){const w=n.getSkippedReason&&n.getSkippedReason();if(w!=='user_cancel'&&w!=='tap_outside')googleRedir()}}catch(_){}});
   };
+  /* Botón oficial de Google en la tienda (dice «pidemas.pe» y no se bloquea como la hojita).
+     Reemplaza a nuestros botones «Continuar con Google»; si Google no carga, quedan los nuestros. */
+  let gBtnP=null;
+  function gBtnInit(){if(gBtnP)return gBtnP;gBtnP=(async()=>{await gis();const raw=[...crypto.getRandomValues(new Uint8Array(16))].map(x=>x.toString(16).padStart(2,'0')).join(''),hashed=await sha(raw);
+    google.accounts.id.initialize({client_id:GID,nonce:hashed,auto_select:false,itp_support:true,context:'signin',ux_mode:'popup',
+      callback:async r=>{try{const {error}=await sb.auth.signInWithIdToken({provider:'google',token:r.credential,nonce:raw});if(error)throw error;location.reload()}
+        catch(e){try{window.pdAviso&&window.pdAviso('No se pudo entrar con Google. Probamos de otra forma.')}catch(_){}googleRedir()}}});return true})().catch(()=>{gBtnP=null;return false});return gBtnP}
+  if(GID&&window.crypto&&crypto.subtle)setInterval(()=>{try{
+    const raices=[document].concat([...document.querySelectorAll('pd-app-tienda')].map(h=>h.shadowRoot).filter(Boolean));
+    raices.forEach(R=>R.querySelectorAll('[data-a="google"],[data-h="g"]').forEach(b=>{if(b.dataset.gis||!b.offsetWidth)return;b.dataset.gis='1';
+      gBtnInit().then(ok=>{if(!ok||!b.isConnected)return;const d=document.createElement('div');d.style.cssText='display:flex;justify-content:center;min-height:44px;width:100%';b.parentNode.insertBefore(d,b);
+        const w=Math.round(Math.min(400,Math.max(220,b.offsetWidth||320)));
+        try{google.accounts.id.renderButton(d,{type:'standard',theme:'outline',size:'large',text:'continue_with',shape:'pill',logo_alignment:'center',width:w,locale:'es'})}catch(_){d.remove();return}
+        setTimeout(()=>{if(d.querySelector('iframe')){b.style.setProperty('display','none','important')}else d.remove()},1500)})}))
+  }catch(_){}},500);
   /* Facebook: mismo recorrido que Google (vuelve a la misma carta). Requiere el proveedor Facebook activo en Supabase. */
   window.pdIngresarConFacebook=async function(){
     try{
