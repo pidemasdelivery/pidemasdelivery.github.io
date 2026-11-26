@@ -886,7 +886,7 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
   function perfil(){
     const u=SES(),m=(u&&u.user_metadata)||{},nom=m.full_name||m.name||'';
     const head=top('Mi cuenta',nom||'Perfil');
-    if(!u)return {head,body:loginCard('Inicia sesión','Guarda tus datos y direcciones, y sigue tus pedidos desde cualquier teléfono.')+`<div class="cd"><div class="lnks"><button type="button" data-a="cuenta">${IC.pin}<span>Mis datos de entrega</span>${IC.chev}</button></div></div>`};
+    if(!u)return {head,body:loginCard('Inicia sesión','Guarda tus datos y direcciones, y sigue tus pedidos desde cualquier teléfono.')};
     const d=(window.pdDatosClienteGuardados&&window.pdDatosClienteGuardados())||{};
     let h=`<div class="cd" style="flex-direction:row;align-items:center;gap:14px"><span class="lg" style="border-radius:50%${m.avatar_url||m.picture?`;background-image:url('${E(m.avatar_url||m.picture)}')`:''}">${m.avatar_url||m.picture?'':ini(nom||'Cliente')}</span><span style="display:flex;flex-direction:column;min-width:0"><b style="font-size:17px">${E(nom||'Cliente')}</b><span style="font-size:14px;color:#6B5E55;overflow:hidden;text-overflow:ellipsis">${E(u.email||'')}</span></span></div>`;
     h+=`<div class="cd"><div class="lbl">Datos de entrega</div><div class="li"><span>Celular</span><b>${E(d.telefono||'—')}</b></div><div class="li"><span>Dirección</span><b style="text-align:right">${E(d.direccion||'—')}</b></div></div>`;
