@@ -1072,10 +1072,12 @@ function trackingLabel(status){
   const s=String(status||'pendiente').toLowerCase();
   if(s==='cancelado') return 'Cancelado';
   if(s==='entregado') return 'Entregado';
-  if(s==='en_entrega') return 'En entrega';
-  if(s==='en_camino') return 'En camino';
-  if(s==='aceptado') return 'Pedido aceptado';
+  if(s==='rechazado'||s==='anulado') return 'Cancelado';
+  if(s==='en_entrega'||s==='confirmando_pago') return 'Tu motorizado llegó';
+  if(s==='en_camino'||s==='camino_entrega') return 'Recogió tu pedido';
+  if(s==='aceptado'||s==='pedido_aceptado'||s==='camino_recojo') return 'Motorizado en camino al local';
   if(s==='asignado') return 'Motorizado asignado';
+  if(s==='confirmado') return 'El negocio lo confirmó';
   return 'Pedido recibido';
 }
 function renderTracking(o){
