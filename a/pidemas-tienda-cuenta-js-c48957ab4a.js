@@ -162,6 +162,24 @@
       if(error)throw error;
     }catch(e){if(b)b.disabled=false;msg('No se pudo iniciar sesión: '+(e.message||'inténtalo de nuevo.'))}
   };
+  /* Google rápido («One Tap»): hojita de Google dentro de pidemas.pe. Si no se puede mostrar, usa el ingreso de siempre. */
+  const GID='';/* ID de cliente web de Google (público). Vacío = ingreso de siempre */
+  const googleRedir=window.pdIngresarConGoogle;
+  let gisP=null;function gis(){if(window.google&&google.accounts&&google.accounts.id)return Promise.resolve();if(gisP)return gisP;gisP=new Promise((ok,ko)=>{const x=document.createElement('script');x.src='https://accounts.google.com/gsi/client';x.async=true;x.onload=ok;x.onerror=()=>{gisP=null;ko(new Error('gis'))};document.head.appendChild(x)});return gisP}
+  async function sha(t){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+  window.pdIngresarConGoogle=async function(){
+    if(!GID||!window.crypto||!crypto.subtle)return googleRedir();
+    try{await gis()}catch(_){return googleRedir()}
+    const raw=[...crypto.getRandomValues(new Uint8Array(16))].map(x=>x.toString(16).padStart(2,'0')).join(''),hashed=await sha(raw);
+    let hecho=false;
+    google.accounts.id.initialize({client_id:GID,nonce:hashed,auto_select:false,cancel_on_tap_outside:true,itp_support:true,context:'signin',
+      callback:async r=>{hecho=true;try{msg('Entrando…')}catch(_){}
+        try{const {error}=await sb.auth.signInWithIdToken({provider:'google',token:r.credential,nonce:raw});if(error)throw error;location.reload()}
+        catch(e){try{window.pdAviso&&window.pdAviso('No se pudo entrar con Google. Probamos de otra forma.')}catch(_){}googleRedir()}}});
+    google.accounts.id.prompt(n=>{try{if(hecho)return;
+      if(n.isNotDisplayed&&n.isNotDisplayed())return googleRedir();
+      if(n.isSkippedMoment&&n.isSkippedMoment()){const w=n.getSkippedReason&&n.getSkippedReason();if(w!=='user_cancel'&&w!=='tap_outside')googleRedir()}}catch(_){}});
+  };
   /* Facebook: mismo recorrido que Google (vuelve a la misma carta). Requiere el proveedor Facebook activo en Supabase. */
   window.pdIngresarConFacebook=async function(){
     try{
