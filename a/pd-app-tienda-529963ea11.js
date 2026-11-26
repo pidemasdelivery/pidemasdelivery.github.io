@@ -1411,6 +1411,37 @@ ${ben(sv('<path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/><path d
   addEventListener('popstate',()=>{if(window.__pdPopPropio)return;if(ignorarPop){ignorarPop=false;return}if(Date.now()-cerrT<1200||Date.now()-tapT<1500||eraTapada)return;if(history.state&&history.state.pdt)return;/* volvió de una ventana vieja, no de esta app */if(sub){if(document.querySelector('#modal.overlay')&&!ck())return;atras();if(sub)try{history.pushState({pdt:1},'')}catch(_){}}});
   /* Enlace directo a la carta de un negocio: ?negocio=ID */
   (function(){const id=(new URLSearchParams(location.search).get('negocio')||'').trim();if(!id)return;const t=setInterval(()=>{const r=negPorId(id);if(!r&&window.pdNegNoDisp===id){clearInterval(t);F.neg=id;sub='negocio';key='';pintar();return}if(!r)return;clearInterval(t);F.neg=String(r.id);carta(r.id);sub='negocio';try{const m=$('cartaModalNegocio');if(m&&window.volverMenuPrincipal)window.volverMenuPrincipal()}catch(_){}key='';pintar()},300);setTimeout(()=>clearInterval(t),20000)})();
+
+  /* ---------- bienvenida: solo la primera vez, pide la ubicación de entrega ---------- */
+  async function bvGuardar(lat,lng){const x=await inversa({lat,lng}).catch(()=>null);const dir=x&&x.linea?[x.linea,x.sub].filter(Boolean).join(', '):'';
+    const prev=LSC.get();LSC.set({lat,lng,...(dir&&!String(prev.direccion||'').trim()?{direccion:dir}:{})});
+    try{customerNearbyCoords={latitude:lat,longitude:lng}}catch(_){}
+    const u=SES();if(u){try{const m=u.user_metadata||{};const {data:r}=await SB().auth.updateUser({data:{delivery_lat:lat,delivery_lng:lng,...(dir&&!String(m.address||'').trim()?{address:dir}:{})}});try{window.pdActualizarCuentaCliente&&window.pdActualizarCuentaCliente((r&&r.user)||u)}catch(_){}}catch(_){}}
+    return dir}
+  function bienvenida(){
+    const marca=()=>{try{localStorage.setItem('pd_bienvenida','1')}catch(_){}};
+    hojaAbrir({t:'bienv',n:0,busc:false,msg:'',
+      view(){const b=this.busc;return {dlg:true,title:'Bienvenido a Pidemás',
+        css:'<style>.hbg{background:#FFFFFF!important}.dlg{position:fixed!important;inset:0!important;top:0!important;transform:none!important;max-width:none!important;border-radius:0!important;box-shadow:none!important;padding:calc(env(safe-area-inset-top) + 28px) 24px calc(env(safe-area-inset-bottom) + 20px)!important;align-items:stretch!important;text-align:left!important;justify-content:space-between;gap:0!important;animation:bvIn .28s ease-out!important}@keyframes bvIn{from{opacity:0}to{opacity:1}}.bvM{flex:1;display:flex;flex-direction:column;justify-content:center;gap:14px;max-width:440px;width:100%;margin:0 auto}.bvL{width:68px;height:68px;border-radius:20px;background:#C4410C url(icon-192.png) center/cover;box-shadow:0 8px 22px rgba(196,65,12,.28)}.bvM h2{margin:6px 0 0;font-size:28px;line-height:1.18;font-weight:800;color:#1F1A17;letter-spacing:-.01em}.bvM p{margin:0;font-size:16px;line-height:1.5;color:#6B5E55}.bvQ{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:10px;height:54px;padding:0 16px;border-radius:14px;border:1.5px solid #F1E4DA;background:#FFF8F3;color:#9A8A7F;font-size:16px;cursor:pointer;margin-top:6px}.bvQ svg{width:20px;height:20px;color:#C4410C}.bvB{max-width:440px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:6px}.bvB .bp{display:flex;align-items:center;justify-content:center;gap:8px}.bvB .bp svg{width:20px;height:20px}.bvN{all:unset;text-align:center;font-size:15px;font-weight:700;color:#6B5E55;padding:12px;cursor:pointer}.bvMs{font-size:14px;color:#B42318;line-height:1.4}.bvMs.ok{color:#15803D;font-weight:700}</style>',
+        body:`<div class="bvM"><span class="bvL" role="img" aria-label="Pidemás"></span><h2>Hola, ¿dónde te entregamos?</h2><p>Te mostramos los negocios que llegan a tu zona y calculamos el delivery solo.</p><button type="button" class="bvQ" data-h="mapa">${IC.search}<span>Busca tu dirección</span></button>${this.msg?`<div class="bvMs${this.ok?' ok':''}" role="status">${E(this.msg)}</div>`:''}</div>`,
+        btns:`<div class="bvB"><button type="button" class="bp" data-h="gps"${b?' disabled':''}>${b?'<span class="spin"></span>Buscando tu ubicación…':IC.gps+'Usar mi ubicación'}</button><button type="button" class="bvN" data-h="x">Ahora no</button></div>`}},
+      alCerrar(){marca()},
+      async on(a){const yo=this;
+        if(a==='x'){hojaCerrar();return}
+        if(a==='gps'){if(!navigator.geolocation){yo.msg='Este teléfono no permite obtener la ubicación. Búscala en el mapa.';yo.ok=0;yo.n++;repintarHoja();return}
+          yo.busc=true;yo.msg='';yo.n++;repintarHoja();
+          navigator.geolocation.getCurrentPosition(async p=>{const dir=await bvGuardar(Number(p.coords.latitude.toFixed(7)),Number(p.coords.longitude.toFixed(7)));yo.busc=false;yo.ok=1;yo.msg='Listo'+(dir?': '+dir:', guardamos tu ubicación.');yo.n++;repintarHoja();setTimeout(()=>{if(HO===yo){hojaCerrar();F.filtro='cerca';key='';pintar()}},1300)},
+            e=>{yo.busc=false;yo.ok=0;yo.msg=e&&e.code===1?'No diste permiso de ubicación. Búscala en el mapa o actívala en los ajustes.':'No pudimos obtener tu ubicación. Búscala en el mapa.';yo.n++;repintarHoja()},{enableHighAccuracy:true,timeout:15000,maximumAge:0});return}
+        if(a==='mapa'){marca();const r=await window.pdMapaElegir({titulo:'¿Dónde te entregamos?',tip:'Mueve el mapa hasta tu casa u oficina'});
+          if(r){await bvGuardar(r.lat,r.lng);try{aviso('Listo, guardamos tu dirección de entrega.')}catch(_){}F.filtro='cerca';key='';pintar()}}}});
+  }
+  setTimeout(function(){try{
+    if(localStorage.getItem('pd_bienvenida'))return;
+    const q=new URLSearchParams(location.search);if(q.get('negocio')||q.get('pedido')||q.get('fb'))return;
+    const d=(window.pdDatosClienteGuardados&&window.pdDatosClienteGuardados())||{};const m=(SES()&&SES().user_metadata)||{};
+    if(d.lat!=null||m.delivery_lat!=null){localStorage.setItem('pd_bienvenida','1');return}
+    if(HO)return;bienvenida()}catch(_){}},1200);
+  window.pdBienvenida=bienvenida;
   setInterval(pintar,700);
   window.pdAppTienda={pintar,ir,abrirNeg,navH:()=>0,st:()=>({sub,tab,ck:ck(),cls:document.documentElement.className})};
 })();
