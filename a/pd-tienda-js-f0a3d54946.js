@@ -1764,6 +1764,8 @@ document.addEventListener('focusin',event=>{
 // Protege el envío: errores inesperados se muestran al cliente y el botón no queda bloqueado.
 const pidemasOriginalSubmitCartOrder=submitCartOrder;
 submitCartOrder=async function(){
+  let pdSes=null;try{pdSes=pdClienteSesion}catch(e){}
+  if(!pdSes){toast('Inicia sesión para hacer tu pedido.');try{window.pdAbrirCuentaCliente&&window.pdAbrirCuentaCliente()}catch(e){}return;}
   if(window.__pidemasOrderSubmitting){toast('El pedido sigue en proceso. No vuelvas a pulsar enviar.');return;}
   const button=document.querySelector('#modal.overlay .primary[onclick*="submitCartOrder"]');
   window.__pidemasOrderSubmitting=true;

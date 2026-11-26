@@ -786,7 +786,7 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
     const res=lineasResumen();
     if(res)h+=`<div class="cd">${res.map((x,i)=>`<div class="ln${i===res.length-1?' t':''}${/descuento|gratis/i.test(x[0]+x[1])&&i<res.length-1?' g':''}"><span>${E(x[0])}</span><b>${E(x[1])}</b></div>`).join('')}</div>`;
     const sb2=btnTxt(/^Confirmar|^Enviar|^Hacer pedido|^Reservar/i);const tot=res?res[res.length-1][1]:M(totCart());
-    const foot=`<button type="button" class="cbar c" data-a="enviar"${window.__pidemasOrderSubmitting?' disabled':''}>${window.__pidemasOrderSubmitting?'Enviando…':E((sb2&&/Reservar/i.test(sb2.textContent))?'Reservar pedido':'Confirmar pedido')} · ${E(tot)}</button>`;
+    const foot=`<button type="button" class="cbar c" data-a="enviar"${window.__pidemasOrderSubmitting?' disabled':''}>${window.__pidemasOrderSubmitting?'Enviando…':!SES()?'Inicia sesión para pedir':E((sb2&&/Reservar/i.test(sb2.textContent))?'Reservar pedido':'Confirmar pedido')+' · '+E(tot)}</button>`;
     return {head,body:h,foot};
   }
 
@@ -1404,7 +1404,7 @@ ${ben(sv('<path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/><path d
       case 'mapa':{const b=document.querySelector('#modal .ckMapa');if(b)b.click();[600,2000].forEach(ms=>setTimeout(()=>{key='';pintar()},ms));break}
       case 'cubiertos':{const b=document.querySelector('#modal .pdDescSw');if(b)b.click();setTimeout(()=>{key='';pintar()},80);break}
       case 'cupon':{try{applyDeliveryDiscount()}catch(_){}[300,1200,2500].forEach(ms=>setTimeout(()=>{key='';pintar()},ms));break}
-      case 'enviar':{if(window.__pidemasOrderSubmitting)break;const b=btnTxt(/^Confirmar|^Enviar|^Hacer pedido|^Reservar/i)||document.querySelector('#modal button.primary[onclick*="submitCartOrder"]');
+      case 'enviar':{if(window.__pidemasOrderSubmitting)break;if(!SES()){aviso('Inicia sesión con Google para hacer tu pedido. Tu carrito se guarda.');try{window.pdAbrirCuentaCliente()}catch(_){}break}const b=btnTxt(/^Confirmar|^Enviar|^Hacer pedido|^Reservar/i)||document.querySelector('#modal button.primary[onclick*="submitCartOrder"]');
         const t0=Date.now();if(b)b.click();else try{window.submitCartOrder()}catch(_){}
         key='';pintar();
         const w=setInterval(()=>{if(window.__pidemasOrderSubmitting)return;if(ck()){clearInterval(w);key='';pintar();return}const m=$('modal'),tx=String(m&&m.textContent||'').replace(/\s+/g,' ');const okE=/Pedido enviado|Pedido registrado|Reserva|reservad/i.test(tx);if(!okE&&m&&m.classList.contains('overlay')&&Date.now()-t0<15000)return;clearInterval(w);document.documentElement.classList.remove('pdtCk');if(C.hist)C.hist.t=0;if(C.seg)C.seg.t=0;if(okE){const cd=(tx.match(/#[0-9A-F]{6,10}/i)||[''])[0];F.ok={tit:/Reserva|reservad/i.test(tx)&&!/Pedido enviado/i.test(tx)?'¡Reserva registrada!':'¡Pedido enviado!',cod:cd,txt:/registrado/i.test(tx)&&!/enviado/i.test(tx)?'Tu pedido quedó registrado. Te avisaremos cuando el negocio lo confirme.':'El negocio ya recibió tu pedido y lo confirmará en breve.'};cerrT=Date.now();try{closeModal()}catch(_){}if(history.state&&history.state.pdt){ignorarPop=true;history.back()}sub=null;pila=[];tab='inicio';setTimeout(listoHoja,250)}else{if(history.state&&history.state.pdt){ignorarPop=true;history.back()}sub=null;pila=[];tab='inicio'}key='';pintar()},500);setTimeout(()=>clearInterval(w),90000);break}
