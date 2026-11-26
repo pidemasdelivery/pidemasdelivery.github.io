@@ -1081,7 +1081,7 @@ html.pdtApp body:not(#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdNo#pdN
         const on=s.tipo==='on',enCarta=sub==='negocio'&&String(F.neg)===String(r.id);
         const pill=s.tipo==='off'&&/^Abre /.test(s.txt||'')?s.pill+' · '+s.txt.replace(/^Abre /,'abre ').replace(/\.$/,''):(on?'Abierto ahora':s.pill);
         const CALI=S('<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M8 3v4M16 3v4M4 10h16"/>');
-        return {dlg:true,title:'Horario de '+nomN(r),body:`<div class="hc1"><div class="hcH"><span class="hcI">${IC.clock}</span><span class="hcT"><b>${nomH(r)}</b><span class="st ${E(s.tipo)}">${E(pill)}</span></span></div><div class="sm">${filas}</div>${nota?`<div style="display:flex;gap:10px;align-items:flex-start;margin-top:12px;padding:12px 14px;border-radius:14px;background:#FFF4EC;color:#9A330A;font-size:14.5px;line-height:1.4;font-weight:600">${IC.clock}<span>${E(nota)}</span></div>`:''}</div>`,
+        return {dlg:true,css:'<style>.hbg{background:#FFFFFF!important;touch-action:none}.dlg{position:fixed!important;inset:0!important;top:0!important;left:0!important;right:0!important;transform:none!important;max-width:none!important;margin:0!important;border-radius:0!important;box-shadow:none!important;box-sizing:border-box!important;height:100dvh!important;padding:calc(env(safe-area-inset-top) + 22px) 22px calc(env(safe-area-inset-bottom) + 14px)!important;justify-content:center!important;gap:0!important;overflow-y:auto!important;overscroll-behavior:contain!important;animation:pgIn .22s ease-out!important}@keyframes pgIn{from{opacity:0}to{opacity:1}}.dlg>div:first-child{margin:0 auto!important;max-width:420px;width:100%}.dlg>.bb{max-width:420px;width:100%;margin:20px auto 0!important;gap:10px!important}</style>',title:'Horario de '+nomN(r),body:`<div class="hc1"><div class="hcH"><span class="hcI">${IC.clock}</span><span class="hcT"><b>${nomH(r)}</b><span class="st ${E(s.tipo)}">${E(pill)}</span></span></div><div class="sm">${filas}</div>${nota?`<div style="display:flex;gap:10px;align-items:flex-start;margin-top:12px;padding:12px 14px;border-radius:14px;background:#FFF4EC;color:#9A330A;font-size:14.5px;line-height:1.4;font-weight:600">${IC.clock}<span>${E(nota)}</span></div>`:''}</div>`,
           btns:'<div class="bb hc1b">'+(on?'':`<button type="button" class="bp" data-h="reservar">${CALI}Reservar pedido</button>`)+(enCarta?`<button type="button" class="bs" data-h="cerrar">Cerrar</button>`:`<button type="button" class="bs" data-h="carta">Ver la carta</button>`)+'</div>'}},
       on(a){if(a==='cerrar'){hojaCerrar();return}if(a==='carta'){hojaCerrar();if(!(sub==='negocio'&&String(F.neg)===String(r.id)))abrirNeg(r.id)}if(a==='reservar'){hojaCerrar();setTimeout(()=>reservar(r.id),80)}}});
   }
@@ -1445,14 +1445,14 @@ ${ben(sv('<path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5"/><path d
   /* Bienvenida y «Estamos cerrados» quedan fijas: la página de atrás no se desplaza (así no asoma el diseño viejo ni se mueve la barra del navegador) */
   (function(){let on=false,ov=['',''];
     const cerr=()=>{const c=$('ppCerrado');return c&&!c.hidden&&c.getClientRects().length?c:null};
-    const activo=()=>!!(cerr()||(HO&&(HO.t==='bienv'||HO.t==='login')));
+    const activo=()=>!!(cerr()||(HO&&(HO.t==='bienv'||HO.t==='login'||HO.t==='horario')));
     setInterval(()=>{const v=activo();if(v===on)return;on=v;const de=document.documentElement,b=document.body;
       if(v){ov=[de.style.overflow,b.style.overflow];de.style.overflow='hidden';b.style.overflow='hidden';de.style.overscrollBehavior='none';b.style.overscrollBehavior='none'}
       else{de.style.overflow=ov[0];b.style.overflow=ov[1];de.style.overscrollBehavior='';b.style.overscrollBehavior=''}},200);
     document.addEventListener('touchmove',e=>{if(!activo())return;const c=cerr();
       if(c&&!(HO&&HO.t==='bienv')&&c.contains(e.target)&&c.scrollHeight>c.clientHeight+2)return;
-      if(HO&&HO.t==='login'){try{const d=hRoot.querySelector('.dlg');if(d&&d.scrollHeight>d.clientHeight+2)return}catch(_){}}
-      if(HO&&HO.t!=='bienv'&&HO.t!=='login'&&!c)return;
+      if(HO&&(HO.t==='login'||HO.t==='horario')){try{const d=hRoot.querySelector('.dlg');if(d&&d.scrollHeight>d.clientHeight+2)return}catch(_){}}
+      if(HO&&HO.t!=='bienv'&&HO.t!=='login'&&HO.t!=='horario'&&!c)return;
       if(e.cancelable)e.preventDefault()},{passive:false,capture:true});
   })();
   window.pdBienvenida=bienvenida;
